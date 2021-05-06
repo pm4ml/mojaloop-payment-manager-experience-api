@@ -1,0 +1,60 @@
+{
+  "name": "mojaloop-payment-manager-experience-api-service",
+  "version": "1.9.1",
+  "description": "Mojaloop Payment Manager - Experience API Service",
+  "main": "index.js",
+  "author": "Murthy kakarlamudi, ModusBox Inc.",
+  "contributors": [
+    "Murthy Kakarlamudi <murthy@modusbox.com>",
+    "Yevhen Kyriukha <yevhen.kyriukha@modusbox.com>",
+    "James Bush <james.bush@modusbox.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/modusintegration/mojaloop-payment-manager-management-api-service.git"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "jest --ci --reporters=default --reporters=jest-junit --env=node test/unit",
+    "test:int": "jest --ci --reporters=default --reporters=jest-junit --env=node test/integration --forceExit"
+  },
+  "dependencies": {
+    "@internal/accesscontrol": "file:src/lib/accesscontrol",
+    "@internal/model": "file:src/lib/model",
+    "@internal/randomphrase": "file:src/lib/randomphrase",
+    "@internal/requests": "file:src/lib/requests",
+    "@internal/utils": "file:src/lib/utils",
+    "@koa/cors": "^3.1.0",
+    "@mojaloop/sdk-standard-components": "^10.6.1",
+    "ajv": "^6.12.3",
+    "co-body": "^6.0.0",
+    "dotenv": "^8.2.0",
+    "env-var": "^6.2.0",
+    "faker": "^4.1.0",
+    "koa": "^2.13.0",
+    "koa-body": "^4.2.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-oas3": "^2.0.2",
+    "koa-router": "^9.4.0",
+    "koa-session": "^6.1.0",
+    "koa2-oauth-server": "^1.0.0",
+    "node-fetch": "^2.6.0",
+    "openid-client": "^4.5.0",
+    "redis": "^3.0.2",
+    "uuidv4": "^6.1.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.4",
+    "eslint": "^7.4.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "jest": "^26.1.0",
+    "jest-junit": "^11.0.1",
+    "nock": "^13.0.2",
+    "openapi-response-validator": "^4.0.0",
+    "redis-mock": "^0.49.0",
+    "supertest": "^4.0.2"
+  }
+}

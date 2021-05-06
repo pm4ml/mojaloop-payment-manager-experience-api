@@ -1,0 +1,655 @@
+{
+	"info": {
+		"_postman_id": "6c345f31-769d-49b4-9991-f3151bb40b5f",
+		"name": "Mojaloop-Payment-Manager",
+		"description": "APIs that provide data to drive user interface elements within the ModusBox Mojaloop Payments Manager product.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "batches",
+			"item": [
+				{
+					"name": "{batch Id}",
+					"item": [
+						{
+							"name": "Retrieves a batch",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{EXPERIENCE_API_ENDPOINT}}/batches/:batchId",
+									"host": [
+										"{{EXPERIENCE_API_ENDPOINT}}"
+									],
+									"path": [
+										"batches",
+										":batchId"
+									],
+									"variable": [
+										{
+											"id": "4b365695-8cad-4f89-844e-78b9c85dcb91",
+											"key": "batchId",
+											"value": "<integer>",
+											"type": "string",
+											"description": "(Required) Numeric ID of the batch to get"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "successful operation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{EXPERIENCE_API_ENDPOINT}}/batches/:batchId",
+											"host": [
+												"{{EXPERIENCE_API_ENDPOINT}}"
+											],
+											"path": [
+												"batches",
+												":batchId"
+											],
+											"variable": [
+												{
+													"key": "batchId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n \"id\": \"<integer>\",\n \"status\": \"<string>\",\n \"transferCount\": \"<integer>\",\n \"transferTotals\": [\n  {\n   \"netValue\": \"<string>\",\n   \"currency\": \"<string>\"\n  },\n  {\n   \"netValue\": \"<string>\",\n   \"currency\": \"<string>\"\n  }\n ],\n \"errorCount\": \"<integer>\",\n \"startingTimestamp\": \"<string>\",\n \"closingTimestamp\": \"<string>\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Retrieves transfers for a batch",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{EXPERIENCE_API_ENDPOINT}}/batches/:batchId/transfers",
+									"host": [
+										"{{EXPERIENCE_API_ENDPOINT}}"
+									],
+									"path": [
+										"batches",
+										":batchId",
+										"transfers"
+									],
+									"variable": [
+										{
+											"id": "3a1b2d08-dfb6-472b-bef5-5ab0f05d387e",
+											"key": "batchId",
+											"value": "<integer>",
+											"type": "string",
+											"description": "(Required) Numeric ID of the batch to get"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "successful operation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{EXPERIENCE_API_ENDPOINT}}/batches/:batchId/transfers",
+											"host": [
+												"{{EXPERIENCE_API_ENDPOINT}}"
+											],
+											"path": [
+												"batches",
+												":batchId",
+												"transfers"
+											],
+											"variable": [
+												{
+													"key": "batchId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "[\n {\n  \"id\": \"<string>\",\n  \"batchId\": \"<integer>\",\n  \"institution\": \"<string>\",\n  \"direction\": \"<string>\",\n  \"currency\": \"<string>\",\n  \"value\": \"<string>\",\n  \"type\": \"<string>\",\n  \"status\": \"<string>\",\n  \"initiatedTimestamp\": \"<string>\"\n },\n {\n  \"id\": \"<string>\",\n  \"batchId\": \"<integer>\",\n  \"institution\": \"<string>\",\n  \"direction\": \"<string>\",\n  \"currency\": \"<string>\",\n  \"value\": \"<string>\",\n  \"type\": \"<string>\",\n  \"status\": \"<string>\",\n  \"initiatedTimestamp\": \"<string>\"\n }\n]"
+								}
+							]
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Retrieves all batches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{EXPERIENCE_API_ENDPOINT}}/batches",
+							"host": [
+								"{{EXPERIENCE_API_ENDPOINT}}"
+							],
+							"path": [
+								"batches"
+							],
+							"query": [
+								{
+									"key": "startTimestamp",
+									"value": "<string>",
+									"disabled": true
+								},
+								{
+									"key": "endTimestamp",
+									"value": "<string>",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "successful operation",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{EXPERIENCE_API_ENDPOINT}}/batches?startTimestamp=<string>&endTimestamp=<string>",
+									"host": [
+										"{{EXPERIENCE_API_ENDPOINT}}"
+									],
+									"path": [
+										"batches"
+									],
+									"query": [
+										{
+											"key": "startTimestamp",
+											"value": "<string>"
+										},
+										{
+											"key": "endTimestamp",
+											"value": "<string>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n {\n  \"id\": \"<integer>\",\n  \"status\": \"<string>\",\n  \"transferCount\": \"<integer>\",\n  \"transferTotals\": [\n   {\n    \"netValue\": \"<string>\",\n    \"currency\": \"<string>\"\n   },\n   {\n    \"netValue\": \"<string>\",\n    \"currency\": \"<string>\"\n   }\n  ],\n  \"errorCount\": \"<integer>\",\n  \"startingTimestamp\": \"<string>\",\n  \"closingTimestamp\": \"<string>\"\n },\n {\n  \"id\": \"<integer>\",\n  \"status\": \"<string>\",\n  \"transferCount\": \"<integer>\",\n  \"transferTotals\": [\n   {\n    \"netValue\": \"<string>\",\n    \"currency\": \"<string>\"\n   },\n   {\n    \"netValue\": \"<string>\",\n    \"currency\": \"<string>\"\n   }\n  ],\n  \"errorCount\": \"<integer>\",\n  \"startingTimestamp\": \"<string>\",\n  \"closingTimestamp\": \"<string>\"\n }\n]"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Health check endpoint",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{EXPERIENCE_API_ENDPOINT}}/health",
+					"host": [
+						"{{EXPERIENCE_API_ENDPOINT}}"
+					],
+					"path": [
+						"health"
+					]
+				},
+				"description": "This endpoint checks the health of the endpoint."
+			},
+			"response": [
+				{
+					"name": "Returns empty body if the scheme adapter outbound transfers service is running.",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{EXPERIENCE_API_ENDPOINT}}/health",
+							"host": [
+								"{{EXPERIENCE_API_ENDPOINT}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Retrieves all errors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{EXPERIENCE_API_ENDPOINT}}/errors?startTimestamp=<string>&endTimestamp=<string>",
+					"host": [
+						"{{EXPERIENCE_API_ENDPOINT}}"
+					],
+					"path": [
+						"errors"
+					],
+					"query": [
+						{
+							"key": "startTimestamp",
+							"value": "<string>"
+						},
+						{
+							"key": "endTimestamp",
+							"value": "<string>"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{EXPERIENCE_API_ENDPOINT}}/errors?startTimestamp=<string>&endTimestamp=<string>",
+							"host": [
+								"{{EXPERIENCE_API_ENDPOINT}}"
+							],
+							"path": [
+								"errors"
+							],
+							"query": [
+								{
+									"key": "startTimestamp",
+									"value": "<string>"
+								},
+								{
+									"key": "endTimestamp",
+									"value": "<string>"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n {\n  \"id\": \"<integer>\",\n  \"direction\": \"<string>\",\n  \"type\": \"<string>\",\n  \"currency\": \"<string>\",\n  \"value\": \"<string>\",\n  \"errorType\": \"<string>\",\n  \"committedDate\": \"<string>\"\n },\n {\n  \"id\": \"<integer>\",\n  \"direction\": \"<string>\",\n  \"type\": \"<string>\",\n  \"currency\": \"<string>\",\n  \"value\": \"<string>\",\n  \"errorType\": \"<string>\",\n  \"committedDate\": \"<string>\"\n }\n]"
+				}
+			]
+		},
+		{
+			"name": "Retrieves all transfers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{EXPERIENCE_API_ENDPOINT}}/transfers?startTimestamp=<string>&endTimestamp=<string>&id=<string>&institution=<string>&status=<string>",
+					"host": [
+						"{{EXPERIENCE_API_ENDPOINT}}"
+					],
+					"path": [
+						"transfers"
+					],
+					"query": [
+						{
+							"key": "startTimestamp",
+							"value": "<string>"
+						},
+						{
+							"key": "endTimestamp",
+							"value": "<string>"
+						},
+						{
+							"key": "id",
+							"value": "<string>"
+						},
+						{
+							"key": "institution",
+							"value": "<string>"
+						},
+						{
+							"key": "status",
+							"value": "<string>"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{EXPERIENCE_API_ENDPOINT}}/transfers?startTimestamp=<string>&endTimestamp=<string>&id=<string>&institution=<string>&status=<string>",
+							"host": [
+								"{{EXPERIENCE_API_ENDPOINT}}"
+							],
+							"path": [
+								"transfers"
+							],
+							"query": [
+								{
+									"key": "startTimestamp",
+									"value": "<string>"
+								},
+								{
+									"key": "endTimestamp",
+									"value": "<string>"
+								},
+								{
+									"key": "id",
+									"value": "<string>"
+								},
+								{
+									"key": "institution",
+									"value": "<string>"
+								},
+								{
+									"key": "status",
+									"value": "<string>"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n {\n  \"id\": \"<string>\",\n  \"batchId\": \"<integer>\",\n  \"institution\": \"<string>\",\n  \"direction\": \"<string>\",\n  \"currency\": \"<string>\",\n  \"value\": \"<string>\",\n  \"type\": \"<string>\",\n  \"status\": \"<string>\",\n  \"initiatedTimestamp\": \"<string>\"\n },\n {\n  \"id\": \"<string>\",\n  \"batchId\": \"<integer>\",\n  \"institution\": \"<string>\",\n  \"direction\": \"<string>\",\n  \"currency\": \"<string>\",\n  \"value\": \"<string>\",\n  \"type\": \"<string>\",\n  \"status\": \"<string>\",\n  \"initiatedTimestamp\": \"<string>\"\n }\n]"
+				}
+			]
+		},
+		{
+			"name": "Retrieves hourly positions data ",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{EXPERIENCE_API_ENDPOINT}}/hourlyPosition?hoursPrevious=<integer>",
+					"host": [
+						"{{EXPERIENCE_API_ENDPOINT}}"
+					],
+					"path": [
+						"hourlyPosition"
+					],
+					"query": [
+						{
+							"key": "hoursPrevious",
+							"value": "<integer>",
+							"description": "(Required) "
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{EXPERIENCE_API_ENDPOINT}}/hourlyPosition?hoursPrevious=<integer>",
+							"host": [
+								"{{EXPERIENCE_API_ENDPOINT}}"
+							],
+							"path": [
+								"hourlyPosition"
+							],
+							"query": [
+								{
+									"key": "hoursPrevious",
+									"value": "<integer>"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n {\n  \"currency\": \"<string>\",\n  \"position\": \"<string>\",\n  \"reserved\": \"<string>\",\n  \"committed\": \"<string>\",\n  \"timestamp\": \"<string>\"\n },\n {\n  \"currency\": \"<string>\",\n  \"position\": \"<string>\",\n  \"reserved\": \"<string>\",\n  \"committed\": \"<string>\",\n  \"timestamp\": \"<string>\"\n }\n]"
+				}
+			]
+		},
+		{
+			"name": "Retrieves hourly flow data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{EXPERIENCE_API_ENDPOINT}}/hourlyFlow?hoursPrevious=<integer>",
+					"host": [
+						"{{EXPERIENCE_API_ENDPOINT}}"
+					],
+					"path": [
+						"hourlyFlow"
+					],
+					"query": [
+						{
+							"key": "hoursPrevious",
+							"value": "<integer>",
+							"description": "(Required) "
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{EXPERIENCE_API_ENDPOINT}}/hourlyFlow?hoursPrevious=<integer>",
+							"host": [
+								"{{EXPERIENCE_API_ENDPOINT}}"
+							],
+							"path": [
+								"hourlyFlow"
+							],
+							"query": [
+								{
+									"key": "hoursPrevious",
+									"value": "<integer>"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n {\n  \"currency\": \"<string>\",\n  \"inbound\": \"<string>\",\n  \"outbound\": \"<string>\",\n  \"timestamp\": \"<string>\"\n },\n {\n  \"currency\": \"<string>\",\n  \"inbound\": \"<string>\",\n  \"outbound\": \"<string>\",\n  \"timestamp\": \"<string>\"\n }\n]"
+				}
+			]
+		},
+		{
+			"name": "Retrieves minute by minute successful transfer percentage data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{EXPERIENCE_API_ENDPOINT}}/minuteSuccessfulTransferPerc?minutePrevious=<integer>",
+					"host": [
+						"{{EXPERIENCE_API_ENDPOINT}}"
+					],
+					"path": [
+						"minuteSuccessfulTransferPerc"
+					],
+					"query": [
+						{
+							"key": "minutePrevious",
+							"value": "<integer>",
+							"description": "(Required) "
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{EXPERIENCE_API_ENDPOINT}}/minuteSuccessfulTransferPerc?minutePrevious=<integer>",
+							"host": [
+								"{{EXPERIENCE_API_ENDPOINT}}"
+							],
+							"path": [
+								"minuteSuccessfulTransferPerc"
+							],
+							"query": [
+								{
+									"key": "minutePrevious",
+									"value": "<integer>"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n {\n  \"percentage\": \"<integer>\",\n  \"timestamp\": \"<string>\"\n },\n {\n  \"percentage\": \"<integer>\",\n  \"timestamp\": \"<string>\"\n }\n]"
+				}
+			]
+		},
+		{
+			"name": "Retrieves minute by minute average transfer response time data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{EXPERIENCE_API_ENDPOINT}}/minuteAverageTransferResponseTime?minutePrevious=<integer>",
+					"host": [
+						"{{EXPERIENCE_API_ENDPOINT}}"
+					],
+					"path": [
+						"minuteAverageTransferResponseTime"
+					],
+					"query": [
+						{
+							"key": "minutePrevious",
+							"value": "<integer>",
+							"description": "(Required) "
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "successful operation",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{EXPERIENCE_API_ENDPOINT}}/minuteAverageTransferResponseTime?minutePrevious=<integer>",
+							"host": [
+								"{{EXPERIENCE_API_ENDPOINT}}"
+							],
+							"path": [
+								"minuteAverageTransferResponseTime"
+							],
+							"query": [
+								{
+									"key": "minutePrevious",
+									"value": "<integer>"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n {\n  \"averageResponseTime\": \"<integer>\",\n  \"timestamp\": \"<string>\"\n },\n {\n  \"averageResponseTime\": \"<integer>\",\n  \"timestamp\": \"<string>\"\n }\n]"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"id": "EXPERIENCE_API_ENDPOINT",
+			"key": "EXPERIENCE_API_ENDPOINT",
+			"value": "/",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

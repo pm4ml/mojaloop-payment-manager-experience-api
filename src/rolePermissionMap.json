@@ -1,0 +1,12 @@
+{
+    "roles": {
+        "read-all": [
+            "read-connection-wizard",
+            "read-transfermodel"
+        ],
+        "write-all": [
+            "write-connection-wizard",
+            "write-transfermodel"
+        ]
+    }
+}
