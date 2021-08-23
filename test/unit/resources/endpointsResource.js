@@ -15,11 +15,10 @@ module.exports = {
                 'mockData': false,
                 'logIndent': 2,
                 'managementEndpoint': 'localhost:9000',
-                'envId': '1',
                 'dfspId': 'pm4mltest'
             },
         },
-        'params': { envId: 1 },
+        'params': { },
 
         'response': {}
 
@@ -38,11 +37,10 @@ module.exports = {
                 'mockData': false,
                 'logIndent': 2,
                 'managementEndpoint': 'localhost:9000',
-                'envId': '1',
                 'dfspId': 'pm4mltest'
             },
         },
-        'params': { envId: 1 },
+        'params': { },
 
         'response': {}
 
@@ -74,11 +72,10 @@ module.exports = {
                 'mockData': false,
                 'logIndent': 2,
                 'managementEndpoint': 'localhost:9000',
-                'envId': '1',
                 'dfspId': 'pm4mltest'
             },
         },
-        'params': { 'epId': '9', envId: 1 }
+        'params': { 'epId': '9' }
     },
     updateIngressEndpointContext: {
         'request': {
@@ -107,11 +104,10 @@ module.exports = {
                 'mockData': false,
                 'logIndent': 2,
                 'managementEndpoint': 'localhost:9000',
-                'envId': '1',
                 'dfspId': 'pm4mltest'
             },
         },
-        'params': { 'epId': '1', envId: 1 }
+        'params': { 'epId': '1' }
     },
     deleteEndpointContext: {
         'state': {
@@ -120,12 +116,11 @@ module.exports = {
                 'mockData': false,
                 'logIndent': 2,
                 'managementEndpoint': 'localhost:9000',
-                'envId': '1',
                 'dfspId': 'pm4mltest'
             },
         },
         'response': {},
-        'params': { 'epId': '1', envId: 1 }
+        'params': { 'epId': '1' }
     },
     getMonetaryZones: {
         'request': {
@@ -137,7 +132,7 @@ module.exports = {
                 'managementEndpoint': 'localhost:9000',
             },
         },
-        'response': {}        
+        'response': {}
 
     },
     getDFSPsByMonetaryZone: {
@@ -148,11 +143,10 @@ module.exports = {
         'state': {
             'conf': {
                 'managementEndpoint': 'localhost:9000',
-                'envId': '1'
             },
         },
-        'params': { 'monetaryZoneId': 'EUR', envId: 1 },
-        'response': {}        
+        'params': { 'monetaryZoneId': 'EUR' },
+        'response': {}
 
     },
     getMetricsContext: {

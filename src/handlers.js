@@ -22,7 +22,6 @@ const {
     CertificatesModel,
     MonetaryZoneModel,
     MetricsModel,
-    HubModel,
     EndpointsModel,
 } = require('@internal/model');
 
@@ -31,8 +30,7 @@ const healthCheck = async (ctx) => {
     ctx.body = JSON.stringify({'status':'ok'});
 };
 
-const getEnvironmentDfspStatus = async (ctx) => {
-    const envId = ctx.params.envId;
+const getDfspStatus = async (ctx) => {
     const dfspId = ctx.state.conf.dfspId;
     const { managementEndpoint } = ctx.state.conf;
     const dfspModel = new DFSPModel({
@@ -40,7 +38,7 @@ const getEnvironmentDfspStatus = async (ctx) => {
         managementEndpoint,
         mockData: true
     });
-    ctx.body = await dfspModel.getEnvironmentDfspStatus(envId, dfspId);
+    ctx.body = await dfspModel.getDfspStatus(dfspId);
 };
 
 const getBatches = async (ctx) => {
@@ -144,7 +142,6 @@ const getMetrics = async (ctx) => {
 const getDFSPDetails = async(ctx) => {
     const { dfspId, managementEndpoint } = ctx.state.conf;
     const dfspModel = new DFSPModel({
-        envId: ctx.params.envId,
         dfspId,
         managementEndpoint,
         logger: ctx.state.logger,
@@ -155,7 +152,6 @@ const getDFSPDetails = async(ctx) => {
 const getAllDfsp = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const dfspModel = new DFSPModel({
-        envId: ctx.params.envId,
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -165,7 +161,6 @@ const getAllDfsp = async(ctx) => {
 const getDFSPEgressEndpointsIps = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -176,7 +171,6 @@ const getDFSPEgressEndpointsIps = async(ctx) => {
 const uploadDFSPEgressEndpointsIps = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -184,13 +178,12 @@ const uploadDFSPEgressEndpointsIps = async(ctx) => {
 };
 
 /**
- * Update existing dfsp endpoint 
- * @param {*} ctx 
+ * Update existing dfsp endpoint
+ * @param {*} ctx
  */
 const updateDFSPEgressEndpointsIp = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -204,7 +197,6 @@ const updateDFSPEgressEndpointsIp = async(ctx) => {
 const updateDFSPIngressEndpointsIp = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -214,7 +206,7 @@ const updateDFSPIngressEndpointsIp = async(ctx) => {
 const deleteDFSPEndpointsIp = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -224,7 +216,7 @@ const deleteDFSPEndpointsIp = async(ctx) => {
 const getDFSPIngressEndpointsIps = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -234,7 +226,7 @@ const getDFSPIngressEndpointsIps = async(ctx) => {
 const uploadDFSPIngressEndpointsIps = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -244,7 +236,7 @@ const uploadDFSPIngressEndpointsIps = async(ctx) => {
 const getDFSPIngressEndpointsUrls = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -254,7 +246,7 @@ const getDFSPIngressEndpointsUrls = async(ctx) => {
 const uploadDFSPIngressEndpointsUrls = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -263,12 +255,12 @@ const uploadDFSPIngressEndpointsUrls = async(ctx) => {
 
 /**
  * Update DFSP Ingress URL endpoint by Id
- * @param {*} ctx 
+ * @param {*} ctx
  */
 const updateDFSPIngressEndpointsUrlById = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -277,12 +269,12 @@ const updateDFSPIngressEndpointsUrlById = async(ctx) => {
 
 /**
  * Update DFSP Ingress URL endpoint by Id
- * @param {*} ctx 
+ * @param {*} ctx
  */
 const deleteDFSPIngressEndpointsUrlById = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -292,7 +284,7 @@ const deleteDFSPIngressEndpointsUrlById = async(ctx) => {
 const getHubIngressEndpoints = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -302,7 +294,7 @@ const getHubIngressEndpoints = async(ctx) => {
 const getHubEgressEndpoints = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const endpointsModel = new EndpointsModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -312,7 +304,6 @@ const getHubEgressEndpoints = async(ctx) => {
 const uploadClientCSR = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.paramd.envId,
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -322,7 +313,7 @@ const uploadClientCSR = async(ctx) => {
 const createClientCSR = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -332,7 +323,7 @@ const createClientCSR = async(ctx) => {
 const getClientCertificate = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -342,7 +333,7 @@ const getClientCertificate = async(ctx) => {
 const getDFSPCA = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -352,7 +343,7 @@ const getDFSPCA = async(ctx) => {
 const uploadDFSPCA = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -362,7 +353,7 @@ const uploadDFSPCA = async(ctx) => {
 const getAllJWSCertificates = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -372,7 +363,7 @@ const getAllJWSCertificates = async(ctx) => {
 const getJWSCertificates = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -382,7 +373,7 @@ const getJWSCertificates = async(ctx) => {
 const uploadJWSCertificates = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -392,7 +383,7 @@ const uploadJWSCertificates = async(ctx) => {
 const updateJWSCertificates = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -402,7 +393,7 @@ const updateJWSCertificates = async(ctx) => {
 const deleteJWSCertificates = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -412,7 +403,7 @@ const deleteJWSCertificates = async(ctx) => {
 const getHubCA = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -422,41 +413,31 @@ const getHubCA = async(ctx) => {
 const getDFSPServerCertificates = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
     ctx.body = await certsModel.getDFSPServerCertificates();
 };
 
-const uploadServerCertificates = async(ctx) => {
+const generateServerCertificates = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
-    ctx.body = await certsModel.uploadServerCertificates(ctx.request.body);
+    ctx.body = await certsModel.generateServerCertificates(ctx.request.body);
 };
 
 const getHubServerCertificates = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
     ctx.body = await certsModel.getHubServerCertificates();
-};
-
-const getEnvironments = async(ctx) => {
-    const { managementEndpoint } = ctx.state.conf;
-    const hubModel = new HubModel({
-        managementEndpoint,
-        logger: ctx.state.logger,
-    });
-    const responseData = await hubModel.getEnvironments();
-    ctx.body = responseData;
 };
 
 const getMonetaryZones = async(ctx) => {
@@ -465,25 +446,23 @@ const getMonetaryZones = async(ctx) => {
         managementEndpoint,
         logger: ctx.state.logger,
     });
-    const responseData = await monetaryZoneModel.getMonetaryZones();
-    ctx.body = responseData;
+    ctx.body = await monetaryZoneModel.getMonetaryZones();
 };
 
 const getDfspsByMonetaryZones = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const dfspModel = new DFSPModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
-    const responseData = await dfspModel.getDFSPsByMonetaryZone({monetaryZoneId: ctx.params.monetaryZoneId});
-    ctx.body = responseData;
+    ctx.body = await dfspModel.getDFSPsByMonetaryZone({monetaryZoneId: ctx.params.monetaryZoneId});
 };
 
 const generateAllCerts = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
-        envId: ctx.params.envId,
+
         managementEndpoint,
         logger: ctx.state.logger,
     });
@@ -496,8 +475,8 @@ module.exports = {
     '/health': {
         get: healthCheck
     },
-    '/environments/{envId}/status': {
-        get: getEnvironmentDfspStatus,
+    '/status': {
+        get: getDfspStatus,
     },
     '/batches': {
         get: getBatches,
@@ -538,82 +517,79 @@ module.exports = {
     '/metrics/{metricName}': {
         get: getMetrics,
     },
-    '/environments/{envId}/dfsp/details': {
+    '/dfsp/details': {
         get: getDFSPDetails,
     },
-    '/environments/{envId}/dfsps': {
+    '/dfsps': {
         get: getAllDfsp,
-    },    
-    '/environments/{envId}/dfsp/endpoints/egress/ips': {
+    },
+    '/dfsp/endpoints/egress/ips': {
         get: getDFSPEgressEndpointsIps,
         post: uploadDFSPEgressEndpointsIps,
-    },    
-    '/environments/{envId}/dfsp/endpoints/egress/ips/{epId}': {
+    },
+    '/dfsp/endpoints/egress/ips/{epId}': {
         put: updateDFSPEgressEndpointsIp,
         delete: deleteDFSPEndpointsIp,
     },
-    '/environments/{envId}/dfsp/endpoints/ingress/ips': {
+    '/dfsp/endpoints/ingress/ips': {
         get: getDFSPIngressEndpointsIps,
         post: uploadDFSPIngressEndpointsIps,
-    } ,    
-    '/environments/{envId}/dfsp/endpoints/ingress/ips/{epId}': {
+    } ,
+    '/dfsp/endpoints/ingress/ips/{epId}': {
         put: updateDFSPIngressEndpointsIp,
         delete: deleteDFSPEndpointsIp,
     } ,
-    '/environments/{envId}/dfsp/endpoints/ingress/urls': {
+    '/dfsp/endpoints/ingress/urls': {
         get: getDFSPIngressEndpointsUrls,
         post: uploadDFSPIngressEndpointsUrls,
-    } ,    
-    '/environments/{envId}/dfsp/endpoints/ingress/urls/{epId} ': {
+    } ,
+    '/dfsp/endpoints/ingress/urls/{epId} ': {
         put: updateDFSPIngressEndpointsUrlById,
         delete: deleteDFSPIngressEndpointsUrlById,
     } ,
-    '/environments/{envId}/hub/endpoints/ingress': {
+    '/hub/endpoints/ingress': {
         get: getHubIngressEndpoints,
     },
-    '/environments/{envId}/hub/endpoints/egress': {
+    '/hub/endpoints/egress': {
         get: getHubEgressEndpoints,
     },
     '/monetaryzones': {
         get: getMonetaryZones
     },
-    '/environments': {
-        get: getEnvironments,
-    },
-    '/environments/{envId}/monetaryzones/{monetaryZoneId}/dfsps': {
+    '/monetaryzones/{monetaryZoneId}/dfsps': {
         get: getDfspsByMonetaryZones
     },
-    '/environments/{envId}/dfsp/clientCerts': {
+    '/dfsp/clientCerts': {
         get: getClientCertificate,
         post: uploadClientCSR,
     },
-    '/environments/{envId}/dfsp/clientCerts/csr': {
+    '/dfsp/clientCerts/csr': {
         post: createClientCSR,
     },
-    '/environments/{envId}/dfsp/ca': {
+    '/dfsp/ca': {
         get: getDFSPCA,
         post: uploadDFSPCA,
     },
-    '/environments/{envId}/hub/ca': {
+    '/hub/ca': {
         get: getHubCA,
     },
-    '/environments/{envId}/dfsp/serverCerts': {
+    '/dfsp/serverCerts': {
         get: getDFSPServerCertificates,
-        post: uploadServerCertificates,
+        post: generateServerCertificates,
     },
-    '/environments/{envId}/hub/serverCerts': {
+    '/hub/serverCerts': {
         get: getHubServerCertificates,
     },
-    '/environments/{envId}/dfsp/alljwscerts': {
+    '/dfsp/alljwscerts': {
         get: getAllJWSCertificates,
     },
-    '/environments/{envId}/dfsp/jwscerts': {
+    '/dfsp/jwscerts': {
         get: getJWSCertificates,
         post: uploadJWSCertificates,
         put: updateJWSCertificates,
         delete: deleteJWSCertificates,
     },
-    '/environments/{envId}/dfsp/allcerts': {
+    '/dfsp/allcerts': {
         post: generateAllCerts,
     },
 };

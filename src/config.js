@@ -19,7 +19,6 @@ module.exports = {
     logIndent: env.get('LOG_INDENT').default('2').asIntPositive(),
     managementEndpoint: env.get('MANAGEMENT_ENDPOINT').asString(),
     metricsEndpoint: env.get('METRICS_ENDPOINT').asString(),
-    envId: env.get('ENV_ID').asString(),
     dfspId: env.get('DFSP_ID').asString(),
     sessionConfig: {
         // sessionConfig is mostly identical to the koa session middleware config object as described here:

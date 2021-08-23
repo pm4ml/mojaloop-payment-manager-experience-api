@@ -1,6 +1,6 @@
 {
   "name": "mojaloop-payment-manager-experience-api-service",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "description": "Mojaloop Payment Manager - Experience API Service",
   "main": "index.js",
   "author": "Murthy kakarlamudi, ModusBox Inc.",

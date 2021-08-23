@@ -14,12 +14,10 @@ class CertificatesModel {
     /**
      *
      * @param props {object}
-     * @param props.envId {string}
      * @param props.logger {object}
      * @param props.managementEndpoint {string}
      */
     constructor(props) {
-        this._envId = props.envId;
         this._requests = new Requests({
             logger: props.logger,
             endpoint: props.managementEndpoint,
@@ -30,7 +28,7 @@ class CertificatesModel {
      * Gets uploaded DFSP CSRs and certificates
      */
     async getCertificates() {
-        return this._requests.get(`environments/${this._envId}/dfsp/clientcerts`);
+        return this._requests.get('dfsp/clientcerts');
     }
 
     /**
@@ -38,7 +36,7 @@ class CertificatesModel {
      * @param body {object}
      */
     uploadClientCSR(body) {
-        return this._requests.post(`environments/${this._envId}/dfsp/clientcerts`, body);
+        return this._requests.post('dfsp/clientcerts', body);
     }
 
     /**
@@ -46,14 +44,14 @@ class CertificatesModel {
      * @param body {object}
      */
     createClientCSR() {
-        return this._requests.post(`environments/${this._envId}/dfsp/clientcerts/csr`);
+        return this._requests.post('dfsp/clientcerts/csr');
     }
 
     /**
      * Gets uploaded DFSP CA
      */
     async getDFSPCA() {
-        return this._requests.get(`environments/${this._envId}/dfsp/ca`);
+        return this._requests.get('dfsp/ca');
     }
 
     /**
@@ -61,14 +59,14 @@ class CertificatesModel {
      * @param body {object}
      */
     uploadDFSPCA(body) {
-        return this._requests.post(`environments/${this._envId}/dfsp/ca`, body);
+        return this._requests.post('dfsp/ca', body);
     }
 
     /**
      * Gets Hub CA
      */
     async getHubCA() {
-        return this._requests.get(`environments/${this._envId}/hub/cas`);
+        return this._requests.get('hub/cas');
     }
 
     /**
@@ -76,7 +74,7 @@ class CertificatesModel {
      * @param body {object}
      */
     getDFSPServerCertificates() {
-        return this._requests.get(`environments/${this._envId}/dfsp/servercerts`);
+        return this._requests.get('dfsp/servercerts');
     }
 
 
@@ -84,40 +82,40 @@ class CertificatesModel {
      *
      * @param body {object}
      */
-    uploadServerCertificates(body) {
-        return this._requests.post(`environments/${this._envId}/dfsp/servercerts`, body);
+    generateServerCertificates(body) {
+        return this._requests.post('dfsp/servercerts', body);
     }
 
     /**
      * Gets Hub server certificates
      */
     async getHubServerCertificates() {
-        return this._requests.get(`environments/${this._envId}/hub/servercerts`);
+        return this._requests.get('hub/servercerts');
     }
 
     async getAllJWSCertificates() {
-        return this._requests.get(`environments/${this._envId}/dfsp/alljwscerts`);
+        return this._requests.get('dfsp/alljwscerts');
     }
 
     async getJWSCertificates() {
-        return this._requests.get(`environments/${this._envId}/dfsp/jwscerts`);
+        return this._requests.get('dfsp/jwscerts');
     }
 
     uploadJWSCertificates(body) {
-        return this._requests.post(`environments/${this._envId}/dfsp/jwscerts`, body);
+        return this._requests.post('dfsp/jwscerts', body);
     }
 
     updateJWSCertificates(body) {
-        return this._requests.put(`environments/${this._envId}/dfsp/jwscerts`, body);
+        return this._requests.put('dfsp/jwscerts', body);
     }
 
     deleteJWSCertificates() {
-        return this._requests.delete(`environments/${this._envId}/dfsp/jwscerts`);
+        return this._requests.delete('dfsp/jwscerts');
     }
 
 
     generateAllCerts() {
-        return this._requests.post(`environments/${this._envId}/dfsp/allcerts`);
+        return this._requests.post('dfsp/allcerts');
     }
 }
 
