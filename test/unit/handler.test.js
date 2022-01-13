@@ -26,7 +26,7 @@ describe('Inbound API handlers:', () => {
                 .mockImplementation(() => {});
 
 
-            await handlers['/environments/{envId}/dfsp/endpoints/egress/ips'].post(context);
+            await handlers['/dfsp/endpoints/egress/ips'].post(context);
 
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy.mock.calls[0][0]).toStrictEqual({type: 'IP'});
@@ -41,7 +41,7 @@ describe('Inbound API handlers:', () => {
                 .mockImplementation(() => {});
 
 
-            await handlers['/environments/{envId}/dfsp/endpoints/ingress/ips'].post(context);
+            await handlers['/dfsp/endpoints/ingress/ips'].post(context);
 
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy.mock.calls[0][0]).toStrictEqual({type: 'IP'});
@@ -56,7 +56,7 @@ describe('Inbound API handlers:', () => {
                 .mockImplementation(() => {});
 
 
-            await handlers['/environments/{envId}/dfsp/endpoints/egress/ips/{epId}'].put(context);
+            await handlers['/dfsp/endpoints/egress/ips/{epId}'].put(context);
 
             const expectedArgument = {
                 'epId': context.params.epId,
@@ -77,7 +77,7 @@ describe('Inbound API handlers:', () => {
                 .mockImplementation(() => {});
 
 
-            await handlers['/environments/{envId}/dfsp/endpoints/ingress/ips/{epId}'].put(context);
+            await handlers['/dfsp/endpoints/ingress/ips/{epId}'].put(context);
 
             const expectedArgument = {
                 'epId': context.params.epId,
@@ -98,7 +98,7 @@ describe('Inbound API handlers:', () => {
                 .mockImplementation(() => {});
 
 
-            await handlers['/environments/{envId}/dfsp/endpoints/egress/ips/{epId}'].delete(context);
+            await handlers['/dfsp/endpoints/egress/ips/{epId}'].delete(context);
 
             const expectedArgument = {
                 'epId': context.params.epId
@@ -116,7 +116,7 @@ describe('Inbound API handlers:', () => {
                 .mockImplementation(() => {});
 
 
-            await handlers['/environments/{envId}/dfsp/endpoints/ingress/ips/{epId}'].delete(context);
+            await handlers['/dfsp/endpoints/ingress/ips/{epId}'].delete(context);
 
             const expectedArgument = {
                 'epId': context.params.epId
@@ -150,7 +150,7 @@ describe('Inbound API handlers:', () => {
                 .mockImplementation(() => {});
 
 
-            await handlers['/environments/{envId}/monetaryzones/{monetaryZoneId}/dfsps'].get(context);
+            await handlers['/monetaryzones/{monetaryZoneId}/dfsps'].get(context);
 
             expect(spy).toHaveBeenCalledTimes(1);
             expect(spy.mock.calls[0][0]).toStrictEqual({monetaryZoneId: context.params.monetaryZoneId});

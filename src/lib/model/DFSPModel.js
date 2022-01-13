@@ -14,13 +14,11 @@ class DFSPModel {
     /**
      *
      * @param props {object}
-     * @param props.envId {string}
      * @param props.logger {object}
      * @param props.managementEndpoint {string}
      */
     constructor(props) {
-        this._envId = props.envId;
-        this._dfspId = props.dfspId,
+        this._dfspId = props.dfspId;
         this._requests = new Requests({
             logger: props.logger,
             endpoint: props.managementEndpoint,
@@ -29,30 +27,26 @@ class DFSPModel {
 
     /**
      *
-     * @param envId {string}
      * @param dfspId {string}
      */
-    async getEnvironmentDfspStatus(envId, dfspId) {
-
-        let dfspStatus = this._requests.get(`environments/${envId}/dfsps/${dfspId}/status`);
-
-        return dfspStatus;
+    async getDfspStatus(dfspId) {
+        return this._requests.get(`dfsps/${dfspId}/status`);
     }
 
     getDFSPDetails() {
-        return this._requests.get(`environments/${this._envId}/dfsp`);
+        return this._requests.get('dfsp');
     }
 
     getAllDfsp(opts) {
-        return this._requests.get(`environments/${this._envId}/dfsps`, opts);
-    }    
-    
+        return this._requests.get('dfsps', opts);
+    }
+
     /**
-     * 
+     *
      * @param [opts.monetaryZoneId] {string}
      */
     getDFSPsByMonetaryZone(opts) {
-        return this._requests.get(`environments/${this._envId}/monetaryzones/${opts.monetaryZoneId}/dfsps`, opts);
+        return this._requests.get(`monetaryzones/${opts.monetaryZoneId}/dfsps`, opts);
     }
 
     /**
@@ -63,7 +57,7 @@ class DFSPModel {
      * @param [opts.state] {string}
      */
     getEndpoints(opts) {
-        return this._requests.get(`environments/${this._envId}/dfsp/endpoints`, opts);
+        return this._requests.get('dfsp/endpoints', opts);
     }
 
     /**
@@ -76,8 +70,8 @@ class DFSPModel {
      * @param endpoint.address {string}
      */
     createEndpoints(endpoint) {
-        return this._requests.post(`environments/${this._envId}/dfsp/endpoints`, endpoint);
-        
+        return this._requests.post('dfsp/endpoints', endpoint);
+
     }
 }
 

@@ -12,7 +12,6 @@ const { Requests } = require('@internal/requests');
 
 class EndpointsModel {
     constructor(props) {
-        this._envId = props.envId;
         this._requests = new Requests({
             logger: props.logger,
             endpoint: props.managementEndpoint,
@@ -23,7 +22,7 @@ class EndpointsModel {
      * Get DFSP Egress Endpoints to MCM Server
      */
     async getDFSPEgressEndpoints(opts) {
-        return this._requests.get(`environments/${this._envId}/dfsp/endpoints`,{
+        return this._requests.get('dfsp/endpoints',{
             direction: 'EGRESS',
             type: opts.type
         });
@@ -46,14 +45,14 @@ class EndpointsModel {
         }
         request.type = opts.type;
         request.direction = 'EGRESS';
-        return this._requests.post(`environments/${this._envId}/dfsp/endpoints`,request);
+        return this._requests.post('dfsp/endpoints',request);
     }
 
     /**
      * Get DFSP Igress Endpoints to MCM Server
      */
     async getDFSPIngressEndpoints(opts) {
-        return this._requests.get(`environments/${this._envId}/dfsp/endpoints`,{
+        return this._requests.get('dfsp/endpoints',{
             direction: 'INGRESS',
             type: opts.type
         });
@@ -76,14 +75,14 @@ class EndpointsModel {
         }
         request.type = opts.type;
         request.direction = opts.direction;
-        return this._requests.put(`environments/${this._envId}/dfsp/endpoints/${opts.epId}`,request);
+        return this._requests.put(`dfsp/endpoints/${opts.epId}`,request);
     }
 
     /**
      * Delete DFSP Egress Endpoints in MCM Server
      */
     async deleteDFSPEndpoints(opts) {
-        return this._requests.delete(`environments/${this._envId}/dfsp/endpoints/${opts.epId}`);
+        return this._requests.delete(`dfsp/endpoints/${opts.epId}`);
     }
 
     /**
@@ -103,7 +102,7 @@ class EndpointsModel {
         }
         request.type = opts.type;
         request.direction = 'INGRESS';
-        return this._requests.post(`environments/${this._envId}/dfsp/endpoints`,request);
+        return this._requests.post('dfsp/endpoints',request);
     }
 
     /**
@@ -121,23 +120,23 @@ class EndpointsModel {
                 url: body.address
             };
         }
-        return this._requests.put(`environments/${this._envId}/dfsp/endpoints/${opts.epId}`,request);
+        return this._requests.put(`dfsp/endpoints/${opts.epId}`,request);
     }
 
     /**
      * Update DFSP Ingress Endpoints to MCM Server
      */
     async deleteDFSPIngressEndpointsUrlById(opts) {
-        return this._requests.delete(`environments/${this._envId}/dfsp/endpoints/${opts.epId}`);
+        return this._requests.delete(`dfsp/endpoints/${opts.epId}`);
     }
 
-    
+
 
     /**
      * Get Hub Ingress Endpoints from MCM Server
      */
     async getHubIngressEndpoints() {
-        return this._requests.get(`environments/${this._envId}/hub/endpoints`,{
+        return this._requests.get('hub/endpoints',{
             direction: 'INGRESS',
             state: 'NEW'
         });
@@ -147,7 +146,7 @@ class EndpointsModel {
      * Get Hub Egress Endpoints from MCM Server
      */
     async getHubEgressEndpoints() {
-        return this._requests.get(`environments/${this._envId}/hub/endpoints`,{
+        return this._requests.get('hub/endpoints',{
             direction: 'EGRESS',
             state: 'NEW'
         });

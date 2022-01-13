@@ -1,6 +1,6 @@
 {
   "name": "mojaloop-payment-manager-experience-api-service",
-  "version": "1.9.1",
+  "version": "2.0.0",
   "description": "Mojaloop Payment Manager - Experience API Service",
   "main": "index.js",
   "author": "Murthy kakarlamudi, ModusBox Inc.",
@@ -50,8 +50,8 @@
     "eslint": "^7.4.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
-    "jest": "^26.1.0",
-    "jest-junit": "^11.0.1",
+    "jest": "^27.4.7",
+    "jest-junit": "^13.0.0",
     "nock": "^13.0.2",
     "openapi-response-validator": "^4.0.0",
     "redis-mock": "^0.49.0",

@@ -366,7 +366,7 @@ paths:
           name: metricType
           required: false
           schema:
-            $ref: "#/components/schemas/MetricType" 
+            $ref: "#/components/schemas/MetricType"
       responses:
         200:
           description: successful operation
@@ -375,29 +375,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/MetricDataContainer'
 
+  /dfsp/serverCerts:
 
-  /environments:
-    get:
-      tags:
-      - "env-dfsp-config"
-      summary: "Returns all the environments"
-      responses:
-        200:
-          description: "successful operation"        
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Environment"                    
-  /environments/{envId}/dfsp/serverCerts:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
     get:
       tags:
         - DFSP-client-certificate-authority-config
@@ -430,18 +409,12 @@ paths:
                 $ref: "#/components/schemas/ServerCert"
       x-swagger-router-controller: DfspServerCerts
 
-  /environments/{envId}/dfsp/alljwscerts:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /dfsp/alljwscerts:
+
     get:
       tags:
         - DFSP-jws-certs-configuration
-      summary: get JWS certificates for all DFSPs in the environment
+      summary: get JWS certificates for all DFSPs
       description: TBD
       operationId: getAllDfspJWSCerts
       responses:
@@ -452,14 +425,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/DFSPJWSCert"
       x-swagger-router-controller: DfspJWS
-  /environments/{envId}/dfsp/jwscerts:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /dfsp/jwscerts:
+
     get:
       tags:
         - DFSP-jws-certs-configuration
@@ -531,14 +498,8 @@ paths:
                 $ref: "#/components/schemas/JWSCert"
       x-swagger-router-controller: DfspJWSCerts
 
-  /environments/{envId}/dfsp/details:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /dfsp/details:
+
     get:
       summary: Get DFSP details
       operationId: getDFSPDetails
@@ -549,16 +510,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DFSP"
-  /environments/{envId}/dfsps:
+  /dfsps:
     get:
       summary: Get all participants
-      parameters:
-        - name: envId
-          in: path
-          description: ID of environment
-          required: true
-          schema:
-            type: integer
+
       responses:
         "200":
           description: successful operation
@@ -569,14 +524,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/DFSP'
 
-  /environments/{envId}/dfsp/endpoints/egress/ips:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /dfsp/endpoints/egress/ips:
+
     get:
       summary: Get egress endpoints for DFSP for type IP
       responses:
@@ -602,17 +551,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ObjectCreatedResponse"
-  /environments/{envId}/dfsp/endpoints/egress/ips/{epId}:
+  /dfsp/endpoints/egress/ips/{epId}:
     parameters:
       - name: epId
         in: path
         description: ID of endpoint
-        required: true
-        schema:
-          type: integer
-      - name: envId
-        in: path
-        description: ID of environment
         required: true
         schema:
           type: integer
@@ -639,17 +582,11 @@ paths:
       responses:
         "204":
           description: successful operation
-  /environments/{envId}/dfsp/endpoints/ingress/ips/{epId}:
+  /dfsp/endpoints/ingress/ips/{epId}:
     parameters:
       - name: epId
         in: path
         description: ID of endpoint
-        required: true
-        schema:
-          type: integer
-      - name: envId
-        in: path
-        description: ID of environment
         required: true
         schema:
           type: integer
@@ -675,14 +612,8 @@ paths:
       responses:
         "204":
           description: successful operation
-  /environments/{envId}/dfsp/endpoints/ingress/ips:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /dfsp/endpoints/ingress/ips:
+
     get:
       summary: Get ingress endpoints for DFSP IP
       responses:
@@ -708,14 +639,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ObjectCreatedResponse"
-  /environments/{envId}/dfsp/endpoints/ingress/urls:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /dfsp/endpoints/ingress/urls:
+
     get:
       summary: Get ingress endpoints for DFSP URL
       responses:
@@ -741,7 +666,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ObjectCreatedResponse"
-  /environments/{envId}/dfsp/endpoints/ingress/urls/{epId}:
+  /dfsp/endpoints/ingress/urls/{epId}:
     parameters:
       - name: epId
         in: path
@@ -749,12 +674,6 @@ paths:
         required: true
         schema:
           type: string
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
     put:
       summary: Update egress endpoints for DFSP based on an id
       requestBody:
@@ -774,14 +693,8 @@ paths:
       responses:
         "204":
           description: successful operation
-  /environments/{envId}/hub/endpoints/egress:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /hub/endpoints/egress:
+
     get:
       summary: Update egress endpoints for DFSP
       responses:
@@ -791,14 +704,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EndPoint'
-  /environments/{envId}/hub/endpoints/ingress:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /hub/endpoints/ingress:
+
     get:
       summary: Update egress endpoints for DFSP
       responses:
@@ -808,14 +715,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EndPoint'
-  /environments/{envId}/hub/ca:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /hub/ca:
+
     get:
       tags:
         - HUB-certificate-authority-config
@@ -827,14 +728,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HubCAInfo"
-  /environments/{envId}/hub/serverCerts:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /hub/serverCerts:
+
     get:
       summary: Get Hub server certificates
       operationId: getHubServerCerts
@@ -845,14 +740,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BaseServerCert"
-  /environments/{envId}/dfsp/clientCerts:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /dfsp/clientCerts:
+
     post:
       tags:
         - DFSP-client-certificates-configuration
@@ -873,13 +762,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ObjectCreatedResponse"
     get:
-      parameters:
-        - name: envId
-          in: path
-          description: ID of environment
-          required: true
-          schema:
-            type: integer
+
       summary: Get existing client certs for DFSP
       responses:
         200:
@@ -890,14 +773,8 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/ClientCertInfo"
-  /environments/{envId}/dfsp/clientCerts/csr:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /dfsp/clientCerts/csr:
+
     post:
       tags:
         - DFSP-client-certificates-configuration
@@ -910,14 +787,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ObjectCreatedResponse"
-  /environments/{envId}/dfsp/ca:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /dfsp/ca:
+
     get:
       tags:
         - DFSP-client-certificate-authority-config
@@ -955,14 +826,14 @@ paths:
       operationId: "getMonetaryZones"
       responses:
         200:
-          description: "successful operation"        
+          description: "successful operation"
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/MonetaryZone"
-  /environments/{envId}/monetaryzones/{monetaryZoneId}/dfsps:
+  /monetaryzones/{monetaryZoneId}/dfsps:
     parameters:
       - name: monetaryZoneId
         in: "path"
@@ -970,15 +841,9 @@ paths:
         required: true
         schema:
           type: "string"
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
     get:
       tags:
-      - "monetaryzones"    
+      - "monetaryzones"
       summary: "Returns all the dfsps for that monetary zone"
       responses:
         200:
@@ -988,19 +853,12 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/DFSP"  
+                  $ref: "#/components/schemas/DFSP"
 
-  /environments/{envId}/status:
+  /status:
     get:
-      summary: Retrieves environment dfsp status with UI phase and step completion status
-      operationId: getEnvironmentDfspStatus
-      parameters:
-        - name: envId
-          in: path
-          description: ID of the environment to get satus
-          required: true
-          schema:
-            type: string          
+      summary: Retrieves dfsp status with UI phase and step completion status
+      operationId: getDfspStatus
       responses:
           200:
             description: successful operation
@@ -1009,16 +867,10 @@ paths:
                 schema:
                   type: array
                   items:
-                    $ref: '#/components/schemas/EnvironmentDfspStatus'  
+                    $ref: '#/components/schemas/DfspStatus'
 
-  /environments/{envId}/dfsp/allcerts:
-    parameters:
-      - name: envId
-        in: path
-        description: ID of environment
-        required: true
-        schema:
-          type: integer
+  /dfsp/allcerts:
+
     post:
       tags:
         - DFSP-all-certificates-configuration
@@ -1055,7 +907,7 @@ components:
         - SERVER_CERTIFICATES_EXCHANGE
         - JWS_CERTIFICATES
 
-    EnvironmentDfspStatus:
+    DfspStatus:
       type: object
       properties:
         phase:
@@ -1068,13 +920,13 @@ components:
               identifier:
                 $ref: '#/components/schemas/Identifier'
               status:
-                $ref: '#/components/schemas/Statuses' 
+                $ref: '#/components/schemas/Statuses'
 
     MetricType:
       type: string
       enum:
         - COUNTER_RATE
-        - HIST_SIZE 
+        - HIST_SIZE
 
     MetricDataContainer:
       type: object
@@ -1468,7 +1320,7 @@ components:
           description: "PEM-encoded certificate"
         name:
           type: "string"
-          description: "Descriptive name. Must be unique in the environment"
+          description: "Descriptive name. Must be unique"
         type:
           type: "string"
           enum:
@@ -1765,22 +1617,6 @@ components:
           type: string
           description: PEM-encoded server certificate
 
-    Environment:
-      type: "object"
-      required:
-        - "name"
-        - "id"
-      properties:
-        id:
-          type: integer
-          description: "Object ID"
-        name:
-          type: "string"
-          description: "Dev, test, pre-prod, etc"
-      example:
-        id: 42
-        name: "DEV"          
-
     ServerCert:
       description: The server certificate, with info and id.
       allOf:
@@ -2024,9 +1860,6 @@ components:
     DFSP:
       type: "object"
       properties:
-        envId:
-          type: "integer"
-          description: "Environment id"
         name:
           type: "string"
           description: "Informal name"

@@ -14,12 +14,10 @@ class HubModel {
     /**
      *
      * @param props {object}
-     * @param props.envId {string}
      * @param props.logger {object}
      * @param props.managementEndpoint {string}
      */
     constructor(props) {
-        this._envId = props.envId;
         this._requests = new Requests({
             logger: props.logger,
             endpoint: props.managementEndpoint,
@@ -34,15 +32,8 @@ class HubModel {
      * @param [opts.state] {string}
      */
     getEndpoints(opts) {
-        return this._requests.get(`environments/${this._envId}/hub/endpoints`, opts);
+        return this._requests.get('hub/endpoints', opts);
     }
-
-    /**
-     *
-     */
-    getEnvironments() {
-        return this._requests.get('environments');
-    }    
 }
 
 module.exports = HubModel;

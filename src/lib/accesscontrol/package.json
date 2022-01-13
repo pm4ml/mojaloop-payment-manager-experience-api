@@ -7,8 +7,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "James Bush",
-  "license": "ISC",
-  "dependencies": {
-    "openid-connect": "^1.2.4"
-  }
+  "license": "ISC"
 }
