@@ -51,7 +51,7 @@ class MetricsModel {
 
         let query = `rate(${opts.metricName}[${opts.aggregateDurationSeconds}s])`;
 
-        if(opts.metricType == 'HIST_SIZE') {
+        if(opts.metricType === 'HIST_SIZE') {
             query = `sum(rate(${opts.metricName}_sum[${opts.aggregateDurationSeconds}s])) `
                 + `/ sum(rate(${opts.metricName}_count[${opts.aggregateDurationSeconds}s]))`;
         }
@@ -74,7 +74,7 @@ class MetricsModel {
                     errorType: result.errorType,
                     error: result.error,
                 }
-            }; 
+            };
         }
 
         let resultData = [];

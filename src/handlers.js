@@ -340,14 +340,23 @@ const getDFSPCA = async(ctx) => {
     ctx.body = await certsModel.getDFSPCA();
 };
 
-const uploadDFSPCA = async(ctx) => {
+const createDFSPCA = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
 
         managementEndpoint,
         logger: ctx.state.logger,
     });
-    ctx.body = await certsModel.uploadDFSPCA(ctx.request.body);
+    ctx.body = await certsModel.createDFSPCA(ctx.request.body);
+};
+
+const setDFSPCA = async(ctx) => {
+    const { managementEndpoint } = ctx.state.conf;
+    const certsModel = new CertificatesModel({
+        managementEndpoint,
+        logger: ctx.state.logger,
+    });
+    ctx.body = await certsModel.setDFSPCA(ctx.request.body);
 };
 
 const getAllJWSCertificates = async(ctx) => {
@@ -568,7 +577,8 @@ module.exports = {
     },
     '/dfsp/ca': {
         get: getDFSPCA,
-        post: uploadDFSPCA,
+        post: createDFSPCA,
+        put: setDFSPCA,
     },
     '/hub/ca': {
         get: getHubCA,

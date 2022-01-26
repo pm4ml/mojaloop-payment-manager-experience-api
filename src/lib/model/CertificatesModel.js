@@ -39,10 +39,6 @@ class CertificatesModel {
         return this._requests.post('dfsp/clientcerts', body);
     }
 
-    /**
-     *
-     * @param body {object}
-     */
     createClientCSR() {
         return this._requests.post('dfsp/clientcerts/csr');
     }
@@ -55,11 +51,19 @@ class CertificatesModel {
     }
 
     /**
-     * Upload DFSP CA
+     * Create DFSP CA
      * @param body {object}
      */
-    uploadDFSPCA(body) {
+    createDFSPCA(body) {
         return this._requests.post('dfsp/ca', body);
+    }
+
+    /**
+     * Set DFSP CA
+     * @param body {object}
+     */
+    setDFSPCA(body) {
+        return this._requests.put('dfsp/ca', body);
     }
 
     /**
@@ -68,11 +72,7 @@ class CertificatesModel {
     async getHubCA() {
         return this._requests.get('hub/cas');
     }
-
-    /**
-     *
-     * @param body {object}
-     */
+    
     getDFSPServerCertificates() {
         return this._requests.get('dfsp/servercerts');
     }
