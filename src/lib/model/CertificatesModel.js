@@ -72,7 +72,7 @@ class CertificatesModel {
     async getHubCA() {
         return this._requests.get('hub/cas');
     }
-    
+
     getDFSPServerCertificates() {
         return this._requests.get('dfsp/servercerts');
     }
