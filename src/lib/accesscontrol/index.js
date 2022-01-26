@@ -63,13 +63,15 @@ const createAuthenticatorMiddleware = async (conf) => {
 
 
 /**
- * Returns a mini-router function that handles auth related routes 
+ * Returns a mini-router function that handles auth related routes
  *
  * @returns {function}
  */
 const authenticationRoutes = (client, generators, authConfig) => {
     return async (ctx, next) => {
-        ctx.state.logger.log('Authenticating request');
+        if (ctx.path !== '/health') {
+            ctx.state.logger.log('Authenticating request');
+        }
 
         // TODO: refresh route
         switch(ctx.path) {
@@ -102,7 +104,7 @@ const authenticationRoutes = (client, generators, authConfig) => {
 
 
 /**
- * Redirects the client to the logout URL provided by the auth provider 
+ * Redirects the client to the logout URL provided by the auth provider
  *
  * @returns {undefined}
  */
@@ -232,7 +234,7 @@ const authRouteHandler = async (ctx, next, client, authConfig) => {
     // requests to logout
     ctx.session.auth.logoutUrl = await client.endSessionUrl({
         id_token_hint: tokenSet,
-        post_logout_redirect_uri: authConfig.loggedInLandingUrl, 
+        post_logout_redirect_uri: authConfig.loggedInLandingUrl,
     });
 
     // send redirect back to landing page or where our browser requested to
@@ -248,7 +250,7 @@ const authRouteHandler = async (ctx, next, client, authConfig) => {
 
 /**
  * Calls the OIDC provider and asks for a user info object. This typically contains details
- * of the user such as name. 
+ * of the user such as name.
  *
  * @returns {undefined}
  */

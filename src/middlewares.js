@@ -55,7 +55,9 @@ const createLogger = (logger) => async (ctx, next) => {
         path: ctx.path,
         method: ctx.method
     }});
-    ctx.state.logger.push({ body: ctx.request.body }).log('Request received');
+    if (ctx.path !== '/health') {
+        ctx.state.logger.push({body: ctx.request.body}).log('Request received');
+    }
 
     // allow exceptions to bubble up. they should be caught by our general error handler back up the chain
     await next();
