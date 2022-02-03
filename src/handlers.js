@@ -301,15 +301,6 @@ const getHubEgressEndpoints = async(ctx) => {
     ctx.body = await endpointsModel.getHubEgressEndpoints();
 };
 
-const uploadClientCSR = async(ctx) => {
-    const { managementEndpoint } = ctx.state.conf;
-    const certsModel = new CertificatesModel({
-        managementEndpoint,
-        logger: ctx.state.logger,
-    });
-    ctx.body = await certsModel.uploadClientCSR(ctx.request.body);
-};
-
 const createClientCSR = async(ctx) => {
     const { managementEndpoint } = ctx.state.conf;
     const certsModel = new CertificatesModel({
@@ -570,7 +561,6 @@ module.exports = {
     },
     '/dfsp/clientCerts': {
         get: getClientCertificate,
-        post: uploadClientCSR,
     },
     '/dfsp/clientCerts/csr': {
         post: createClientCSR,

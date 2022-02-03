@@ -741,28 +741,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/BaseServerCert"
   /dfsp/clientCerts:
-
-    post:
-      tags:
-      - DFSP-client-certificates-configuration
-      summary: post client certificate request
-      description: TBD
-      operationId: createDfspClientCerts
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/BaseClientCert"
-      responses:
-        201:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ObjectCreatedResponse"
     get:
-
       summary: Get existing client certs for DFSP
       responses:
         200:
@@ -773,8 +752,8 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/ClientCertInfo"
-  /dfsp/clientCerts/csr:
 
+  /dfsp/clientCerts/csr:
     post:
       tags:
       - DFSP-client-certificates-configuration
@@ -1618,14 +1597,6 @@ components:
           description: "Object ID"
       example:
         id: 42
-
-    BaseClientCert:
-      type: object
-      description: The server certificate.
-      properties:
-        clientCSR:
-          type: string
-          description: PEM-encoded CSR
 
     BaseServerCert:
       type: object
