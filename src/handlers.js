@@ -59,9 +59,9 @@ const getBatch = async (ctx) => {
 };
 
 const getTransfers = async (ctx) => {
-    const { id, startTimestamp, endTimestamp, institution, status, batchId } = ctx.query;
+    const { id, startTimestamp, endTimestamp, recipient, direction, institution, status, batchId } = ctx.query;
     const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
-    ctx.body = await transfer.findAll({ id, startTimestamp, endTimestamp, institution, status, batchId });
+    ctx.body = await transfer.findAll({ id, startTimestamp, endTimestamp, recipient, direction, institution, status, batchId });
 };
 
 const getTransferStatusSummary = async (ctx) => {

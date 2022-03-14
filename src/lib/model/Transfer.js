@@ -38,6 +38,8 @@ class Transfer {
      * @param opts {Object}
      * @param [opts.startTimestamp] {string}
      * @param [opts.endTimestamp] {string}
+     * @param [opts.recipient] {string}
+     * @param [opts.direction] {string}     
      * @param [opts.institution] {string}
      * @param [opts.batchId] {number}
      * @param [opts.status] {string}

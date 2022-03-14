@@ -1,13 +1,14 @@
 {
   "name": "mojaloop-payment-manager-experience-api-service",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Mojaloop Payment Manager - Experience API Service",
   "main": "index.js",
   "author": "Murthy kakarlamudi, ModusBox Inc.",
   "contributors": [
     "Murthy Kakarlamudi <murthy@modusbox.com>",
     "Yevhen Kyriukha <yevhen.kyriukha@modusbox.com>",
-    "James Bush <james.bush@modusbox.com>"
+    "James Bush <james.bush@modusbox.com>",
+    "Juan Correa <juan.correa@modusbox.com>"
   ],
   "repository": {
     "type": "git",
