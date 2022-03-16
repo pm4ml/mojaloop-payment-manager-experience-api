@@ -38,7 +38,12 @@ class Transfer {
      * @param opts {Object}
      * @param [opts.startTimestamp] {string}
      * @param [opts.endTimestamp] {string}
-     * @param [opts.recipient] {string}
+     * @param [opts.senderIdType] {string}
+     * @param [opts.senderIdValue] {string}
+     * @param [opts.senderIdSubValue] {string}
+     * @param [opts.recipientIdType] {string}
+     * @param [opts.recipientIdValue] {string}
+     * @param [opts.recipientIdSubValue] {string}
      * @param [opts.direction] {string}     
      * @param [opts.institution] {string}
      * @param [opts.batchId] {number}
