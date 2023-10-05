@@ -171,7 +171,7 @@ const loginRouteHandler = async (ctx, next, client, generators, authConfig) => {
         code_challenge_method: 'S256',
     });
 
-    ctx.state.logger.log('Redirecting to auth URL in response to login request');
+    ctx.state.logger.log(`Redirecting to auth URL in response to login request: ${authUrl}`);
     ctx.redirect(authUrl);
 };
 
