@@ -27,7 +27,7 @@ const handlers = require('./handlers');
 const middlewares = require('./middlewares');
 
 // todo: take this from config
-const UI_ORIGIN = 'https://portal.devpm4ml.labsk8s901.mojaloop.live';
+const UI_ORIGIN = '*'; // 'https://portal.devpm4ml.labsk8s901.mojaloop.live';
 
 
 class Server {
