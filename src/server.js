@@ -11,7 +11,7 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const { oas } = require('koa-oas3');
-const cors = require('@koa/cors');
+// const cors = require('@koa/cors');
 
 // required for authentication and authorisation
 const session = require('koa-session');
