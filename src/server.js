@@ -66,10 +66,10 @@ class Server {
 
         // we need to allow cookies to be forwarded from other origins as this api may not
         // be served on the same port as the UI
-        this._api.use(cors({
-            origin: () => '*',
-            credentials: true,
-        }));
+        // this._api.use(cors({
+        //     origin: () => '*',
+        //     credentials: true,
+        // }));
 
         this._api.use(middlewares.createErrorHandler());
         this._api.use(middlewares.createRequestIdGenerator());
