@@ -26,6 +26,9 @@ const { CookieStore } = require('@internal/accesscontrol');
 const handlers = require('./handlers');
 const middlewares = require('./middlewares');
 
+// todo: take this from config
+const UI_ORIGIN = 'https://portal.devpm4ml.labsk8s901.mojaloop.live';
+
 
 class Server {
     constructor(conf) {
@@ -66,12 +69,18 @@ class Server {
 
         // we need to allow cookies to be forwarded from other origins as this api may not
         // be served on the same port as the UI
-        this._api.use(cors({
-            // origin: () => '*',
-            // todo: use dynamic origin based on request
-            origin: 'https://portal.devpm4ml.labsk8s901.mojaloop.live',
-            credentials: true,
-        }));
+        // this._api.use(cors({
+        //     origin: 'https://portal.devpm4ml.labsk8s901.mojaloop.live',
+        //     credentials: true,
+        // }));
+
+        this._api.use(async (ctx, next) => {
+            ctx.set({
+                'Access-Control-Allow-Origin': UI_ORIGIN,
+                'Access-Control-Allow-Credentials': true,
+            });
+            await next();
+        });
 
         this._api.use(middlewares.createErrorHandler());
         this._api.use(middlewares.createRequestIdGenerator());
