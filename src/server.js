@@ -11,7 +11,7 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const { oas } = require('koa-oas3');
-// const cors = require('@koa/cors');
+const cors = require('@koa/cors');
 
 // required for authentication and authorisation
 const session = require('koa-session');
@@ -66,10 +66,12 @@ class Server {
 
         // we need to allow cookies to be forwarded from other origins as this api may not
         // be served on the same port as the UI
-        // this._api.use(cors({
-        //     origin: () => '*',
-        //     credentials: true,
-        // }));
+        this._api.use(cors({
+            // origin: () => '*',
+            // todo: use dynamic origin based on request
+            origin: 'https://portal.devpm4ml.labsk8s901.mojaloop.live',
+            credentials: true,
+        }));
 
         this._api.use(middlewares.createErrorHandler());
         this._api.use(middlewares.createRequestIdGenerator());
