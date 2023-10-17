@@ -16,6 +16,7 @@
   },
   "scripts": {
     "start": "node src/index.js",
+    "start:dev": "node -r dotenv/config src/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest --ci --reporters=default --reporters=jest-junit --env=node test/unit",
