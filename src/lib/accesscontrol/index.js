@@ -259,7 +259,8 @@ const userInfoRouteHandler = async (ctx, next, client) => {
     const { tokenSet }  = ctx.session.auth;
     ctx.state.logger.log(`tokenSet: ${JSON.stringify(tokenSet)}`);
 
-    const userInfo = await client.userinfo(tokenSet.access_token);
+    const userInfo = {};
+    // const userInfo = await client.userinfo(tokenSet.access_token);
     ctx.state.logger.push(userInfo).log('Got user info from authentication service');
     ctx.body = userInfo;
 };
