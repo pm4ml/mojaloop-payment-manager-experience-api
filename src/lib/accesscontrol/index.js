@@ -254,6 +254,7 @@ const authRouteHandler = async (ctx, next, client, authConfig) => {
  *
  * @returns {undefined}
  */
+// eslint-disable-next-line no-unused-vars
 const userInfoRouteHandler = async (ctx, next, client) => {
     // call the userinfo endpoint on the auth service to get more info on the user
     const { tokenSet }  = ctx.session.auth;
