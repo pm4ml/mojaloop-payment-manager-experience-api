@@ -55,6 +55,6 @@
     "nock": "^13.5.4",
     "openapi-response-validator": "^4.0.0",
     "redis-mock": "^0.49.0",
-    "supertest": "^4.0.2"
+    "supertest": "^7.0.0"
   }
 }
