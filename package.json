@@ -18,7 +18,7 @@
     "start": "node src/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest --ci --reporters=default --reporters=jest-junit --env=node test/unit",
+    "test": "jest",
     "test:int": "jest --ci --reporters=default --reporters=jest-junit --env=node test/integration --forceExit"
   },
   "dependencies": {
@@ -50,7 +50,7 @@
     "eslint": "^7.4.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
-    "jest": "^27.4.7",
+    "jest": "^27.5.1",
     "jest-junit": "^13.0.0",
     "nock": "^13.0.2",
     "openapi-response-validator": "^4.0.0",
