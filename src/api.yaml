@@ -1080,6 +1080,15 @@ components:
           type: integer
         amount:
           $ref: '#/components/schemas/Amount'
+        currency:
+          type: string
+          example: "USD"
+        type:
+          type: string
+          example: "TRANSFER"
+        institution:
+          type: string
+          example: "testingtoolkitdfsp"
         sender:
           type: string
         recipient:
@@ -1088,6 +1097,9 @@ components:
           type: string
         status:
           $ref: "#/components/schemas/TransferStatus"
+        initiatedTimestamp:
+          type: string
+          example: "2024-08-28T09:43:39.199Z"
         technicalDetails:
           $ref: "#/components/schemas/TransferTechnicalDetails"
 
@@ -1116,10 +1128,22 @@ components:
           $ref: "#/components/schemas/MojaloopRequest"
         quoteResponse:
           $ref: "#/components/schemas/MojaloopRequest"
+        supportedCurrencies:
+          $ref: "#/components/schemas/Currency"
+        fxProviders:
+          $ref: "#/components/schemas/Provider"
+        fxQuoteRequest:
+          $ref: "#/components/schemas/MojaloopRequest"
+        fxQuoteResponse:
+          $ref: "#/components/schemas/fxQuote"
         transferPrepare:
           $ref: "#/components/schemas/MojaloopRequest"
         transferFulfilment:
+          $ref: "#/components/schemas/Fulfilment"
+        fxTransferRequest:
           $ref: "#/components/schemas/MojaloopRequest"
+        fxTransferResponse:
+          $ref: "#/components/schemas/fxTransfer"
         lastError:
           $ref: '#/components/schemas/TransferError'
 
@@ -1191,6 +1215,89 @@ components:
         body:
           type: object
 
+    Provider:
+      type: array
+      items:
+        example: "testfxp1"
+
+    fxQuote:
+      type: object
+      properties:
+        headers:
+          type: object
+        body:
+          type: object
+          properties:
+            conversionTerms:
+              $ref: '#/components/schemas/conversionTerms'
+
+    fxTransfer:
+      title: fxTransfers
+      description: >-
+        fxTransfers is used to ask to confirm the execution of an agreed currency conversion.
+      type: object
+      properties:
+        headers:
+          type: object
+        body:
+          type: object
+          properties:
+            conversionState:
+              type: string
+              example: "RESERVED"
+            fulfilment:
+              type: string
+              example: "WLctttbu2HvTsa1XWvUoGRcQozHsqeu9Ahl2JW9Bsu8"
+            completedTimestamp:
+              type: string
+              example: "2024-08-27T06:44:46.180Z"
+    
+    Fulfilment:
+      title: Fulfilment
+      description: >-
+        The fulfilment of the condition specified for the currency conversion. Mandatory if the conversion has been executed successfully.
+      type: object
+      properties:
+        headers:
+          type: object
+        body:
+          type: object
+          properties:
+            transferState:
+              type: string
+              example: "COMMITTED"
+            fulfilment:
+              type: string
+              example: "kDOgQH81DGGZ7nZaExSCAB9Y2e74Po564CStclCoukI"
+            completedTimestamp:
+              type: string
+              example: "2024-08-27T06:44:46.180Z"
+
+    Charge:
+      title: Charge
+      description: >-
+        An FXP will be able to specify a charge which it proposes to levy on the currency conversion operation using a FxCharge object.
+      type: array
+      items:
+        properties:
+          chargeType:
+            type: string
+          sourceAmount:
+            properties:
+              currency:
+                $ref: '#/components/schemas/Currency'
+              amount:
+                $ref: '#/components/schemas/Amount'
+          targetAmount:
+            type: object
+            properties:
+              currency:
+                type: string
+                example: "GBP"
+              amount:
+                type: string
+                example: "80"
+        
     InternalTransferStatus:
       type: string
       enum:
@@ -1198,6 +1305,47 @@ components:
       - WAITING_FOR_PARTY_ACCEPTANCE
       - WAITING_FOR_QUOTE_ACCEPTANCE
       - COMPLETED
+    
+    conversionTerms: 
+      type: object
+      properties:
+        conversionId:
+          type: string
+          example: "19c7b885-f426-4203-a07f-cbca3ad35438"
+        initiatingFsp:
+          type: string
+          example: "PayerFSP"
+        counterPartyFsp:
+          type: string
+          example: "testfxp1"
+        amountType:
+          type: string
+          example: "SEND"
+        sourceAmount:
+          type: object
+          properties:
+            currency:
+              $ref: '#/components/schemas/Currency'
+            amount:
+              $ref: '#/components/schemas/Amount'
+        targetAmount:
+          type: object
+          properties:
+            currency:
+              type: string
+              example: "GBP"
+            amount:
+              type: string
+              example: "80"
+        expiration:
+          type: string
+          example: "2023-12-25T14:17:09.663+01:00"
+        determiningTransferId:
+          type: string
+          example: "b51ec534-ee48-4575-b6a9-ead2955b8069"
+
+        charges:
+          $ref: '#/components/schemas/Charge'
 
     TransferParty:
       type: object
@@ -1273,7 +1421,6 @@ components:
         $ref: '#/components/schemas/ExtensionItem'
       minItems: 0
       maxItems: 16
-
 
     payerType:
       type: string
