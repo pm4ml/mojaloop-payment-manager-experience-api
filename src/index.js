@@ -1,12 +1,27 @@
 const config = require('./config');
 const Server = require('./server');
-
+const { createMemoryCache } = require('./lib/cacheDatabase/');
+const { Logger } = require('@mojaloop/sdk-standard-components');
 
 if(require.main === module) {
     (async () => {
+        const logger = new Logger.Logger( {
+            context: {
+                app: 'mojaloop-payment-manager-experience-api-service-control-server'
+            },
+            stringify: Logger.buildStringify({ space: 2 }),
+        });
+
+        console.log('Session config url is ',config.sessionConfig.redisUrl);
+        const db = await createMemoryCache({
+            cacheUrl : config.sessionConfig.redisUrl,
+            syncInterval: config.syncInterval,
+            logger,
+        });
+
         // this module is main i.e. we were started as a server;
         // not used in unit test or "require" scenarios
-        const svr = new Server(config);
+        const svr = new Server(config, db);
 
         // handle SIGTERM to exit gracefully
         process.on('SIGTERM', async () => {

@@ -61,29 +61,29 @@ const getBatch = async (ctx) => {
 const getTransfers = async (ctx) => {
     const { id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId } = ctx.query;
 
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.findAll({ id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId });
 };
 
 const getTransferStatusSummary = async (ctx) => {
     const { startTimestamp, endTimestamp } = ctx.query;
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.statusSummary({ startTimestamp, endTimestamp });
 };
 
 const getTransfer = async (ctx) => {
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.findOne(ctx.params.transferId);
 };
 
 const getTransferDetails = async (ctx) => {
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.details(ctx.params.transferId);
 };
 
 const getErrors = async (ctx) => {
     const { startTimestamp, endTimestamp } = ctx.query;
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.errors({ startTimestamp, endTimestamp });
 };
 
@@ -95,19 +95,19 @@ const getHourlyPosition = async (ctx) => {
 
 const getHourlyFlow = async (ctx) => {
     const { hoursPrevious } = ctx.query;
-    const transfer = new Transfer(ctx.state.conf);
+    const transfer = new Transfer({...ctx.state.conf, logger:ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.hourlyFlow({ hoursPrevious });
 };
 
 const getTransfersSuccessRate = async (ctx) => {
     const { minutePrevious } = ctx.query;
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({...ctx.state.conf, logger:ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.successRate({ minutePrevious });
 };
 
 const getTransfersAvgResponseTime = async (ctx) => {
     const { minutePrevious } = ctx.query;
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({...ctx.state.conf, logger:ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.avgResponseTime({ minutePrevious });
 };
 

@@ -20,6 +20,8 @@ module.exports = {
     managementEndpoint: env.get('MANAGEMENT_ENDPOINT').asString(),
     metricsEndpoint: env.get('METRICS_ENDPOINT').asString(),
     dfspId: env.get('DFSP_ID').asString(),
+    syncInterval: env.get('CACHE_SYNC_INTERVAL_SECONDS').default(30).asIntPositive(),
+
     sessionConfig: {
         // sessionConfig is mostly identical to the koa session middleware config object as described here:
         // https://github.com/koajs/session
