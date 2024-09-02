@@ -1086,27 +1086,17 @@ components:
         transactionType:
           type: string
           example: "TRANSFER"
-        sourceAmount:
-          type: object
-          properties:
-            currency:
-              $ref: '#/components/schemas/Currency'
-            amount:
-              $ref: '#/components/schemas/Amount'
-        targetAmount:
-          type: object
-          properties:
-            currency:
-              type: string
-              example: "GBP"
-            amount:
-              type: string
-              example: "80"
         institution:
           type: string
           example: "testingtoolkitdfsp"
         sender:
           type: string
+        receiveAmount:
+          type: string
+          example: "7.99"
+        receiveCurrency:
+          type: string
+          example: "GBP"
         recipient:
           type: string
         details:
