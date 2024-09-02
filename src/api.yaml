@@ -1074,20 +1074,77 @@ components:
     TransferDetails:
       type: object
       properties:
-        id:
+        transferId:
+          $ref: "#/components/schemas/MojaloopIdentifier"
+        transferState:
           type: string
+          example: "succeeded"
+        direction:
+          type: string
+          enum:
+          - INBOUND
+          - OUTBOUND
+        transactionType:
+          type: string
+          example: "TRANSFER"
         confirmationNumber:
           type: integer
-        amount:
+        sendAmount:
           $ref: '#/components/schemas/Amount'
-        sender:
+        sendCurrency:
+          $ref: '#/components/schemas/Currency'
+        dateSubmitted:
           type: string
-        recipient:
+          example: "2024-08-28T09:43:39.199Z"
+        # senderInstitution:
+        #   type: string
+        #   example: "dfsp1"
+        receiveAmount:
           type: string
-        details:
+          example: "7.99"
+        receiveCurrency:
+          $ref: '#/components/schemas/Currency'
+        conversionSubmitted:
           type: string
-        status:
-          $ref: "#/components/schemas/TransferStatus"
+          example: "2023-12-25T14:17:09.663+01:00"
+        senderDetails:
+          type: object
+          properties:
+            idType:
+              $ref: '#/components/schemas/idType'
+            idValue:
+              $ref: '#/components/schemas/idValue'
+        recipientDetails:
+          type: object
+          properties:
+            idType:
+              $ref: '#/components/schemas/idType'
+            idValue:
+              $ref: '#/components/schemas/idValue'
+        recipientCurrencies:
+          $ref: '#/components/schemas/Currency'
+        recipientInstitution:
+          type: string
+          example: "dfsp2"
+        # recipient:
+        #   type: string
+        # details:
+        #   type: string
+        conversionInstitution:
+          type: string
+          example: "Global-FXP"
+        conversionState:
+          type: string
+          example: "succeeded"
+        # status:
+        #   $ref: "#/components/schemas/TransferStatus"
+        initiatedTimestamp:
+          type: string
+          example: "2024-08-28T09:43:39.199Z"
+        transferTerms:
+          $ref: "#/components/schemas/TransferTerms"
+        transferParties:
+          $ref: "#/components/schemas/TransferParties"
         technicalDetails:
           $ref: "#/components/schemas/TransferTechnicalDetails"
 
@@ -1096,16 +1153,16 @@ components:
       properties:
         schemeTransferId:
           $ref: "#/components/schemas/MojaloopIdentifier"
-        homeTransferId:
-          type: string
         transactionId:
+          $ref: "#/components/schemas/MojaloopIdentifier"
+        quoteId:
+          $ref: "#/components/schemas/MojaloopIdentifier"
+        homeTransferId:
           $ref: "#/components/schemas/MojaloopIdentifier"
         payerParty:
           $ref: "#/components/schemas/TransferParty"
         payeeParty:
           $ref: "#/components/schemas/TransferParty"
-        quoteId:
-          $ref: "#/components/schemas/MojaloopIdentifier"
         transferState:
           $ref: "#/components/schemas/InternalTransferStatus"
         getPartiesRequest:
@@ -1116,12 +1173,95 @@ components:
           $ref: "#/components/schemas/MojaloopRequest"
         quoteResponse:
           $ref: "#/components/schemas/MojaloopRequest"
-        transferPrepare:
+        fxQuoteRequest:
           $ref: "#/components/schemas/MojaloopRequest"
-        transferFulfilment:
+        fxQuoteResponse:
+          $ref: "#/components/schemas/conversionTerms"
+        fxTransferPrepare:
           $ref: "#/components/schemas/MojaloopRequest"
+        fxTransferFulfilment:
+          $ref: "#/components/schemas/Fulfilment"
         lastError:
           $ref: '#/components/schemas/TransferError'
+
+    TransferTerms:
+      type: object
+      properties:
+        transferId:
+          $ref: "#/components/schemas/MojaloopIdentifier"
+        quoteAmount:
+          type: object
+          properties:
+            amount:
+              $ref: "#/components/schemas/Amount"
+            currency:
+              $ref: "#/components/schemas/Currency"
+        quoteAmountType:
+          type: string
+          example: "SEND"
+        transferAmount:
+          type: object
+          properties:
+            amount:
+              $ref: "#/components/schemas/Amount"
+            currency:
+              $ref: "#/components/schemas/Currency"
+        payeeReceiveAmount:
+          type: object
+          properties:
+            amount:
+              $ref: "#/components/schemas/Amount"
+            currency:
+              $ref: "#/components/schemas/Currency"
+        payeeDfspFee:
+          type: object
+          properties:
+            amount:
+              $ref: "#/components/schemas/Amount"
+            currency:
+              $ref: "#/components/schemas/Currency"
+        payeeDfspCommision:
+          type: object
+          properties:
+            amount:
+              $ref: "#/components/schemas/Amount"
+            currency:
+              $ref: "#/components/schemas/Currency"
+        expiryDate:
+          type: string
+          example: "2024-08-28T09:43:39.199Z"
+        conversionTerms:
+          type: object
+          properties:
+            transferAmount:
+              type: object
+              properties:
+                amount:
+                  $ref: "#/components/schemas/Amount"
+                currency:
+                  $ref: "#/components/schemas/Currency"
+            charges:
+              $ref: "#/components/schemas/Charge"
+            exchangeRate:
+              $ref: "#/components/schemas/Amount"
+            expiryDate:
+              type: string
+              example: "2024-08-28T09:43:39.199Z"
+    
+    TransferParties:
+      type: object
+      properties:
+        transferId:
+          $ref: "#/components/schemas/MojaloopIdentifier"
+        transferState:
+          $ref: "#/components/schemas/InternalTransferStatus"
+        transferType:
+          type: string
+          example: "Payment"
+        payerParty:
+          $ref: "#/components/schemas/TransferParty"
+        payeeParty:
+          $ref: "#/components/schemas/TransferParty"
 
     TransferError:
       type: object
@@ -1191,6 +1331,77 @@ components:
         body:
           type: object
 
+    Provider:
+      type: array
+      items:
+        example: "testfxp1"
+
+    # fxQuote:
+    #   type: object
+    #   properties:
+    #     headers:
+    #       type: object
+    #     body:
+    #       type: object
+    #       properties:
+    #         conversionTerms:
+    #           $ref: '#/components/schemas/conversionTerms'
+
+    # fxTransfer:
+    #   title: fxTransfers
+    #   description: >-
+    #     fxTransfers is used to ask to confirm the execution of an agreed currency conversion.
+    #   type: object
+    #   properties:
+    #     transferState:
+    #       type: string
+    #       example: "RESERVED"
+    #     fulfilment:
+    #       type: string
+    #       example: "WLctttbu2HvTsa1XWvUoGRcQozHsqeu9Ahl2JW9Bsu8"
+    #     completedTimestamp:
+    #       type: string
+    #       example: "2024-08-27T06:44:46.180Z"
+    
+    Fulfilment:
+      title: Fulfilment
+      description: >-
+        The fulfilment of the condition specified for the currency conversion. Mandatory if the conversion has been executed successfully.
+     
+      type: object
+      properties:
+        transferState:
+          type: string
+          example: "COMMITTED"
+        fulfilment:
+          type: string
+          example: "kDOgQH81DGGZ7nZaExSCAB9Y2e74Po564CStclCoukI"
+        completedTimestamp:
+          type: string
+          example: "2024-08-27T06:44:46.180Z"
+
+    Charge:
+      title: Charge
+      description: >-
+        An FXP will be able to specify a charge which it proposes to levy on the currency conversion operation using a FxCharge object.
+      type: array
+      items:
+        properties:
+          chargeType:
+            type: string
+          sourceAmount:
+            properties:
+              amount:
+                $ref: '#/components/schemas/Amount'
+              currency:
+                $ref: '#/components/schemas/Currency'
+          targetAmount:
+            properties:
+              amount:
+                $ref: '#/components/schemas/Amount'
+              currency:
+                $ref: '#/components/schemas/Currency'
+        
     InternalTransferStatus:
       type: string
       enum:
@@ -1198,7 +1409,48 @@ components:
       - WAITING_FOR_PARTY_ACCEPTANCE
       - WAITING_FOR_QUOTE_ACCEPTANCE
       - COMPLETED
-
+    
+    conversionTerms: 
+      type: object
+      properties:
+        conversionId:
+          $ref: "#/components/schemas/MojaloopIdentifier"
+        conversionQuoteId:
+          $ref: "#/components/schemas/MojaloopIdentifier"
+        initiatingFsp:
+          type: string
+          example: "PayerFSP"
+        counterPartyFsp:
+          type: string
+          example: "testfxp1"
+        amountType:
+          type: string
+          example: "SEND"
+        sourceAmount:
+            properties:
+              amount:
+                $ref: '#/components/schemas/Amount'
+              currency:
+                $ref: '#/components/schemas/Currency'
+        targetAmount:
+            properties:
+              amount:
+                $ref: '#/components/schemas/Amount'
+              currency:
+                $ref: '#/components/schemas/Currency'
+        conversionSubmitted:
+          type: string
+          example: "2023-12-25T14:17:09.663+01:00" 
+        conversionState:
+          $ref: "#/components/schemas/InternalTransferStatus"
+        determiningTransferId:
+          type: string
+          example: "b51ec534-ee48-4575-b6a9-ead2955b8069" 
+        expiration:
+          type: string
+          example: "2023-12-25T14:17:09.663+01:00"
+        charges:
+          $ref: '#/components/schemas/Charge'
     TransferParty:
       type: object
       required:
@@ -1273,7 +1525,6 @@ components:
         $ref: '#/components/schemas/ExtensionItem'
       minItems: 0
       maxItems: 16
-
 
     payerType:
       type: string
