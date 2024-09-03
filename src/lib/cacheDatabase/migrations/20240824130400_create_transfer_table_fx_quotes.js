@@ -28,6 +28,10 @@ async function up(knex) {
     table.string('fx_amount');
     table.string('fx_currency');
     table.string('fx_direction');
+    table.string('fx_condition');
+    table.string('fx_fulfilment');
+    table.string('fx_completed_timestamp');
+    table.string('fx_conversion_state');
   });
 }
 
