@@ -32,6 +32,7 @@ async function up(knex) {
         table.integer('created_at');
         table.integer('completed_at');
         table.string('raw');
+        table.string('supported_currencies');
     });
 }
 

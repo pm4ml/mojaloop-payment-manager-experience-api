@@ -143,7 +143,6 @@ async function syncDB({ redisCache, db, logger }) {
                 batch_id: '',
                 details: data.quoteRequest?.body?.note,
                 dfsp: data.quoteRequest?.body?.payer?.partyIdInfo.fspId,
-
                 success: getInboundTransferStatus(data),
             }),
             ...(data.direction === 'OUTBOUND' && {
@@ -162,6 +161,7 @@ async function syncDB({ redisCache, db, logger }) {
                 details: data.note,
                 dfsp: data.to?.fspId,
                 success: getTransferStatus(data),
+                supported_currencies: JSON.stringify(data.supportedCurrencies),
             }),
         };
 
