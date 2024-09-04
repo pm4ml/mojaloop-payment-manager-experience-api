@@ -179,7 +179,6 @@ async function syncDB({ redisCache, db, logger }) {
                 // completed_at: data.completedTimestamp,
                 ...(data.direction === 'INBOUND' && {
                     conversion_id: data.fxQuoteResponse.body.conversionTerms.conversionId,
-                    determining_transfer_id: data.fxQuoteResponse.body.conversionTerms.determiningTransferId,
                     initiating_fsp: data.fxQuoteResponse.body.conversionTerms.initiatingFsp,
                     counter_party_fsp: data.fxQuoteResponse.body.conversionTerms.counterPartyFsp,
                     amount_type: data.fxQuoteResponse.body.conversionTerms.amountType,
@@ -191,7 +190,6 @@ async function syncDB({ redisCache, db, logger }) {
                 }),
                 ...(data.direction === 'OUTBOUND' && {
                     conversion_id: data.fxQuoteResponse.body.conversionTerms.conversionId,
-                    determining_transfer_id: data.fxQuoteResponse.body.conversionTerms.determiningTransferId,
                     initiating_fsp: data.fxQuoteResponse.body.conversionTerms.initiatingFsp,
                     counter_party_fsp: data.fxQuoteResponse.body.conversionTerms.counterPartyFsp,
                     amount_type: data.fxQuoteResponse.body.conversionTerms.amountType,
@@ -207,10 +205,51 @@ async function syncDB({ redisCache, db, logger }) {
             console.log("fxQuoteResponse key does not exist");
         }
 
+        let fx_transfer_row = null;
         if (data.fxTransferRequest && data.fxTransferResponse) {
+            console.log("====================================");
             console.log(data.fxTransferRequest.body);
             console.log("====================================");
+            const fxTransferRequestData = parseData(data.fxTransferRequest.body);
+            fx_transfer_row = {
+                created_at: initiatedTimestamp,
+                ...(data.direction === 'INBOUND' && {
+                    initiating_fsp: fxTransferRequestData.initiatingFsp,
+                    counter_party_fsp: fxTransferRequestData.counterPartyFsp,
+                    amount_type: fxTransferRequestData.amountType,
+                    source_amount: fxTransferRequestData.sourceAmount.amount,
+                    source_currency: fxTransferRequestData.sourceAmount.currency,
+                    target_amount: fxTransferRequestData.targetAmount.amount,
+                    target_currency: fxTransferRequestData.targetAmount.currency,
+                    expiration: fxTransferRequestData.expiration,
+                    determining_transfer_id: fxTransferRequestData.determiningTransferId,
+                    condition: fxTransferRequestData.condition,
+                    commit_request_id: fxTransferRequestData.commitRequestId,
+                    conversion_state: data.fxTransferResponse.body.conversionState,
+                    completed_timestamp: data.fxTransferResponse.body.completedTimestamp,
+                    fulfilment: data.fxTransferResponse.body.fulfilment,
+                }),
+                ...(data.direction === 'OUTBOUND' && {
+                    initiating_fsp: fxTransferRequestData.initiatingFsp,
+                    counter_party_fsp: fxTransferRequestData.counterPartyFsp,
+                    amount_type: fxTransferRequestData.amountType,
+                    source_amount: fxTransferRequestData.sourceAmount.amount,
+                    source_currency: fxTransferRequestData.sourceAmount.currency,
+                    target_amount: fxTransferRequestData.targetAmount.amount,
+                    target_currency: fxTransferRequestData.targetAmount.currency,
+                    expiration: fxTransferRequestData.expiration,
+                    determining_transfer_id: fxTransferRequestData.determiningTransferId,
+                    condition: fxTransferRequestData.condition,
+                    commit_request_id: fxTransferRequestData.commitRequestId,
+                    conversion_state: data.fxTransferResponse.body.conversionState,
+                    completed_timestamp: data.fxTransferResponse.body.completedTimestamp,
+                    fulfilment: data.fxTransferResponse.body.fulfilment,
+             }),
+            }
+
+            console.log("====================================");
             console.log(data.fxTransferResponse.body);
+            console.log("====================================");
         } else {
             // code to handle when fxQuoteResponse key does not exist
             console.log("fxTransferRequest or fxTransferResponse key does not exist");
@@ -227,11 +266,25 @@ async function syncDB({ redisCache, db, logger }) {
             if(fx_quote_row != undefined && fx_quote_row != null) {
                 await db('fx_quote').insert(fx_quote_row);
             }
+            if(fx_transfer_row != undefined && fx_transfer_row != null) {
+                await db('fx_transfer').insert(fx_transfer_row);
+            }
             cachedPendingKeys.push(row.id);
         } else {
             await db('transfer').where({ id: row.id }).update(row);
             if(fx_quote_row != null && fx_quote_row != undefined) {
-                await db('fx_quote').update(fx_quote_row);
+                try {
+                    await db('fx_quote').update(fx_quote_row);
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+            if(fx_transfer_row != undefined && fx_transfer_row != null) {
+                try {
+                    await db('fx_transfer').update(fx_transfer_row);
+                } catch (err) { 
+                    console.log(err);
+                }
             }
             // cachedPendingKeys.splice(keyIndex, 1);
         }

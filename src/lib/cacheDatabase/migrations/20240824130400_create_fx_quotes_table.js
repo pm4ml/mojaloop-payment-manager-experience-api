@@ -20,7 +20,6 @@ async function up(knex) {
         table.integer('created_at');
         table.integer('completed_at');
         table.string('conversion_id');
-        table.string('determining_transfer_id');
         table.string('initiating_fsp');
         table.string('counter_party_fsp');
         table.string('amount_type');

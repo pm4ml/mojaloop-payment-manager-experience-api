@@ -14,22 +14,21 @@ const TABLE_NAME = 'fx_transfer';
 
 async function up(knex) {
   return knex.schema.createTable(TABLE_NAME, (table) => {
-    table.string('fx_commit_request_id');
-    table.string('fx_determining_transfer_id');
-    table.string('fx_sender_id_type');
-    table.string('fx_sender_id_sub_value');
-    table.string('fx_sender_id_value');
-    table.string('fx_recipient');
-    table.string('fx_recipient_id_type');
-    table.string('fx_recipient_id_sub_value');
-    table.string('fx_recipient_id_value');
-    table.string('fx_amount');
-    table.string('fx_currency');
-    table.string('fx_direction');
-    table.string('fx_condition');
-    table.string('fx_fulfilment');
-    table.string('fx_completed_timestamp');
-    table.string('fx_conversion_state');
+      table.string('initiating_fsp');
+      table.string('counter_party_fsp');
+      table.string('amount_type');
+      table.string('source_amount');
+      table.string('source_currency');
+      table.string('target_amount');
+      table.string('target_currency');
+      table.integer('expiration');
+      table.string('determining_transfer_id');
+      table.string('condition');
+      table.string('commit_request_id');
+      table.string('conversion_state');
+      table.integer('completed_timestamp');
+      table.integer('created_at');
+      table.string('fulfilment');
   });
 }
 
