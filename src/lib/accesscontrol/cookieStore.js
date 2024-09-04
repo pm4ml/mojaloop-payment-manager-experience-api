@@ -38,8 +38,12 @@ class CookieStore {
                 this._connected = true;
                 resolve();
             });
+
+            this._client.connect();
         });
     }
+
+
 
     async get(key) { // , maxAge, { rolling, ctx }) {
         if(!this._connected) {
@@ -47,15 +51,8 @@ class CookieStore {
         }
 
         // this._logger.log(`session get ${key}`);
-        return new Promise((resolve, reject) => {
-            this._client.get(key, (err, sess) => {
-                if(err) {
-                    this._logger.push(err).error('Error getting key from redis');
-                    return reject(err);
-                }
-                resolve(JSON.parse(sess));
-            });
-        });
+        const sess = await (this._client.get(key));
+        return JSON.parse(sess);
     }
 
     async set(key, sess, maxAge) { // , { rolling, changed, ctx }) {
@@ -64,15 +61,7 @@ class CookieStore {
         }
 
         // this._logger.log(`session set ${key}, ${util.inspect(sess)}`);
-        return new Promise((resolve, reject) => {
-            this._client.setex(key, maxAge, JSON.stringify(sess), (err) => {
-                if(err) {
-                    this._logger.push(err).error('Error setting key in redis');
-                    return reject(err);
-                }
-                resolve();
-            });
-        });
+        await this._client.set(key, JSON.stringify(sess), maxAge);
     }
 
     async destroy(key) { // , { ctx }) {
@@ -81,15 +70,7 @@ class CookieStore {
         }
 
         // this._logger.log(`session destroy ${key}`);
-        return new Promise((resolve, reject) => {
-            this._client.del(key, (err) => {
-                if(err) {
-                    this.logger.push(err).error('Error deleting key from redis');
-                    return reject(err);
-                }
-                resolve();
-            });
-        }); 
+        await this._client.del(key);
     }
 }
 

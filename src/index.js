@@ -12,10 +12,9 @@ if(require.main === module) {
             stringify: Logger.buildStringify({ space: 2 }),
         });
 
-        console.log('Session config url is ',config.sessionConfig.redisUrl);
         const db = await createMemoryCache({
-            cacheUrl : config.sessionConfig.redisUrl,
-            syncInterval: config.syncInterval,
+            cacheUrl : config.cacheConfig.redisUrl,
+            syncInterval: config.cacheConfig.syncInterval,
             logger,
         });
 
