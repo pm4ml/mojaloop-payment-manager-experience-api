@@ -61,9 +61,9 @@ class Server {
             await next();
         });
 
-        // this._conf.sessionConfig.store = new CookieStore({ logger: this._logger, redisUrl: this._conf.sessionConfig.redisUrl});
+        this._conf.sessionConfig.store = new CookieStore({ logger: this._logger, redisUrl: this._conf.sessionConfig.redisUrl});
 
-        // await this._conf.sessionConfig.store.connect();
+        await this._conf.sessionConfig.store.connect();
 
         this._api.use(session(this._conf.sessionConfig, this._api));
 
