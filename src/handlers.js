@@ -58,11 +58,12 @@ const getBatch = async (ctx) => {
     ctx.body = batch.findOne(ctx.params.batchId);
 };
 
+//Updated handler to get joind transfers table
 const getTransfers = async (ctx) => {
     const { id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId } = ctx.query;
 
     const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger, db: ctx.state.db });
-    ctx.body = await transfer.findAll({ id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId });
+    ctx.body = await transfer.findAllWithFX({ id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId });
 };
 
 const getTransferStatusSummary = async (ctx) => {
