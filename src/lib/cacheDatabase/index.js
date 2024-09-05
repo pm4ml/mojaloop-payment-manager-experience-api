@@ -146,6 +146,7 @@ async function syncDB({ redisCache, db, logger }) {
                 details: data.quoteRequest?.body?.note,
                 dfsp: data.quoteRequest?.body?.payer?.partyIdInfo.fspId,
                 success: getInboundTransferStatus(data),
+                supported_currencies: JSON.stringify(data.supportedCurrencies),
             }),
             ...(data.direction === 'OUTBOUND' && {
                 sender: getName(data.from),
@@ -170,7 +171,7 @@ async function syncDB({ redisCache, db, logger }) {
         // check if there is a key in the data object named fxQuoteResponse
         let fx_quote_row = null;
         if (data.fxQuoteResponse) {
-            
+
             fx_quote_row = {
                 id: data.transferId,
                 redis_key: key, // To be used instead of Transfer.cachedKeys
@@ -198,18 +199,16 @@ async function syncDB({ redisCache, db, logger }) {
                     target_amount: data.fxQuoteResponse.body.conversionTerms.targetAmount.amount,
                     target_currency: data.fxQuoteResponse.body.conversionTerms.targetAmount.currency,
                     expiration: data.fxQuoteResponse.body.conversionTerms.expiration
-             }),
-            }
+                }),
+            };
         } else {
             // code to handle when fxQuoteResponse key does not exist
-            console.log("fxQuoteResponse key does not exist");
+            logger.log('fxQuoteResponse key does not exist');
         }
 
         let fx_transfer_row = null;
         if (data.fxTransferRequest && data.fxTransferResponse) {
-            console.log("====================================");
-            console.log(data.fxTransferRequest.body);
-            console.log("====================================");
+            logger.log(`The fxTransferRequest body is ${data.fxTransferRequest.body}`);
             const fxTransferRequestData = parseData(data.fxTransferRequest.body);
             fx_transfer_row = {
                 created_at: initiatedTimestamp,
@@ -244,17 +243,15 @@ async function syncDB({ redisCache, db, logger }) {
                     conversion_state: data.fxTransferResponse.body.conversionState,
                     completed_timestamp: data.fxTransferResponse.body.completedTimestamp,
                     fulfilment: data.fxTransferResponse.body.fulfilment,
-             }),
-            }
+                }),
+            };
 
-            console.log("====================================");
-            console.log(data.fxTransferResponse.body);
-            console.log("====================================");
+            logger.log(`fxTransferResponse body is ${data.fxTransferResponse.body}`);
         } else {
             // code to handle when fxQuoteResponse key does not exist
-            console.log("fxTransferRequest or fxTransferResponse key does not exist");
+            logger.log('fxTransferRequest or fxTransferResponse key does not exist');
         }
-        
+
 
         // logger.push({ data }).log('processing cache item');
 
@@ -282,7 +279,7 @@ async function syncDB({ redisCache, db, logger }) {
             if(fx_transfer_row != undefined && fx_transfer_row != null) {
                 try {
                     await db('fx_transfer').update(fx_transfer_row);
-                } catch (err) { 
+                } catch (err) {
                     console.log(err);
                 }
             }
