@@ -71,27 +71,6 @@ class Transfer {
     };
   }
 
-  //Transfer, fx_transfer and fx_quote join method
-    async findAllWithFX(params) {
-        const { id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId } = params;
-
-        const query = this.db('transfer')
-            .leftJoin('fx_transfer', 'transfer.id', 'fx_transfer.determining_transfer_id')
-            .leftJoin('fx_quote', 'fx_transfer.conversion_id', 'fx_quote.id')
-            .select(
-                'transfer.*',
-                'fx_transfer.source_amount as fx_source_amount',
-                'fx_transfer.target_amount as fx_target_amount',
-                'fx_quote.source_currency as fx_source_currency',
-                'fx_quote.target_currency as fx_target_currency'
-            );
-
-        if (id) query.where('transfer.id', id);
-        if (startTimestamp) query.where('transfer.created_at', '>=', startTimestamp);
-        if (endTimestamp) query.where('transfer.created_at', '<=', endTimestamp);
-
-        return query;
-    }
 
   static _transferLastErrorToErrorType(err) {
     if (err.mojaloopError) {
@@ -338,6 +317,29 @@ class Transfer {
     return rows.map(this._convertToApiFormat.bind(this));
     // return this._requests.get("transfers", opts);
   }
+
+  //Transfer, fx_transfer and fx_quote join method
+    async findAllWithFX(params) {
+        const { id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId } = params;
+
+        const query = this._db('transfer')
+            .leftJoin('fx_transfer', 'transfer.id', 'fx_transfer.determining_transfer_id')
+            .leftJoin('fx_quote', 'fx_transfer.determining_transfer_id', 'fx_quote.id')
+            .select(
+                'transfer.*',
+                'fx_transfer.source_amount as fx_source_amount',
+                'fx_transfer.target_amount as fx_target_amount',
+                'fx_quote.source_currency as fx_source_currency',
+                'fx_quote.target_currency as fx_target_currency'
+            );
+
+        if (id) query.where('transfer.id', id);
+        if (startTimestamp) query.where('transfer.created_at', '>=', new Date(startTimestamp).getTime());
+        if (endTimestamp) query.where('transfer.created_at', '<=', new Date(endTimestamp).getTime());
+
+        const rows = await query;
+        return rows;
+    }
 
   /**
    *
