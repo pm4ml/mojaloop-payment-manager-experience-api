@@ -71,28 +71,6 @@ class Transfer {
     };
   }
 
-  //Transfer, fx_transfer and fx_quote join method
-    async findAllWithFX(params) {
-        const { id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId } = params;
-
-        const query = this.db('transfer')
-            .leftJoin('fx_transfer', 'transfer.id', 'fx_transfer.determining_transfer_id')
-            .leftJoin('fx_quote', 'fx_transfer.conversion_id', 'fx_quote.id')
-            .select(
-                'transfer.*',
-                'fx_transfer.source_amount as fx_source_amount',
-                'fx_transfer.target_amount as fx_target_amount',
-                'fx_quote.source_currency as fx_source_currency',
-                'fx_quote.target_currency as fx_target_currency'
-            );
-
-        if (id) query.where('transfer.id', id);
-        if (startTimestamp) query.where('transfer.created_at', '>=', startTimestamp);
-        if (endTimestamp) query.where('transfer.created_at', '<=', endTimestamp);
-
-        return query;
-    }
-
   static _transferLastErrorToErrorType(err) {
     if (err.mojaloopError) {
       return err.mojaloopError.errorInformation.errorDescription;
@@ -339,6 +317,88 @@ class Transfer {
     // return this._requests.get("transfers", opts);
   }
 
+    //Transfer, fx_transfer and fx_quote join method
+  async findAllWithFX(opts) {
+    if (this.mockData) {
+      return mock.getTransfers(opts);
+    }
+  
+    const DEFAULT_LIMIT = 100;
+  
+    const query = this._db('transfer')
+      .leftJoin('fx_quote', 'transfer.id', 'fx_quote.conversion_id')
+      .leftJoin('fx_transfer', 'fx_quote.id', 'fx_transfer.determining_transfer_id')
+      .select([
+        'transfer.*',
+        'fx_quote.source_currency as fx_source_currency',
+        'fx_quote.target_currency as fx_target_currency',
+        'fx_transfer.source_currency as fx_transfer_source_currency',
+        'fx_transfer.target_currency as fx_transfer_target_currency',
+        'fx_transfer.source_amount as fx_source_amount',
+        'fx_transfer.target_amount as fx_target_amount',
+        'fx_quote.source_currency as fx_source_currency',
+        'fx_quote.target_currency as fx_target_currency'
+      ])
+      .whereRaw('true');
+  
+    if (opts.id) {
+      query.andWhere('transfer.id', 'LIKE', `%${opts.id}%`);
+    }
+    if (opts.startTimestamp) {
+      query.andWhere('transfer.created_at', '>=', new Date(opts.startTimestamp).getTime());
+    }
+    if (opts.endTimestamp) {
+      query.andWhere('transfer.created_at', '<', new Date(opts.endTimestamp).getTime());
+    }
+    if (opts.senderIdType) {
+      query.andWhere('transfer.sender_id_type', 'LIKE', `%${opts.senderIdType}%`);
+    }
+    if (opts.senderIdValue) {
+      query.andWhere('transfer.sender_id_value', 'LIKE', `%${opts.senderIdValue}%`);
+    }
+    if (opts.senderIdSubValue) {
+      query.andWhere('transfer.sender_id_sub_value', 'LIKE', `%${opts.senderIdSubValue}%`);
+    }
+    if (opts.recipientIdType) {
+      query.andWhere('transfer.recipient_id_type', 'LIKE', `%${opts.recipientIdType}%`);
+    }
+    if (opts.recipientIdValue) {
+      query.andWhere('transfer.recipient_id_value', 'LIKE', `%${opts.recipientIdValue}%`);
+    }
+    if (opts.recipientIdSubValue) {
+      query.andWhere('transfer.recipient_id_sub_value', 'LIKE', `%${opts.recipientIdSubValue}%`);
+    }
+    if (opts.direction) {
+      if (opts.direction === 'INBOUND') {
+        query.andWhere('transfer.direction', '=', '-1');
+      } else if (opts.direction === 'OUTBOUND') {
+        query.andWhere('transfer.direction', '=', '1');
+      }
+    }
+    if (opts.institution) {
+      query.andWhere('transfer.dfsp', 'LIKE', `%${opts.institution}%`);
+    }
+    if (opts.batchId) {
+      query.andWhere('transfer.batch_id', 'LIKE', `%${opts.batchId}%`);
+    }
+    if (opts.status) {
+      if (opts.status === 'PENDING') {
+        query.andWhereRaw('transfer.success IS NULL');
+      } else {
+        query.andWhere('transfer.success', opts.status === 'SUCCESS');
+      }
+    }
+    if (opts.offset) {
+      query.offset(opts.offset);
+    }
+    query.limit(opts.limit || DEFAULT_LIMIT);
+    query.orderBy('transfer.created_at');
+  
+    const rows = await query;
+    return rows.map(this._convertToApiFormat.bind(this));
+  }
+  
+  
   /**
    *
    * @param id {string}
