@@ -118,12 +118,14 @@ class Transfer {
             typeof raw.fxQuoteRequest.body === 'string'
         ) {
             raw.fxQuoteRequest.body = JSON.parse(raw.fxQuoteRequest.body);
-        }if(
+        }
+        if(
             raw.fxTransferRequest &&
             typeof raw.fxTransferRequest.body === 'string'
         ) {
             raw.fxTransferRequest.body = JSON.parse(raw.fxTransferRequest.body);
-        }if(
+        }
+        if(
             raw.fxTransferResponse&&
             typeof raw.fxTransferResponse.body === 'string'
         ) {
@@ -151,10 +153,10 @@ class Transfer {
             confirmationNumber: 0, // TODO: Implement
             sendAmount:transfer.fx_source_amount ? transfer.fx_source_amount : transfer.amount,
             sendCurrency:transfer.fx_source_currency ? transfer.fx_source_currency: transfer.currency,
-            dateSubmitted: transfer.initiatedTimestamp,
+            dateSubmitted: new Date(transfer.created_at),
             receiveAmount: transfer.fx_target_amount ? transfer.fx_target_amount: transfer.amount,
             receiveCurrency: transfer.fx_target_currency ? transfer.fx_target_currency: transfer.currency,
-            conversionSubmitted: null,
+            conversionSubmitted: raw.fxTransferResponse.body.completedTimestamp, // TODO: Rename conversionSubmitted to conversionAcceptedDate
             senderDetails: {
                 idType: transfer.sender_id_type,
                 idValue: transfer.sender_id_value,
@@ -163,26 +165,35 @@ class Transfer {
                 idType: transfer.recipient_id_type,
                 idValue: transfer.recipient_id_value,
             },
-            recipientCurrencies: transfer.supported_currencies,
-            recipientInstitution: null,
-            conversionInstitution: null,
-            conversionState: raw.fxTransferResponse.body.conversionState,
-            initiatedTimestamp: new Date(transfer.created_at),
+            recipientCurrencies: JSON.parse(transfer.supported_currencies),
+            recipientInstitution: raw.quoteRequest.body.payee.partyIdInfo.fspId,
+            conversionInstitution: raw.fxQuoteRequest.body.conversionTerms.counterPartyFsp,
+            conversionState: raw.fulfil ? raw.fulfil.transferState : raw.fxTransferResponse.body.conversionState,
+            initiatedTimestamp:new Date(transfer.created_at),
             transferTerms: {
                 transferId: transfer.id,
-                quoteAmount: raw.quoteRequest.amount,
-                quoteAmountType: raw.quoteRequest.amountType,
+                quoteAmount: raw.quoteRequest.body.amount,
+                quoteAmountType: raw.quoteRequest.body.amountType,
                 transferAmount: raw.quoteResponse.body.transferAmount,
                 payeeReceiveAmount:raw.quoteResponse.body.payeeReceiveAmount,
                 payeeDfspFee: raw.quoteResponse.body.payeeFspFee,
-                payeeDfspCommision: raw.quoteResponse.body.payeeFspCommision,
+                payeeDfspCommision: raw.quoteResponse.body.payeeFspCommission,
                 expiryDate: raw.quoteResponse.body.expiration,
-                conversionTerms: raw.fxQuoteRequest && raw.fxQuoteResponse.body.conversionTerms,
+                conversionTerms: {
+                charges: {
+                    chargeType: "0",
+                    sourceAmount: { amount: '12312', currency: 'AED'},
+                    targetAmount: { amount: '12312', currency: 'AED'},
+                },// TODO : calculate total charges { totalSourceCurrencyCharges, totalTargetCurrencyCharges }
+                    expiryDate: raw.fxQuoteResponse.body.expiration,
+                    transferAmount: { amount: '12312', currency: 'AED'}, // TODO: set transferAmount = { sourceAmount, targetAmount}
+                    exchangeRate: '0', // TODO: calculate the exchangeRate
+                },
             },
             transferParties: {
                 transferId: transfer.id,
                 transferState: raw.currentState,
-                transferType : null,
+                transferType : raw.transactionType, //  TODO: rename to transactionType
                 payerParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payer'),
                 payeeParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payee'),
             },
@@ -192,6 +203,9 @@ class Transfer {
                   raw.quoteRequest &&
                   raw.quoteRequest.body &&
                   raw.quoteRequest.body.transactionId,
+                conversionState: raw.fulfil ? raw.fulfil.transferState : raw.fxTransferResponse.body.conversionState,
+                conversionId: raw.fxQuoteRequest.body.conversionTerms.conversionId,
+                conversionQuoteId: raw.fxQuoteRequest.body.conversionRequestId,
                 quoteId:
                   raw.quoteRequest &&
                   raw.quoteRequest.body &&

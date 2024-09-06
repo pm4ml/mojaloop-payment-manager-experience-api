@@ -96,7 +96,7 @@ async function syncDB({ redisCache, db, logger }) {
         const rawData = await redisCache.get(key);
         const data = parseData(rawData);
 
-        // console.log(rawData);
+        // console.log(data);
 
         // this is all a hack right now as we will eventually NOT use the cache as a source
         // of truth for transfers but rather some sort of dedicated persistence service instead.
