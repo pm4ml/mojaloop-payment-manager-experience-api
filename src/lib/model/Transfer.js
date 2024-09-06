@@ -95,9 +95,6 @@ class Transfer {
         // operate on a copy of incoming object...we dont want side effects
         const raw = JSON.parse(JSON.stringify(transferRaw));
 
-        console.log('============================')
-        console.log(Object.keys(raw))
-        console.log('============================')
         if (
             raw.getPartiesRequest &&
             typeof raw.getPartiesRequest.body === 'string'
@@ -148,58 +145,43 @@ class Transfer {
 
         return {
             transferId: transfer.id,
-            transferState:null,
+            transferState: Transfer.STATUSES[transfer.success],
             direction: transfer.direction > 0 ? 'OUTBOUND' : 'INBOUND',
             transactionType: raw.transactionType,
             confirmationNumber: 0, // TODO: Implement
-            sendAmount:transfer.fx_source_amount,
-            sendCurrency:transfer.fx_source_currency,
-            dateSubmitted: "2024-08-28T09:43:39.199Z",
-            receiveAmount: transfer.fx_target_amount,
-            receiveCurrency: transfer.fx_target_currency,
-            conversionSubmitted: "2024-08-28T09:43:39.199Z",
+            sendAmount:transfer.fx_source_amount ? transfer.fx_source_amount : transfer.amount,
+            sendCurrency:transfer.fx_source_currency ? transfer.fx_source_currency: transfer.currency,
+            dateSubmitted: transfer.initiatedTimestamp,
+            receiveAmount: transfer.fx_target_amount ? transfer.fx_target_amount: transfer.amount,
+            receiveCurrency: transfer.fx_target_currency ? transfer.fx_target_currency: transfer.currency,
+            conversionSubmitted: null,
             senderDetails: {
-                idType: null,
-                idValue: null,
+                idType: transfer.sender_id_type,
+                idValue: transfer.sender_id_value,
             },
             recipientDetails: {
-                idType: null,
-                idValue: null,
+                idType: transfer.recipient_id_type,
+                idValue: transfer.recipient_id_value,
             },
-            recipientCurrencies: null,
-            recipientInstition: null,
+            recipientCurrencies: transfer.supported_currencies,
+            recipientInstitution: null,
             conversionInstitution: null,
-            conversionState: null,
-            initiatedTimestamp: null,
-            transferTersm: {
-                transferId: null,
-                quoteAmount: {
-                    amount: null,
-                    currency: null,
-                },
-                quoteAmountType: null,
-                transferAmount: {
-                    amount: null,
-                    currency: null,
-                },
-                payeeReceiveAmount: {
-                    amount: null,
-                    currency: null,
-                },
-                payeeDfspFee: {
-                    amount: null,
-                    currency: null,
-                },
-                payeeDfspCommision: {
-                    amount: null,
-                    currency: null,
-                },
-                expiryDate: null,
-                conversionTerms: null,
+            conversionState: raw.fxTransferResponse.body.conversionState,
+            initiatedTimestamp: new Date(transfer.created_at),
+            transferTerms: {
+                transferId: transfer.id,
+                quoteAmount: raw.quoteRequest.amount,
+                quoteAmountType: raw.quoteRequest.amountType,
+                transferAmount: raw.quoteResponse.body.transferAmount,
+                payeeReceiveAmount:raw.quoteResponse.body.payeeReceiveAmount,
+                payeeDfspFee: raw.quoteResponse.body.payeeFspFee,
+                payeeDfspCommision: raw.quoteResponse.body.payeeFspCommision,
+                expiryDate: raw.quoteResponse.body.expiration,
+                conversionTerms: raw.fxQuoteRequest && raw.fxQuoteResponse.body.conversionTerms,
             },
             transferParties: {
-                transferId: null,
-                transferState: null,
+                transferId: transfer.id,
+                transferState: raw.currentState,
                 transferType : null,
                 payerParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payer'),
                 payeeParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payee'),
@@ -229,8 +211,14 @@ class Transfer {
                 },
                 quoteResponse: raw.quoteResponse,
                 fxQuoteResponse: raw.fxQuoteResponse,
-                fxQuoteRequest: raw.fxQuoteRequest,
-                fxTransferPrepare: raw.fxTransferRequest,
+                fxQuoteRequest: {
+                    headers: raw.fxQuoteRequest && raw.fxQuoteRequest.headers,
+                    body: raw.fxQuoteRequest && raw.fxQuoteRequest.body,
+                },
+                fxTransferPrepare: {
+                    headers: raw.fxTransferRequest && raw.fxTransferRequest.headers,
+                    body: raw.fxTransferRequest && raw.fxTransferRequest.body,
+                },
                 fxTransferFulfilment: raw.fxTransferResponse,
                 transferPrepare: {
                     headers: raw.prepare && raw.prepare.headers,
@@ -497,7 +485,6 @@ class Transfer {
         const query = this._db('transfer').where('transfer.id', id);
         this._applyJoin(query);
         const rows = await query;
-        console.log(rows);
         if (rows.length > 0) {
             return this._convertToApiDetailFormat(rows[0]);
         }
