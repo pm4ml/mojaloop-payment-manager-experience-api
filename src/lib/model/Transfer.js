@@ -156,7 +156,7 @@ class Transfer {
             dateSubmitted: new Date(transfer.created_at),
             receiveAmount: transfer.fx_target_amount ? transfer.fx_target_amount: transfer.amount,
             receiveCurrency: transfer.fx_target_currency ? transfer.fx_target_currency: transfer.currency,
-            conversionAcceptedDate : raw.fxTransferResponse.body.completedTimestamp,
+            conversionAcceptedDate : raw.fxTransferResponse && raw.fxTransferResponse.body && raw.fxTransferResponse.body.completedTimestamp,
             senderDetails: {
                 idType: transfer.sender_id_type,
                 idValue: transfer.sender_id_value,
@@ -167,7 +167,11 @@ class Transfer {
             },
             recipientCurrencies: JSON.parse(transfer.supported_currencies),
             recipientInstitution: raw.quoteRequest.body.payee.partyIdInfo.fspId,
-            conversionInstitution: raw.fxQuoteRequest.body.conversionTerms.counterPartyFsp,
+            conversionInstitution:
+                raw.fxQuoteRequest &&
+                raw.fxQuoteRequest.body &&
+                raw.fxQuoteRequest.body.conversionTerms &&
+                raw.fxQuoteRequest.body.conversionTerms.counterPartyFsp,
             conversionState: raw.fulfil ? raw.fulfil.body.transferState : raw.fxTransferResponse.body.conversionState,
             initiatedTimestamp:new Date(transfer.created_at),
             transferTerms: {
@@ -186,9 +190,13 @@ class Transfer {
                             sourceAmount: { amount: '12312', currency: 'AED'},
                             targetAmount: { amount: '12312', currency: 'AED'},
                         }
-                      // TODO : calculate total charges { totalSourceCurrencyCharges, totalTargetCurrencyCharges }
+                        // TODO : calculate total charges { totalSourceCurrencyCharges, totalTargetCurrencyCharges }
                     ],
-                    expiryDate: raw.fxQuoteResponse.body.conversionTerms.expiration,
+                    expiryDate:
+                      raw.fxQuoteResponse &&
+                      raw.fxQuoteResponse.body &&
+                      raw.fxQuoteResponse.body.conversionTerms &&
+                      raw.fxQuoteResponse.body.conversionTerms.expiration,
                     transferAmount: { amount: '12312', currency: 'AED'}, // TODO: set transferAmount = { sourceAmount, targetAmount}
                     exchangeRate: '0', // TODO: calculate the exchangeRate
                 },
@@ -203,16 +211,23 @@ class Transfer {
             technicalDetails: {
                 schemeTransferId: raw.transferId,
                 transactionId:
-                  raw.quoteRequest &&
-                  raw.quoteRequest.body &&
-                  raw.quoteRequest.body.transactionId,
+                    raw.quoteRequest &&
+                    raw.quoteRequest.body &&
+                    raw.quoteRequest.body.transactionId,
                 conversionState: raw.fulfil ? raw.fulfil.body.transferState : raw.fxTransferResponse.body.conversionState,
-                conversionId: raw.fxQuoteRequest.body.conversionTerms.conversionId,
-                conversionQuoteId: raw.fxQuoteRequest.body.conversionRequestId,
+                conversionId:
+                    raw.fxQuoteRequest &&
+                    raw.fxQuoteRequest.body &&
+                    raw.fxQuoteRequest.body.conversionTerms &&
+                    raw.fxQuoteRequest.body.conversionTerms.conversionId,
+                conversionQuoteId:
+                    raw.fxQuoteRequest &&
+                    raw.fxQuoteRequest.body &&
+                    raw.fxQuoteRequest.body.conversionRequestId,
                 quoteId:
-                  raw.quoteRequest &&
-                  raw.quoteRequest.body &&
-                  raw.quoteRequest.body.quoteId,
+                    raw.quoteRequest &&
+                    raw.quoteRequest.body &&
+                    raw.quoteRequest.body.quoteId,
                 homeTransferId: raw.homeTransactionId,
                 payerParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payer'),
                 payeeParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payee'),
