@@ -156,7 +156,7 @@ class Transfer {
             dateSubmitted: new Date(transfer.created_at),
             receiveAmount: transfer.fx_target_amount ? transfer.fx_target_amount: transfer.amount,
             receiveCurrency: transfer.fx_target_currency ? transfer.fx_target_currency: transfer.currency,
-            conversionSubmitted: raw.fxTransferResponse.body.completedTimestamp, // TODO: Rename conversionSubmitted to conversionAcceptedDate
+            conversionAcceptedDate : raw.fxTransferResponse.body.completedTimestamp,
             senderDetails: {
                 idType: transfer.sender_id_type,
                 idValue: transfer.sender_id_value,
@@ -168,7 +168,7 @@ class Transfer {
             recipientCurrencies: JSON.parse(transfer.supported_currencies),
             recipientInstitution: raw.quoteRequest.body.payee.partyIdInfo.fspId,
             conversionInstitution: raw.fxQuoteRequest.body.conversionTerms.counterPartyFsp,
-            conversionState: raw.fulfil ? raw.fulfil.transferState : raw.fxTransferResponse.body.conversionState,
+            conversionState: raw.fulfil ? raw.fulfil.body.transferState : raw.fxTransferResponse.body.conversionState,
             initiatedTimestamp:new Date(transfer.created_at),
             transferTerms: {
                 transferId: transfer.id,
@@ -180,12 +180,15 @@ class Transfer {
                 payeeDfspCommision: raw.quoteResponse.body.payeeFspCommission,
                 expiryDate: raw.quoteResponse.body.expiration,
                 conversionTerms: {
-                charges: {
-                    chargeType: "0",
-                    sourceAmount: { amount: '12312', currency: 'AED'},
-                    targetAmount: { amount: '12312', currency: 'AED'},
-                },// TODO : calculate total charges { totalSourceCurrencyCharges, totalTargetCurrencyCharges }
-                    expiryDate: raw.fxQuoteResponse.body.expiration,
+                    charges: [
+                        {
+                            chargeType: '0',
+                            sourceAmount: { amount: '12312', currency: 'AED'},
+                            targetAmount: { amount: '12312', currency: 'AED'},
+                        }
+                      // TODO : calculate total charges { totalSourceCurrencyCharges, totalTargetCurrencyCharges }
+                    ],
+                    expiryDate: raw.fxQuoteResponse.body.conversionTerms.expiration,
                     transferAmount: { amount: '12312', currency: 'AED'}, // TODO: set transferAmount = { sourceAmount, targetAmount}
                     exchangeRate: '0', // TODO: calculate the exchangeRate
                 },
@@ -193,7 +196,7 @@ class Transfer {
             transferParties: {
                 transferId: transfer.id,
                 transferState: raw.currentState,
-                transferType : raw.transactionType, //  TODO: rename to transactionType
+                transactionType : raw.transactionType,
                 payerParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payer'),
                 payeeParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payee'),
             },
@@ -203,7 +206,7 @@ class Transfer {
                   raw.quoteRequest &&
                   raw.quoteRequest.body &&
                   raw.quoteRequest.body.transactionId,
-                conversionState: raw.fulfil ? raw.fulfil.transferState : raw.fxTransferResponse.body.conversionState,
+                conversionState: raw.fulfil ? raw.fulfil.body.transferState : raw.fxTransferResponse.body.conversionState,
                 conversionId: raw.fxQuoteRequest.body.conversionTerms.conversionId,
                 conversionQuoteId: raw.fxQuoteRequest.body.conversionRequestId,
                 quoteId:
@@ -224,7 +227,7 @@ class Transfer {
                     body: raw.quoteRequest && raw.quoteRequest.body,
                 },
                 quoteResponse: raw.quoteResponse,
-                fxQuoteResponse: raw.fxQuoteResponse,
+                fxQuoteResponse: raw.fxQuoteResponse && raw.fxQuoteResponse.body,
                 fxQuoteRequest: {
                     headers: raw.fxQuoteRequest && raw.fxQuoteRequest.headers,
                     body: raw.fxQuoteRequest && raw.fxQuoteRequest.body,
@@ -233,7 +236,7 @@ class Transfer {
                     headers: raw.fxTransferRequest && raw.fxTransferRequest.headers,
                     body: raw.fxTransferRequest && raw.fxTransferRequest.body,
                 },
-                fxTransferFulfilment: raw.fxTransferResponse,
+                fxTransferFulfilment: raw.fxTransferResponse && raw.fxTransferResponse.body,
                 transferPrepare: {
                     headers: raw.prepare && raw.prepare.headers,
                     body: raw.prepare && raw.prepare.body,
