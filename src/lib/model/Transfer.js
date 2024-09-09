@@ -166,23 +166,28 @@ class Transfer {
                 idValue: transfer.recipient_id_value,
             },
             recipientCurrencies: JSON.parse(transfer.supported_currencies),
-            recipientInstitution: raw.quoteRequest.body.payee.partyIdInfo.fspId,
+            recipientInstitution:
+                raw.quoteRequest &&
+                raw.quoteRequest.body &&
+                raw.quoteRequest.body.payee &&
+                raw.quoteRequest.body.payee.partyIdInfo &&
+                raw.quoteRequest.body.payee.partyIdInfo.fspId,
             conversionInstitution:
                 raw.fxQuoteRequest &&
                 raw.fxQuoteRequest.body &&
                 raw.fxQuoteRequest.body.conversionTerms &&
                 raw.fxQuoteRequest.body.conversionTerms.counterPartyFsp,
-            conversionState: raw.fulfil ? raw.fulfil.body.transferState : raw.fxTransferResponse.body.conversionState,
+            conversionState: raw.fulfil ? raw.fulfil.body.transferState : raw.fxTransferResponse && raw.fxTransferResponse.body.conversionState,
             initiatedTimestamp:new Date(transfer.created_at),
             transferTerms: {
                 transferId: transfer.id,
-                quoteAmount: raw.quoteRequest.body.amount,
-                quoteAmountType: raw.quoteRequest.body.amountType,
-                transferAmount: raw.quoteResponse.body.transferAmount,
-                payeeReceiveAmount:raw.quoteResponse.body.payeeReceiveAmount,
-                payeeDfspFee: raw.quoteResponse.body.payeeFspFee,
-                payeeDfspCommision: raw.quoteResponse.body.payeeFspCommission,
-                expiryDate: raw.quoteResponse.body.expiration,
+                quoteAmount: raw.quoteRequest && raw.quoteRequest.body.amount,
+                quoteAmountType: raw.quoteRequest && raw.quoteRequest.body.amountType,
+                transferAmount: raw.quoteResponse && raw.quoteResponse.body.transferAmount,
+                payeeReceiveAmount: raw.quoteResponse && raw.quoteResponse.body.payeeReceiveAmount,
+                payeeDfspFee: raw.quoteResponse && raw.quoteResponse.body.payeeFspFee,
+                payeeDfspCommision: raw.quoteResponse && raw.quoteResponse.body.payeeFspCommission,
+                expiryDate: raw.quoteResponse && raw.quoteResponse.body.expiration,
                 conversionTerms: {
                     charges: [
                         {
@@ -214,7 +219,7 @@ class Transfer {
                     raw.quoteRequest &&
                     raw.quoteRequest.body &&
                     raw.quoteRequest.body.transactionId,
-                conversionState: raw.fulfil ? raw.fulfil.body.transferState : raw.fxTransferResponse.body.conversionState,
+                conversionState: raw.fulfil ? raw.fulfil.body.transferState : raw.fxTransferResponse && raw.fxTransferResponse.body.conversionState,
                 conversionId:
                     raw.fxQuoteRequest &&
                     raw.fxQuoteRequest.body &&
