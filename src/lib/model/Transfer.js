@@ -181,13 +181,28 @@ class Transfer {
             initiatedTimestamp:new Date(transfer.created_at),
             transferTerms: {
                 transferId: transfer.id,
-                quoteAmount: raw.quoteRequest && raw.quoteRequest.body.amount,
+                quoteAmount: {
+                    amount: raw.quoteRequest && raw.quoteRequest.body && raw.quoteRequest.body.amount.amount,
+                    currency: raw.quoteRequest && raw.quoteRequest.body && raw.quoteRequest.body.amount.currency,
+                },
                 quoteAmountType: raw.quoteRequest && raw.quoteRequest.body.amountType,
-                transferAmount: raw.quoteResponse && raw.quoteResponse.body.transferAmount,
-                payeeReceiveAmount: raw.quoteResponse && raw.quoteResponse.body.payeeReceiveAmount,
-                payeeDfspFee: raw.quoteResponse && raw.quoteResponse.body.payeeFspFee,
-                payeeDfspCommision: raw.quoteResponse && raw.quoteResponse.body.payeeFspCommission,
-                expiryDate: raw.quoteResponse && raw.quoteResponse.body.expiration,
+                transferAmount: {
+                    amount: raw.quoteResponse && raw.quoteRequest.body && raw.quoteRequest.body.transferAmount && raw.quoteResponse.body.transferAmount.amount,
+                    currency: raw.quoteResponse && raw.quoteRequest.body && raw.quoteRequest.body.transferAmount && raw.quoteResponse.body.transferAmount.currency
+                },
+                payeeReceiveAmount: {
+                    amount: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeReceiveAmount && raw.quoteResponse.body.payeeReceiveAmount.amount,
+                    currency: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeReceiveAmount && raw.quoteResponse.body.payeeReceiveAmount.currency,
+                },
+                payeeDfspFee: {
+                    amount : raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeFspFee && raw.quoteResponse.body.payeeFspFee.amount,
+                    currency: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeFspFee && raw.quoteResponse.body.payeeFspFee.currency,
+                },
+                payeeDfspCommision: {
+                    amount: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeFspCommission && raw.quoteResponse.body.payeeFspCommission.amount,
+                    currency: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeFspCommission && raw.quoteResponse.body.payeeFspCommission.currency,
+                },
+                expiryDate: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.expiration,
                 conversionTerms: {
                     charges: [
                         {
