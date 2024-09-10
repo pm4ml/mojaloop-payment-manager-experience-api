@@ -326,7 +326,7 @@ class Transfer {
     const DEFAULT_LIMIT = 100;
   
     const query = this._db('transfer')
-      .leftJoin('fx_quote', 'transfer.id', 'fx_quote.conversion_id')
+      .leftJoin('fx_quote', 'transfer.id', 'fx_quote.id')
       .leftJoin('fx_transfer', 'fx_quote.id', 'fx_transfer.determining_transfer_id')
       .select([
         'transfer.*',
