@@ -221,11 +221,11 @@ class Transfer {
 
         return {
             totalSourceCurrencyCharges: {
-                amount: totalSourceCurrencyCharges,
+                amount: totalSourceCurrencyCharges.toString(),
                 currency: charges[0].sourceAmount.currency,
             },
             totalTargetCurrencyCharges: {
-                amount: totalTargetCurrencyCharges,
+                amount: totalTargetCurrencyCharges.toString(),
                 currency: charges[0].targetAmount.currency
             },
         };
