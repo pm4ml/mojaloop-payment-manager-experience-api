@@ -9,6 +9,7 @@
  *                                                                        *
  *  CONTRIBUTORS:                                                         *
  *       James Bush - james.bush@modusbox.com                             *
+ *       Ujjwal Panwar - ujjwal.panwar@izyane.com                         *
  **************************************************************************/
 
 const util = require('util');
@@ -139,6 +140,99 @@ class Transfer {
         return raw;
     }
 
+    _getConversionTermsFromFxQuoteResponse(fxQuoteResponse) {
+        if(fxQuoteResponse == undefined){
+            return {
+                charges : {
+                    totalSourceCurrencyCharges: { amount: '', currency: ''},
+                    totalTargetCurrencyCharges: { amount: '', currency: ''},
+                },
+                expiryDate: '',
+                transferAmount: {
+                    sourceAmount : {
+                        amount: '', currency: ''
+                    },
+                    targetAmount : {
+                        amount: '',
+                        currency: '',
+                    },
+                },
+                exchangeRate: '',
+            };
+        }
+
+        const conversionTerms = fxQuoteResponse.body.conversionTerms;
+
+        if(!conversionTerms)
+            return ;
+
+        const charges = this._calculateTotalChargesFromCharges(conversionTerms.charges);
+        const transferAmount = {
+            sourceAmount : {
+                amount:
+                conversionTerms.sourceAmount &&
+                conversionTerms.sourceAmount.amount,
+                currency:
+                conversionTerms.sourceAmount &&
+                conversionTerms.sourceAmount.currency,
+            },
+            targetAmount : {
+                amount:
+                conversionTerms.targetAmount &&
+                conversionTerms.targetAmount.amount,
+                currency:
+                conversionTerms.targetAmount &&
+                conversionTerms.targetAmount.currency,
+            },
+        };
+        return {
+            charges : charges ,
+            expiryDate: conversionTerms.expiration,
+            transferAmount: transferAmount,
+            exchangeRate: this._calculateExchangeRate(
+                transferAmount.sourceAmount.amount,
+                transferAmount.targetAmount.amount,
+                parseFloat(charges.totalSourceCurrencyCharges.amount),
+                parseFloat(charges.totalTargetCurrencyCharges.amount),
+            )
+        };
+
+    }
+
+    _calculateTotalChargesFromCharges(charges){
+        if(!charges)
+            return {
+                totalSourceCurrencyCharges: { amount: '', currency: ''},
+                totalTargetCurrencyCharges: { amount: '', currency: ''},
+            };
+
+        let totalSourceCurrencyCharges = 0;
+        let totalTargetCurrencyCharges = 0;
+
+        charges.forEach( charge => {
+            const sourceAmount = parseFloat(charge.sourceAmount.amount);
+            const targetAmount = parseFloat(charge.targetAmount.amount);
+
+            totalSourceCurrencyCharges += sourceAmount;
+            totalTargetCurrencyCharges += targetAmount;
+        });
+
+        return {
+            totalSourceCurrencyCharges: {
+                amount: totalSourceCurrencyCharges.toString(),
+                currency: charges[0].sourceAmount.currency,
+            },
+            totalTargetCurrencyCharges: {
+                amount: totalTargetCurrencyCharges.toString(),
+                currency: charges[0].targetAmount.currency
+            },
+        };
+
+    }
+    _calculateExchangeRate(sourceAmount, targetAmount, totalSourceCharges, totalTargetCharges) {
+        return (targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges);
+    }
+
     _convertToApiDetailFormat(transfer) {
         let raw = JSON.parse(transfer.raw);
         raw = this._parseRawTransferRequestBodies(raw);
@@ -179,30 +273,29 @@ class Transfer {
             initiatedTimestamp:new Date(transfer.created_at),
             transferTerms: {
                 transferId: transfer.id,
-                quoteAmount: raw.quoteRequest && raw.quoteRequest.body.amount,
-                quoteAmountType: raw.quoteRequest && raw.quoteRequest.body.amountType,
-                transferAmount: raw.quoteResponse && raw.quoteResponse.body.transferAmount,
-                payeeReceiveAmount: raw.quoteResponse && raw.quoteResponse.body.payeeReceiveAmount,
-                payeeDfspFee: raw.quoteResponse && raw.quoteResponse.body.payeeFspFee,
-                payeeDfspCommision: raw.quoteResponse && raw.quoteResponse.body.payeeFspCommission,
-                expiryDate: raw.quoteResponse && raw.quoteResponse.body.expiration,
-                conversionTerms: {
-                    charges: [
-                        {
-                            chargeType: '0',
-                            sourceAmount: { amount: '12312', currency: 'AED'},
-                            targetAmount: { amount: '12312', currency: 'AED'},
-                        }
-                        // TODO : calculate total charges { totalSourceCurrencyCharges, totalTargetCurrencyCharges }
-                    ],
-                    expiryDate:
-                      raw.fxQuoteResponse &&
-                      raw.fxQuoteResponse.body &&
-                      raw.fxQuoteResponse.body.conversionTerms &&
-                      raw.fxQuoteResponse.body.conversionTerms.expiration,
-                    transferAmount: { amount: '12312', currency: 'AED'}, // TODO: set transferAmount = { sourceAmount, targetAmount}
-                    exchangeRate: '0', // TODO: calculate the exchangeRate
+                quoteAmount: {
+                    amount: raw.quoteRequest && raw.quoteRequest.body && raw.quoteRequest.body.amount.amount,
+                    currency: raw.quoteRequest && raw.quoteRequest.body && raw.quoteRequest.body.amount.currency,
                 },
+                quoteAmountType: raw.quoteRequest && raw.quoteRequest.body.amountType,
+                transferAmount: {
+                    amount: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.transferAmount && raw.quoteResponse.body.transferAmount.amount,
+                    currency: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.transferAmount && raw.quoteResponse.body.transferAmount.currency
+                },
+                payeeReceiveAmount: {
+                    amount: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeReceiveAmount && raw.quoteResponse.body.payeeReceiveAmount.amount,
+                    currency: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeReceiveAmount && raw.quoteResponse.body.payeeReceiveAmount.currency,
+                },
+                payeeDfspFee: {
+                    amount : raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeFspFee && raw.quoteResponse.body.payeeFspFee.amount,
+                    currency: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeFspFee && raw.quoteResponse.body.payeeFspFee.currency,
+                },
+                payeeDfspCommision: {
+                    amount: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeFspCommission && raw.quoteResponse.body.payeeFspCommission.amount,
+                    currency: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeFspCommission && raw.quoteResponse.body.payeeFspCommission.currency,
+                },
+                expiryDate: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.expiration,
+                conversionTerms: this._getConversionTermsFromFxQuoteResponse(raw.fxQuoteResponse),
             },
             transferParties: {
                 transferId: transfer.id,
