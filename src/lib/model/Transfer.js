@@ -48,8 +48,6 @@ class Transfer {
                 'fx_transfer.target_currency as fx_transfer_target_currency',
                 'fx_transfer.source_amount as fx_source_amount',
                 'fx_transfer.target_amount as fx_target_amount',
-                'fx_quote.source_currency as fx_source_currency',
-                'fx_quote.target_currency as fx_target_currency'
             ]);
     }
 
