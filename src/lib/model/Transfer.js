@@ -238,6 +238,7 @@ class Transfer {
         raw = this._parseRawTransferRequestBodies(raw);
 
         return {
+            needFx: raw.needFx,
             transferId: transfer.id,
             transferState: Transfer.STATUSES[transfer.success],
             direction: transfer.direction > 0 ? 'OUTBOUND' : 'INBOUND',
