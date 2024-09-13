@@ -237,6 +237,10 @@ class Transfer {
         let raw = JSON.parse(transfer.raw);
         raw = this._parseRawTransferRequestBodies(raw);
 
+        console.log('===========================================');
+        console.log('Need fx is ', raw.needFx);
+        console.log('===========================================');
+
         return {
             needFx: raw.needFx,
             transferId: transfer.id,
@@ -280,8 +284,8 @@ class Transfer {
                 },
                 quoteAmountType: raw.quoteRequest && raw.quoteRequest.body.amountType,
                 transferAmount: {
-                    amount: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.transferAmount && raw.quoteResponse.body.transferAmount.amount,
-                    currency: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.transferAmount && raw.quoteResponse.body.transferAmount.currency
+                    amount: transfer.amount,
+                    currency: transfer.currency,
                 },
                 payeeReceiveAmount: {
                     amount: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeReceiveAmount && raw.quoteResponse.body.payeeReceiveAmount.amount,
