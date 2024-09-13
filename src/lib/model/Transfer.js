@@ -543,7 +543,7 @@ class Transfer {
         }
         if (opts.endTimestamp) {
             query.andWhere('transfer.created_at', '<', new Date(opts.endTimestamp).getTime());
-        }git 
+        }
         if (opts.senderIdType) {
             query.andWhere('transfer.sender_id_type', 'LIKE', `%${opts.senderIdType}%`);
         }
