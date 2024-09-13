@@ -180,7 +180,7 @@ async function syncDB({ redisCache, db, logger }) {
                 fx_quote_row = {
                     conversion_request_id: fxQuoteRequest.conversionRequestId,
                     conversion_id: data.fxQuoteResponse.body.conversionTerms.conversionId,
-                    determining_transfer_id: data.fxQuoteResponse.body.conversionTerms.determiningTransferId,
+                    determining_transfer_id: data.transferId,  // TODO: replace back with determining_transfer_id once Implemented
                     initiating_fsp: data.fxQuoteResponse.body.conversionTerms.initiatingFsp,
                     counter_party_fsp: data.fxQuoteResponse.body.conversionTerms.counterPartyFsp,
                     amount_type: data.fxQuoteResponse.body.conversionTerms.amountType,
@@ -203,7 +203,7 @@ async function syncDB({ redisCache, db, logger }) {
 
             let fx_transfer_row = null;
             if (data.fxTransferRequest && data.fxTransferResponse) {
-                logger.log(`The fxTransferRequest body is ${data.fxTransferRequest.body}`);
+
                 const fxTransferRequestData = parseData(data.fxTransferRequest.body);
                 fx_transfer_row = {
                     commit_request_id: fxTransferRequestData.commitRequestId,
@@ -225,7 +225,6 @@ async function syncDB({ redisCache, db, logger }) {
 
                 };
 
-                logger.log(`fxTransferResponse body is ${data.fxTransferResponse.body}`);
             } else {
                 // code to handle when fxQuoteResponse key does not exist
                 logger.log('fxTransferRequest or fxTransferResponse key does not exist');

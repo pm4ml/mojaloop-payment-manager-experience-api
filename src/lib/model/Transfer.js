@@ -39,8 +39,8 @@ class Transfer {
 
     _applyJoin(query){
         return query
-            .leftJoin('fx_quote', 'transfer.id', 'fx_quote.id')
-            .leftJoin('fx_transfer', 'fx_quote.id', 'fx_transfer.determining_transfer_id')
+            .leftJoin('fx_quote', 'transfer.id', 'fx_quote.determining_transfer_id')
+            .leftJoin('fx_transfer', 'fx_quote.determining_transfer_id', 'fx_transfer.determining_transfer_id')
             .select([
                 'transfer.*',
                 'fx_quote.source_currency as fx_source_currency',
