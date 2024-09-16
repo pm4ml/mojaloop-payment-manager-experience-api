@@ -17,6 +17,7 @@ const HubModel = require('./HubModel');
 const EndpointsModel = require('./EndpointsModel');
 const MonetaryZoneModel = require('./MonetaryZoneModel');
 const MetricsModel = require('./MetricsModel');
+const FxpConversion = require('./FxpConversion');
 
 module.exports = {
     Batch,
@@ -28,4 +29,5 @@ module.exports = {
     EndpointsModel,
     MonetaryZoneModel,
     MetricsModel,
+    FxpConversion
 };

@@ -13,6 +13,7 @@
 
 const knex = require('knex');
 const Cache = require('./cache');
+const { getTransfer } = require('@internal/model/mock');
 
 const cachedFulfilledKeys = [];
 const cachedPendingKeys = [];
@@ -189,11 +190,12 @@ async function syncDB({ redisCache, db, logger }) {
                     target_amount: data.fxQuoteResponse.body.conversionTerms.targetAmount.amount,
                     target_currency: data.fxQuoteResponse.body.conversionTerms.targetAmount.currency,
                     expiration: data.fxQuoteResponse.body.conversionTerms.expiration,
-                    condition: data.fxQuoteResponse.body.conversionTerms.condition,
+                    condition: data.fxQuoteResponse.body.condition,
                     direction: data.direction,
                     raw: JSON.stringify(data),
                     created_at: initiatedTimestamp,
                     completed_at: data.completedTimestamp,
+                    success: getInboundTransferStatus(data)
 
                 };
             } else {
@@ -271,7 +273,7 @@ async function syncDB({ redisCache, db, logger }) {
         }
         else {
 
-            console.log(data);
+            // console.log(data);
 
             const initiatedTimestamp = data.initiatedTimestamp
                 ? new Date(data.initiatedTimestamp).getTime()
@@ -282,8 +284,9 @@ async function syncDB({ redisCache, db, logger }) {
 
 
             const fxQuoteBody = JSON.parse(data.fxQuoteResponse.body);
+
             const fxQuoteRow = {
-                conversion_request_id: data.fxQuoteRequest.conversionRequestId,
+                conversion_request_id: data.fxQuoteRequest.body.conversionRequestId,
                 conversion_id:fxQuoteBody.conversionTerms.conversionId,
                 determining_transfer_id:fxQuoteBody.conversionTerms.determiningTransferId,
                 initiating_fsp:fxQuoteBody.conversionTerms.initiatingFsp,
@@ -291,14 +294,15 @@ async function syncDB({ redisCache, db, logger }) {
                 amount_type:fxQuoteBody.conversionTerms.amountType,
                 source_amount:fxQuoteBody.conversionTerms.sourceAmount.amount,
                 source_currency:fxQuoteBody.conversionTerms.sourceAmount.currency,
-                target_amount:fxQuoteBody.conversionTerms.targetAmount.currency,
+                target_amount:fxQuoteBody.conversionTerms.targetAmount.amount,
                 target_currency:fxQuoteBody.conversionTerms.targetAmount.currency,
                 expiration:fxQuoteBody.conversionTerms.expiration,
-                condition:fxQuoteBody.conversionTerms.condition,
+                condition:fxQuoteBody.condition,
                 direction: data.direction,
                 raw: JSON.stringify(data),
                 created_at: initiatedTimestamp,
                 completed_at: completedTimestamp,
+                success: getTransferStatus(data)
             };
 
             let fxTransferRow = null;

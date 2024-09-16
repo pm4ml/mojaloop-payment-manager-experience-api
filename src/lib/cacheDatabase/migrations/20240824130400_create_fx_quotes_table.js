@@ -29,6 +29,7 @@ async function up(knex) {
         table.string('raw');
         table.integer('created_at');
         table.integer('completed_at');
+        table.string('success');
     });
 }
 

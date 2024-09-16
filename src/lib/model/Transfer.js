@@ -227,8 +227,8 @@ class Transfer {
                 currency: charges[0].targetAmount.currency
             },
         };
-
     }
+
     _calculateExchangeRate(sourceAmount, targetAmount, totalSourceCharges, totalTargetCharges) {
         return (targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges);
     }
@@ -236,10 +236,6 @@ class Transfer {
     _convertToApiDetailFormat(transfer) {
         let raw = JSON.parse(transfer.raw);
         raw = this._parseRawTransferRequestBodies(raw);
-
-        console.log('===========================================');
-        console.log('Need fx is ', raw.needFx);
-        console.log('===========================================');
 
         return {
             needFx: raw.needFx,
@@ -442,8 +438,8 @@ class Transfer {
             extensionList: party.extensionList,
         };
     }
+
     /**
-     *
      * @param opts {Object}
      * @param [opts.startTimestamp] {string}
      * @param [opts.endTimestamp] {string}
@@ -523,7 +519,6 @@ class Transfer {
         // return this._requests.get('transfers', opts);
     }
 
-    //Transfer, fx_transfer and fx_quote join method
     async findAllWithFX(opts) {
         if (this.mockData) {
             return mock.getTransfers(opts);

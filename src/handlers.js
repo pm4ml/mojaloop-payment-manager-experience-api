@@ -23,6 +23,7 @@ const {
     MonetaryZoneModel,
     MetricsModel,
     EndpointsModel,
+    FxpConversion,
 } = require('@internal/model');
 
 
@@ -111,6 +112,44 @@ const getTransfersAvgResponseTime = async (ctx) => {
     const { minutePrevious } = ctx.query;
     const transfer = new Transfer({...ctx.state.conf, logger:ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.avgResponseTime({ minutePrevious });
+};
+
+const getFxpConversions = async (ctx) =>  {
+    const { id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId, offset, limit } = ctx.query;
+
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db:ctx.state.db});
+
+    ctx.body = await fxpConversion.findAll({ id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId, offset, limit });
+};
+
+const getFxpConversionStatusSummary = async (ctx) => {
+    const { startTimestamp, endTimestamp } = ctx.query;
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db: ctx.state.db });
+    ctx.body = await fxpConversion.statusSummary({ startTimestamp, endTimestamp });
+};
+
+const getFxpConversion = async (ctx) => {
+    ctx.body = JSON.stringify({'status':'ok'});
+};
+
+const getFxpConversionDetails = async (ctx) => {
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db: ctx.state.db });
+    ctx.body = await fxpConversion.details(ctx.params.conversionId);
+};
+
+const getFxpConversionErrors = async (ctx) => {
+    ctx.body = JSON.stringify({'status':'ok'});
+};
+
+const getFxpConversionsSuccessRate = async (ctx) => {
+    const { minutePrevious } = ctx.query;
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db: ctx.state.db });
+    ctx.body = await fxpConversion.successRate({ minutePrevious });
+};
+const getFxpConversionsAvgResponseTime = async (ctx) => {
+    const { minutePrevious } = ctx.query;
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db: ctx.state.db });
+    ctx.body = await fxpConversion.avgResponseTime({ minutePrevious });
 };
 
 const getMetrics = async (ctx) => {
@@ -595,4 +634,26 @@ module.exports = {
     '/dfsp/allcerts': {
         post: generateAllCerts,
     },
+    '/fxpConversions': {
+        get: getFxpConversions,
+    },
+    '/fxpConversions/{conversionId}': {
+        get: getFxpConversion,
+    },
+    '/fxpConversions/{conversionId}/details': {
+        get: getFxpConversionDetails,
+    },
+    '/fxpConversionStatusSummary': {
+        get: getFxpConversionStatusSummary,
+    },
+    '/fxpConversionErrors': {
+        get: getFxpConversionErrors,
+    },
+    '/minuteSuccessfulFxpConversionPerc': {
+        get: getFxpConversionsSuccessRate,
+    },
+    '/minuteAverageFxpConversionResponseTime': {
+        get: getFxpConversionsAvgResponseTime,
+    },
+
 };
