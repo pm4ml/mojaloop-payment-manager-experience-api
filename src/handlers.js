@@ -638,16 +638,16 @@ module.exports = {
     '/fxpConversions/{conversionId}/details': {
         get: getFxpConversionDetails,
     },
-    '/fxpConversionStatusSummary': {
+    '/fxpConversionsStatusSummary': {
         get: getFxpConversionStatusSummary,
     },
-    '/fxpConversionErrors': {
+    '/fxpErrors': {
         get: getFxpConversionErrors,
     },
-    '/minuteSuccessfulFxpConversionPerc': {
+    '/minuteSuccessfulFxpConversionsPerc': {
         get: getFxpConversionsSuccessRate,
     },
-    '/minuteAverageFxpConversionResponseTime': {
+    '/minuteAverageFxpConversionsResponseTime': {
         get: getFxpConversionsAvgResponseTime,
     },
 
