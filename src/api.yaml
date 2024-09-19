@@ -237,10 +237,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/Transfer'
 
-  /fxpConversion:
+  /fxpConversions:
     get:
       summary: Retrieves all transfers
-      operationId: findAllFxpConversion
+      operationId: findAllFxpConversions
       parameters:
       - in: query
         name: startTimestamp
@@ -310,7 +310,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/fxpConversion'
+                  $ref: '#/components/schemas/fxpConversions'
 
   /transfers/{transferId}:
     get:
@@ -350,7 +350,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/TransferDetails'
 
-  /fxpConversion/{transferId}/details:
+  /fxpConversions/{conversionId}/details:
     get:
       summary: Retrieves additional transfer details
       operationId: findFxpConversionDetails
@@ -367,7 +367,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/fxpConversionDetails'
+                $ref: '#/components/schemas/fxpConversionsDetails'
 
 
   /hourlyPosition:
@@ -435,10 +435,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/SuccessfulTransferPerc'
 
-  /fxpMinuteSuccessfulConversionPerc:
+  /minuteSuccessfulFxpConversionsPerc:
     get:
       summary: Retrieves minute by minute successful transfer percentage data
-      operationId: findMinuteSuccesfulFxpConversion
+      operationId: findMinuteSuccesfulFxpConversions
       parameters:
       - in: query
         name: minutePrevious
@@ -479,10 +479,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/AverageTransferResponseTime'
 
-  /fxpMinuteAverageConversionResponseTime:
+  /minuteAverageFxpConversionsResponseTime:
     get:
       summary: Retrieves minute by minute average transfer response time data
-      operationId: findMinuteAverageFxpConversionResponseTime
+      operationId: findMinuteAverageFxpConversionsResponseTime
       parameters:
       - in: query
         name: minutePrevious
@@ -530,7 +530,7 @@ paths:
                     status:
                       $ref: '#/components/schemas/TransferStatus'
 
-  /fxpConversionStatusSummary:
+  /fxpConversionsStatusSummary:
     get:
       summary: Retrieves transfers status summary
       parameters:
@@ -1263,7 +1263,7 @@ components:
         details:
           type: string
 
-    fxpConversion:
+    fxpConversions:
       type: object
       properties:
         id:
@@ -1316,6 +1316,8 @@ components:
     TransferDetails:
       type: object
       properties:
+        needFX:
+          type: boolean
         transferId:
           $ref: "#/components/schemas/MojaloopIdentifier"
         transferState:
@@ -1606,34 +1608,11 @@ components:
       items:
         example: "testfxp1"
 
-    fxpConversionDetails:
+    fxpConversionsDetails:
       type: object
       properties:
-        transferId:
-          $ref: "#/components/schemas/MojaloopIdentifier"
-        conversionId:
-            type: string
-        conversionState:
-          type: string
-          example: "succeeded"
-        sourceAmount:
-          type: number
-        sourceCurrency:
-          type: string
-        targetAmount:
-          type: string
-        sendCurrency:
-          $ref: '#/components/schemas/Currency'
-        conversionAcceptedDate:
-          type: string
-          example: "2024-08-28T09:43:39.199Z"
-        # senderInstitution:
-        #   type: string
-        #   example: "dfsp1"
-        conversionSettlementBatch:
-          type: string
-        dfspInstitution:
-          type: string
+        conversionDetails:
+          $ref: "#/components/schemas/fxpConversionDetails"
         conversionTerms:
           $ref: "#/components/schemas/fxpConversionTerms"
         technicalDetails:
@@ -1642,7 +1621,7 @@ components:
     fxpConversionTerms:
       type: object
       properties:
-        transferId:
+        determiningTransferId:
           type: string
         conversionState:
           type: string
@@ -1677,7 +1656,7 @@ components:
     fxpConversionTechnicalDetails:
       type: object
       properties:
-        transferId:
+        determiningTransferId:
           $ref: "#/components/schemas/MojaloopIdentifier"
         conversionId:
           type: string
@@ -1722,7 +1701,38 @@ components:
     #     completedTimestamp:
     #       type: string
     #       example: "2024-08-27T06:44:46.180Z"
-    
+    fxpConversionDetails:
+      title: Conversion details
+      description: >-
+
+      type: object
+      properties:
+        determiningTransferId:
+          $ref: "#/components/schemas/MojaloopIdentifier"
+        conversionId:
+            type: string
+        conversionState:
+          type: string
+          example: "succeeded"
+        sourceAmount:
+          type: number
+        sourceCurrency:
+          type: string
+        targetAmount:
+          type: string
+        sendCurrency:
+          $ref: '#/components/schemas/Currency'
+        conversionAcceptedDate:
+          type: string
+          example: "2024-08-28T09:43:39.199Z"
+        # senderInstitution:
+        #   type: string
+        #   example: "dfsp1"
+        conversionSettlementBatch:
+          type: string
+        dfspInstitution:
+          type: string
+
     Fulfilment:
       title: Fulfilment
       description: >-
