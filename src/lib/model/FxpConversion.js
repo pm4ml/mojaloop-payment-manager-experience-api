@@ -13,7 +13,13 @@ const util = require('util');
 const mock = require('./mock');
 
 class FxpConversion {
-
+    /**
+     *
+     * @param props {object}
+     * @param [props.mockData] {boolean}
+     * @param props.logger {object}
+     * @param props.managementEndpoint {string}
+     */
     constructor(props) {
         this.logger = props.logger;
         this._db = props.db;
@@ -34,6 +40,13 @@ class FxpConversion {
                 'fx_transfer.conversion_state as conversion_state',
                 'fx_transfer.expiration as fx_transfer_expiration',
             ]);
+    }
+
+    static _fxpConversionLastErrorToErrorType(err){
+        if(err.mojaloopError) {
+            return err.mojaloopError.errorInformation.errorDescription;
+        }
+        return `HTTP ${err.httpStatusCode}`;
     }
 
     _parseRawTransferRequestBodies(transferRaw) {
@@ -163,6 +176,7 @@ class FxpConversion {
     }
 
     _convertToApiFormat(fxpConversion) {
+        const raw = JSON.parse(transfer.raw);
 
         return {
             conversionId: fxpConversion.conversion_id,
@@ -173,6 +187,10 @@ class FxpConversion {
             current: fxpConversion.source_currency,
             initiatedTimestamp: new Date(fxpConversion.created_at).toISOString(),
             status: FxpConversion.STATUSES[fxpConversion.success],
+            errorType:
+              fxpConversion.success === 0
+                  ? FxpConversion._fxpConversionLastErrorToErrorType(raw.lastError)
+                  : null,
         };
     }
 
@@ -303,7 +321,6 @@ class FxpConversion {
         };
 
         const rows = await avgRespTimeQuery();
-        console.log(rows);
         return rows;
     }
 
@@ -349,9 +366,21 @@ class FxpConversion {
         return Object.keys(ret).map((r) => ret[r]);
     }
 
-    // async fxpErrors(opts){
-    //     // TODO: Implement fxpErrors
-    // }
+    async fxpErrors(opts){
+        // TODO: Implement fxpErrors
+        try {
+            let query = this._db('fx_quote').where('success', false);
+            query = this._joinFxQuotesAndFxTransfers(query);
+
+            const rows = await query;
+            return rows.map(this._convertToApiFormat.bind(this));
+        } catch (err) {
+            this.logger.log(
+                `Error getting transfer errors: ${err.stack || util.inspect(err)}`
+            );
+            throw err;
+        }
+    }
 
 
 

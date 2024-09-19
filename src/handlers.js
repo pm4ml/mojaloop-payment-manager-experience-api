@@ -128,17 +128,15 @@ const getFxpConversionStatusSummary = async (ctx) => {
     ctx.body = await fxpConversion.statusSummary({ startTimestamp, endTimestamp });
 };
 
-const getFxpConversion = async (ctx) => {
-    ctx.body = JSON.stringify({'status':'ok'});
-};
-
 const getFxpConversionDetails = async (ctx) => {
     const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db: ctx.state.db });
     ctx.body = await fxpConversion.details(ctx.params.conversionId);
 };
 
 const getFxpConversionErrors = async (ctx) => {
-    ctx.body = JSON.stringify({'status':'ok'});
+    const { startTimestamp, endTimestamp } = ctx.query;
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db: ctx.state.db});
+    ctx.body = await fxpConversion.fxpErrors({ startTimestamp, endTimestamp });
 };
 
 const getFxpConversionsSuccessRate = async (ctx) => {
@@ -636,9 +634,6 @@ module.exports = {
     },
     '/fxpConversions': {
         get: getFxpConversions,
-    },
-    '/fxpConversions/{conversionId}': {
-        get: getFxpConversion,
     },
     '/fxpConversions/{conversionId}/details': {
         get: getFxpConversionDetails,
