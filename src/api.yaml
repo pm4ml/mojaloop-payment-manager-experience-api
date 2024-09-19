@@ -353,7 +353,7 @@ paths:
   /fxpConversions/{conversionId}/details:
     get:
       summary: Retrieves additional transfer details
-      operationId: findFxpConversionsDetails
+      operationId: findFxpConversionDetails
       parameters:
       - name: transferId
         in: path
