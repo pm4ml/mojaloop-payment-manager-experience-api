@@ -176,7 +176,7 @@ class FxpConversion {
     }
 
     _convertToApiFormat(fxpConversion) {
-        const raw = JSON.parse(transfer.raw);
+        const raw = JSON.parse(fxpConversion.raw);
 
         return {
             conversionId: fxpConversion.conversion_id,
