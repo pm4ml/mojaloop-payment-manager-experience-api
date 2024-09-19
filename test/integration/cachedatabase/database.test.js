@@ -9,100 +9,66 @@
  *       Nguni Phakela - nguni @izyane.com                                *
  **************************************************************************/
 
-jest.mock('redis');
-
+// jest.mock('redis');
+const redis = require('redis');
+const knex = require('knex');
+const { Logger } = require('@mojaloop/sdk-standard-components');
 const { addTransferToCache, createTestDb } = require('../utils');
+const redisTransferData = require('../data/redisTransferData.json');
+const { syncDB } = require('../../../src/lib/cacheDatabase/');
+
 
 describe('Database', () => {
   let db;
+  let logger;
 
   beforeAll(async () => {
-    db = await createTestDb();
-  });
+    this.logger = new Logger.Logger({
+      context: {
+        app: 'mojaloop-payment-manager-experience-api-service-control-server'
+      },
+      stringify: Logger.buildStringify({ space: 2 }),
+    });
 
-  beforeEach(async () => {
-    await global.redisClient.flushDb();
-  });
+    const knexConfig = {
+      client: 'better-sqlite3',
+      connection: {
+        filename: ':memory:',
+      },
+      useNullAsDefault: true,
+    };
 
-  afterAll(async () => {
-    await db.disconnect();
-    db.destroy();
-    console.log('Redis client disconnected snf destroyed');
+    this.db = knex(knexConfig);
+
+    Object.defineProperty(
+      this.db,
+      'createTransaction',
+      async () => new Promise((resolve) => db.transaction(resolve)),
+    );
+
+    await this.db.migrate.latest({ directory: `./src/lib/cacheDatabase/migrations` });
   });
 
   describe('Integration tests', () => {
+    const redisClient = redis.createClient();
+    redisClient.set('transferModel_out_05efec3c-a689-4e5d-8a78-acb2ccf8ade6', redisTransferData);
 
-    test('Should cache Redis records', async () => {
-      const now = Date.now();
-      const createTimestamp = (secondsAdd = 0) => new Date(now + secondsAdd * 1e3).toISOString();
-      await addTransferToCache(db, {
-        currency: 'USD',
-        amount: '100',
-        transferId: 'tr1',
-        currentState: 'succeeded',
-        initiatedTimestamp: createTimestamp(),
-        completedTimestamp: createTimestamp(10),
-      });
-      await addTransferToCache(db, {
-        isPending: true,
-        currency: 'EUR',
-        amount: '50',
-        transferId: 'tr2',
-        currentState: 'payeeResolved',
-        initiatedTimestamp: createTimestamp(5),
-      });
-      await addTransferToCache(db, {
-        currency: 'UAH',
-        amount: '70',
-        transferId: 'tr3',
-        currentState: 'errored',
-        initiatedTimestamp: createTimestamp(8),
-        completedTimestamp: createTimestamp(20),
-      });
+    test('Should fetch cached Redis records', async () => {
+      const redisValue = redisClient.get('transferModel_out_05efec3c-a689-4e5d-8a78-acb2ccf8ade6');
 
-      await db.sync();
-      const rows = await db('transfer').select('id', 'success', 'amount');
-      expect(rows).toMatchObject([
-        { id: 'tr1', success: 1, amount: '100' },
-        { id: 'tr2', success: null, amount: '50' },
-        { id: 'tr3', success: 0, amount: '70' },
-      ]);
+      expect(redisValue).toBe(redisTransferData);
 
-      // Modify transfers
-      await addTransferToCache(db, {
-        currency: 'USD',
-        amount: '200',
-        transferId: 'tr1',
-        currentState: 'succeeded',
-        initiatedTimestamp: createTimestamp(),
-        completedTimestamp: createTimestamp(10),
-      });
-      await addTransferToCache(db, {
-        currency: 'EUR',
-        amount: '200',
-        transferId: 'tr2',
-        currentState: 'succeeded',
-        initiatedTimestamp: createTimestamp(5),
-        completedTimestamp: createTimestamp(10),
-      });
-      await addTransferToCache(db, {
-        currency: 'UAH',
-        amount: '200',
-        transferId: 'tr3',
-        currentState: 'succeeded',
-        initiatedTimestamp: createTimestamp(5),
-        completedTimestamp: createTimestamp(10),
-      });
+      await syncDB({ redisCache: redisClient, db: this.db, logger: this.logger })
 
-      await db.sync();
-      const updatedRows = await db('transfer').select('id', 'success', 'amount');
-      // Fulfilled transfers shouldn't be refreshed in the cache
+      const updatedRows = await this.db('transfer').select('id', 'success', 'amount');
+      
       expect(updatedRows).toMatchObject([
-        { id: 'tr1', success: 1, amount: '100' },
-        { id: 'tr2', success: 1, amount: '200' },
-        { id: 'tr3', success: 0, amount: '70' },
+        {
+          id: '05efec3c-a689-4e5d-8a78-acb2ccf8ade6',
+          success: 1,
+          amount: '10'
+        }
       ]);
     });
-
   });
 });

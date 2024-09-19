@@ -24,30 +24,8 @@ const createTestDb = async () => {
     manualSync: true
   });
 
-  // await waitForRedis(db.redisCache._getClient(), 10000);
-
   return db;
 };
-
-const waitForRedis = async (redisClient, timeoutMs = 5000) => {
-  console.log('Waiting for Redis connection...');
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      reject(new Error('Redis connection timeout'));
-    }, timeoutMs);
-
-    redisClient.ping((err) => {
-      clearTimeout(timeout);
-      if (err) {
-        logger.error('Redis connection failed:', err);
-        reject(err);
-      } else {
-        logger.info('Redis connected successfully');
-        resolve();
-      }
-    });
-  });
-}
 
 const addTransferToCache = async (db, opts) => {
   const transfer = JSON.parse(JSON.stringify(transferTemplate));

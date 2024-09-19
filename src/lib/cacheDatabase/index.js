@@ -79,6 +79,8 @@ async function syncDB({ redisCache, db, logger }) {
             } catch (err) {
                 logger.push({ err }).log('Error parsing JSON cache value');
             }
+        } else {
+            data = rawData;
         }
 
         if (data.direction === 'INBOUND') {
@@ -95,8 +97,6 @@ async function syncDB({ redisCache, db, logger }) {
     const cacheKey = async (key) => {
         const rawData = await redisCache.get(key);
         const data = parseData(rawData);
-
-        // console.log(data);
 
         // this is all a hack right now as we will eventually NOT use the cache as a source
         // of truth for transfers but rather some sort of dedicated persistence service instead.
@@ -321,7 +321,6 @@ const createMemoryCache = async (config) => {
 
     await db.migrate.latest({ directory: `${__dirname}/migrations` });
 
-
     const redisCache = new Cache(config);
     await redisCache.connect();
 
@@ -345,5 +344,6 @@ const createMemoryCache = async (config) => {
 };
 
 module.exports = {
-    createMemoryCache
+    createMemoryCache,
+    syncDB
 };

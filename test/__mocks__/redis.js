@@ -13,35 +13,56 @@
 const redisMock = require('redis-mock');
 
 // redis-mock currently ignores callback argument, the following class fix this
-class RedisClient extends redisMock.RedisClient {
-    constructor() {
-        super();
-    }
+class RedisClient { // extends redisMock.RedisClient {
+    __data = {};
+    // constructor() {
+    //     // super();
+    // }
 
-    _executeCallback(...args) {
-        if (typeof args[args.length - 1] === 'function') {
-            const callback = args[args.length - 1];
-            const argList = Array.prototype.slice.call(args, 0, args.length - 1);
-            callback(null, argList);
-        }
-    }
+    // _executeCallback(...args) {
+    //     if (typeof args[args.length - 1] === 'function') {
+    //         const callback = args[args.length - 1];
+    //         const argList = Array.prototype.slice.call(args, 0, args.length - 1);
+    //         callback(null, argList);
+    //     }
+    // }
 
-    subscribe(...args) {
-        super.subscribe(...args);
-        this._executeCallback(...args);
-    }
+    // subscribe(...args) {
+    //     // super.subscribe(...args);
+    //     this._executeCallback(...args);
+    // }
 
-    publish(...args) {
-        super.publish(...args);
-        this._executeCallback(...args);
-    }
+    // publish(...args) {
+    //     // super.publish(...args);
+    //     this._executeCallback(...args);
+    // }
 
-    set(...args) {
-        super.set(...args);
-        this._executeCallback(...args);
+    // set(...args) {
+    //     // super.set(...args);
+    //     this._executeCallback(...args);
+    // }
+
+    // get(...args) {
+    //     // super.get(...args);
+    //     return this.__data;
+    // }
+
+    get data() {
+        return this.__data;
+    }
+    set data(data) {
+        this.__data = data;
+    }
+    get(key) {
+        return this.data[key];
+    }
+    set(key, value) {
+        this.data[key] = value;
+    }
+    keys() {
+        return Object.keys(this.data);
     }
 }
-
 
 
 module.exports = {
