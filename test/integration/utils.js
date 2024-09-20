@@ -6,7 +6,7 @@
  *                                                                        *
  *  ORIGINAL AUTHOR:                                                      *
  *       Yevhen Kyriukha - yevhen.kyriukha@modusbox.com                   *
- *       Nguni Phakela - nguni @izyane.com                                *
+ *       Nguni Phakela - nguni@izyane.com                                *
  **************************************************************************/
 
 const { Logger } = require('@mojaloop/sdk-standard-components');

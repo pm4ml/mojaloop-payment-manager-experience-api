@@ -9,7 +9,6 @@
  *       Nguni Phakela - nguni @izyane.com                                *
  **************************************************************************/
 
-// jest.mock('redis');
 const redis = require('redis');
 const knex = require('knex');
 const { Logger } = require('@mojaloop/sdk-standard-components');
