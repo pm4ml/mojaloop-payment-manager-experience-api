@@ -28,11 +28,13 @@ const middlewares = require('./middlewares');
 
 
 class Server {
-    constructor(conf) {
+    constructor(conf, db) {
         this._conf = conf;
         this._api = null;
         this._server = null;
         this._logger = null;
+        this._db = db;
+
     }
 
     async setupApi() {
@@ -60,6 +62,7 @@ class Server {
         });
 
         this._conf.sessionConfig.store = new CookieStore({ logger: this._logger, redisUrl: this._conf.sessionConfig.redisUrl});
+
         await this._conf.sessionConfig.store.connect();
 
         this._api.use(session(this._conf.sessionConfig, this._api));
@@ -72,7 +75,9 @@ class Server {
         this._api.use(middlewares.createRequestIdGenerator());
         this._api.use(middlewares.createLogger(this._logger));
         this._api.use(bodyParser());
-        this._api.use(await middlewares.createAuthenticator(oidcClient, this._conf.authConfig, this._logger));
+        if(this._conf.authConfig.enableAuthClient){
+            this._api.use(await middlewares.createAuthenticator(oidcClient, this._conf.authConfig, this._logger));
+        }
         this._api.use(validator);
         this._api.use(middlewares.createRouter(handlers));
 

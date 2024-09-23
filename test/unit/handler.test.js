@@ -4,6 +4,7 @@ const {
     MetricsModel,
     MonetaryZoneModel,
     DFSPModel,
+    Transfer,
 } = require('@internal/model');
 
 const endpointsResource = require('./resources/endpointsResource');
@@ -172,6 +173,25 @@ describe('Inbound API handlers:', () => {
                 ...context.query,
                 metricName: context.params.metricName
             });
+        });
+    });
+});
+
+describe('Outbound API handlers:', () => {
+    afterEach( () => {
+        jest.clearAllMocks();
+    });
+
+    describe('Transfer tests', () => {
+        test('Retrieve transfers including fx', async () => {
+            const context = endpointsResource.getFxTransfersContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'findAllWithFX')
+                .mockImplementation(() => {});
+
+            await handlers['/transfers'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
         });
     });
 });

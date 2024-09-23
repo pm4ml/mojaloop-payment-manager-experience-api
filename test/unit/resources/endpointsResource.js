@@ -170,4 +170,17 @@ module.exports = {
             metricType: undefined
         }
     },
+    getFxTransfersContext: {
+        request: {
+            method: 'GET',
+            utl: '/transfers'
+        },
+        state: {
+            conf: {
+                mockData: true,
+            }
+        },
+        params: {},
+        query: {}
+    },
 };
