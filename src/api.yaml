@@ -241,7 +241,7 @@ paths:
     get:
       summary: Retrieves all transfers
       operationId: findAllFxpConversions
-      parameters:
+     parameters:
       - in: query
         name: startTimestamp
         required: false
@@ -311,7 +311,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/fxpConversions'
-
   /transfers/{transferId}:
     get:
       summary: Retrieves a transfer
@@ -355,7 +354,7 @@ paths:
       summary: Retrieves additional transfer details
       operationId: findFxpConversionDetails
       parameters:
-      - name: transferId
+      - name: conversionId
         in: path
         description: UUID of the transfer to get
         required: true
@@ -368,7 +367,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/fxpConversionsDetails'
-
 
   /hourlyPosition:
     get:

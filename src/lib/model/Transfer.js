@@ -28,7 +28,6 @@ class Transfer {
         this.mockData = props.mockData;
         this.logger = props.logger;
         this._db = props.db;
-
     }
 
     static STATUSES = {
@@ -519,6 +518,7 @@ class Transfer {
         // return this._requests.get('transfers', opts);
     }
 
+    //Transfer, fx_transfer and fx_quote join method
     async findAllWithFX(opts) {
         if (this.mockData) {
             return mock.getTransfers(opts);

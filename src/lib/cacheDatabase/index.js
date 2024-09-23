@@ -81,6 +81,9 @@ async function syncDB({ redisCache, db, logger }) {
                 logger.push({ err }).log('Error parsing JSON cache value');
             }
         }
+        else {
+            data = rawData;
+        }
 
         if (data.direction === 'INBOUND') {
             if (data.quoteResponse?.body) {
@@ -402,5 +405,6 @@ const createMemoryCache = async (config) => {
 };
 
 module.exports = {
-    createMemoryCache
+    createMemoryCache,
+    syncDB
 };

@@ -7,8 +7,8 @@
  *  ORIGINAL AUTHOR:                                                      *
  *       Yevhen Kyriukha - yevhen.kyriukha@modusbox.com                   *
  *       Nguni Phakela - nguni @izyane.com                                *
- *
  **************************************************************************/
+
 const TABLE_NAME = 'fx_quote';
 
 async function up(knex) {
