@@ -234,8 +234,13 @@ class FxpConversion {
                 conversionState: fxpConversion.conversion_state,
                 fxQuoteRequest: raw.fxQuoteRequest,
                 fxQuoteResponse: raw.fxQuoteResponse,
-                fxTransferPrepare: raw.fxPrepare,
-                fxTransferFulfil: raw.fulfil,
+                fxTransferPrepare: fxpConversion.direction === 'OUTBOUND' ?
+                {
+                    headers: raw.fxTransferRequest && raw.fxTransferRequest.headers,
+                    body: raw.fxTransferRequest && raw.fxTransferRequest.body && JSON.parse(raw.fxTransferRequest.body),
+                }: raw.fxPrepare,
+                fxTransferFulfil: fxpConversion.direction === 'OUTBOUND' ?
+                    raw.fxTransferResponse && raw.fxTransferResponse.body : raw.fulfil,
                 lastError: raw.lastError,
             }
         };

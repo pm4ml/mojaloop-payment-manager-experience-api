@@ -12,7 +12,7 @@ const TABLE_NAME = 'fx_transfer';
 
 async function up(knex) {
     return knex.schema.createTable(TABLE_NAME, (table) => {
-        table.string('commit_request_id');
+        table.string('commit_request_id').primary();
         table.string('determining_transfer_id');
         table.string('initiating_fsp');
         table.string('counter_party_fsp');

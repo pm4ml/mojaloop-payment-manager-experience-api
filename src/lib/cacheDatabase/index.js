@@ -13,7 +13,6 @@
 
 const knex = require('knex');
 const Cache = require('./cache');
-const { getTransfer } = require('@internal/model/mock');
 
 const cachedFulfilledKeys = [];
 const cachedPendingKeys = [];
@@ -80,6 +79,9 @@ async function syncDB({ redisCache, db, logger }) {
             } catch (err) {
                 logger.push({ err }).log('Error parsing JSON cache value');
             }
+        }
+        else {
+            data = rawData;
         }
 
         if (data.direction === 'INBOUND') {
@@ -194,8 +196,8 @@ async function syncDB({ redisCache, db, logger }) {
                     direction: data.direction,
                     raw: JSON.stringify(data),
                     created_at: initiatedTimestamp,
-                    completed_at: data.completedTimestamp,
-                    success: getInboundTransferStatus(data)
+                    completed_at: completedTimestamp,
+                    success: getTransferStatus(data)
 
                 };
             } else {
@@ -251,14 +253,14 @@ async function syncDB({ redisCache, db, logger }) {
                 await db('transfer').where({ id: row.id }).update(row);
                 if(fx_quote_row != null && fx_quote_row != undefined) {
                     try {
-                        await db('fx_quote').update(fx_quote_row);
+                        await db('fx_quote').where({conversion_id: fx_quote_row.conversion_id}).update(fx_quote_row);
                     } catch (err) {
                         console.log(err);
                     }
                 }
                 if(fx_transfer_row != undefined && fx_transfer_row != null) {
                     try {
-                        await db('fx_transfer').update(fx_transfer_row);
+                        await db('fx_transfer').where({commit_request_id:fx_transfer_row.commit_request_id}).update(fx_transfer_row);
                     } catch (err) {
                         console.log(err);
                     }
@@ -272,8 +274,6 @@ async function syncDB({ redisCache, db, logger }) {
 
         }
         else {
-
-            // console.log(data);
 
             const initiatedTimestamp = data.initiatedTimestamp
                 ? new Date(data.initiatedTimestamp).getTime()
@@ -302,7 +302,7 @@ async function syncDB({ redisCache, db, logger }) {
                 raw: JSON.stringify(data),
                 created_at: initiatedTimestamp,
                 completed_at: completedTimestamp,
-                success: getTransferStatus(data)
+                success: getInboundTransferStatus(data)
             };
 
             let fxTransferRow = null;
@@ -330,10 +330,33 @@ async function syncDB({ redisCache, db, logger }) {
             }
 
             try {
-                if(fxQuoteRow !== undefined && fxQuoteRow !== null)
-                    await db('fx_quote').insert(fxQuoteRow);
-                if(fxTransferRow!== undefined && fxTransferRow!== null)
-                    await db('fx_transfer').insert(fxTransferRow);
+                const keyIndex = cachedPendingKeys.indexOf(fxQuoteRow.conversion_id);
+                if(keyIndex === -1){
+                    if(fxQuoteRow !== undefined && fxQuoteRow !== null)
+                        await db('fx_quote').insert(fxQuoteRow);
+                    if(fxTransferRow!== undefined && fxTransferRow!== null)
+                        await db('fx_transfer').insert(fxTransferRow);
+                    cachedPendingKeys.push(fxQuoteRow.conversion_id);
+                }
+                else{
+                    if(fxQuoteRow!= null && fxQuoteRow!= undefined) {
+                        try {
+                            await db('fx_quote').where({conversion_id: fxQuoteRow.conversion_id}).update(fxQuoteRow);
+                        } catch (err) {
+                            console.log(err);
+                        }
+                    }
+                    if(fxTransferRow!= undefined && fxTransferRow!= null) {
+                        try {
+                            await db('fx_transfer').where({commit_request_id: fxTransferRow.commit_request_id}).update(fxTransferRow);
+                        } catch (err) {
+                            console.log(err);
+                        }
+                    }
+                }
+                if (fxQuoteRow.success !== null) {
+                    cachedFulfilledKeys.push(key);
+                }
             } catch (err) {
                 console.log(err);
             }
@@ -402,5 +425,6 @@ const createMemoryCache = async (config) => {
 };
 
 module.exports = {
-    createMemoryCache
+    createMemoryCache,
+    syncDB
 };

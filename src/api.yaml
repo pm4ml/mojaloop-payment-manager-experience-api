@@ -182,7 +182,7 @@ paths:
         required: false
         schema:
           type: string
-      - in: query  
+      - in: query
         name: senderIdType
         required: false
         schema:
@@ -216,7 +216,7 @@ paths:
         name: direction
         required: false
         schema:
-          type: string        
+          type: string
       - in: query
         name: institution
         required: false
@@ -257,7 +257,7 @@ paths:
         required: false
         schema:
           type: string
-      - in: query  
+      - in: query
         name: senderIdType
         required: false
         schema:
@@ -291,7 +291,7 @@ paths:
         name: direction
         required: false
         schema:
-          type: string        
+          type: string
       - in: query
         name: institution
         required: false
@@ -311,7 +311,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/fxpConversions'
-
   /transfers/{transferId}:
     get:
       summary: Retrieves a transfer
@@ -355,7 +354,7 @@ paths:
       summary: Retrieves additional transfer details
       operationId: findFxpConversionDetails
       parameters:
-      - name: transferId
+      - name: conversionId
         in: path
         description: UUID of the transfer to get
         required: true
@@ -368,7 +367,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/fxpConversionsDetails'
-
 
   /hourlyPosition:
     get:
@@ -1508,8 +1506,8 @@ components:
                         $ref: '#/components/schemas/Currency'
             exchangeRate:
               $ref: "#/components/schemas/Amount"
-  
-    
+
+
     TransferParties:
       type: object
       properties:
@@ -1592,7 +1590,7 @@ components:
           type: object
         body:
           type: object
-  
+
     fxpConversionFulfilment:
       type: object
       properties:
@@ -1737,7 +1735,7 @@ components:
       title: Fulfilment
       description: >-
         The fulfilment of the condition specified for the currency conversion. Mandatory if the conversion has been executed successfully.
-     
+
       type: object
       properties:
         transferState:
@@ -1767,7 +1765,7 @@ components:
               $ref: '#/components/schemas/Amount'
             currency:
               $ref: '#/components/schemas/Currency'
-        
+
     InternalTransferStatus:
       type: string
       enum:
@@ -1775,8 +1773,8 @@ components:
       - WAITING_FOR_PARTY_ACCEPTANCE
       - WAITING_FOR_QUOTE_ACCEPTANCE
       - COMPLETED
-    
-    conversionTerms: 
+
+    conversionTerms:
       type: object
       properties:
         conversionId:
@@ -1806,12 +1804,12 @@ components:
                 $ref: '#/components/schemas/Currency'
         conversionAcceptedDate:
           type: string
-          example: "2023-12-25T14:17:09.663+01:00" 
+          example: "2023-12-25T14:17:09.663+01:00"
         conversionState:
           $ref: "#/components/schemas/InternalTransferStatus"
         determiningTransferId:
           type: string
-          example: "b51ec534-ee48-4575-b6a9-ead2955b8069" 
+          example: "b51ec534-ee48-4575-b6a9-ead2955b8069"
         expiration:
           type: string
           example: "2023-12-25T14:17:09.663+01:00"
@@ -2114,7 +2112,7 @@ components:
       - SUCCESS
       - PENDING
       - ERROR
-      
+
 
     Currency:
       title: CurrencyEnum

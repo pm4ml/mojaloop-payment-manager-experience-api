@@ -6,42 +6,32 @@
  *                                                                        *
  *  ORIGINAL AUTHOR:                                                      *
  *       James Bush - james.bush@modusbox.com                             *
+ *       Nguni Phakela - nguni@izyane.com                                 *
  **************************************************************************/
 
 'use strict';
 
 const redisMock = require('redis-mock');
 
-// redis-mock currently ignores callback argument, the following class fix this
-class RedisClient extends redisMock.RedisClient {
-    constructor() {
-        super();
-    }
+class RedisClient {
+    __data = {};
 
-    _executeCallback(...args) {
-        if (typeof args[args.length - 1] === 'function') {
-            const callback = args[args.length - 1];
-            const argList = Array.prototype.slice.call(args, 0, args.length - 1);
-            callback(null, argList);
-        }
+    get data() {
+        return this.__data;
     }
-
-    subscribe(...args) {
-        super.subscribe(...args);
-        this._executeCallback(...args);
+    set data(data) {
+        this.__data = data;
     }
-
-    publish(...args) {
-        super.publish(...args);
-        this._executeCallback(...args);
+    get(key) {
+        return this.data[key];
     }
-
-    set(...args) {
-        super.set(...args);
-        this._executeCallback(...args);
+    set(key, value) {
+        this.data[key] = value;
+    }
+    keys() {
+        return Object.keys(this.data);
     }
 }
-
 
 
 module.exports = {
