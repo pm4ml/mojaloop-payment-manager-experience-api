@@ -14,7 +14,7 @@ const TABLE_NAME = 'fx_quote';
 async function up(knex) {
     return knex.schema.createTable(TABLE_NAME, (table) => {
         table.string('conversion_request_id');
-        table.string('conversion_id');
+        table.string('conversion_id').primary();
         table.string('determining_transfer_id');
         table.string('initiating_fsp');
         table.string('counter_party_fsp');
@@ -29,7 +29,7 @@ async function up(knex) {
         table.string('raw');
         table.integer('created_at');
         table.integer('completed_at');
-        table.string('success');
+        table.boolean('success'); // TRUE - Fulfill, FALSE - Error, NULL - Pending
     });
 }
 
