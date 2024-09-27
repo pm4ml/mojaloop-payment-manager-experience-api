@@ -110,7 +110,7 @@ class FxpConversion {
     }
 
     _calculateExchangeRate(sourceAmount, targetAmount, totalSourceCharges, totalTargetCharges) {
-        return (targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges);
+        return ((targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges)).toFixed(4);
     }
 
     _getConversionTermsFromFxQuoteResponse(fxQuoteResponse) {
@@ -181,10 +181,10 @@ class FxpConversion {
         return {
             conversionId: fxpConversion.conversion_id,
             batchId: fxpConversion.batchId,
-            institution: fxpConversion.counter_party_fsp,
+            institution: fxpConversion.direction === 'OUTBOUND' ? fxpConversion.counter_party_fsp: fxpConversion.initiating_fsp,
             direction: fxpConversion.direction,
             amount: fxpConversion.source_amount,
-            current: fxpConversion.source_currency,
+            currency: fxpConversion.source_currency,
             initiatedTimestamp: new Date(fxpConversion.created_at).toISOString(),
             status: FxpConversion.STATUSES[fxpConversion.success],
             errorType:
@@ -192,6 +192,31 @@ class FxpConversion {
                   ? FxpConversion._fxpConversionLastErrorToErrorType(raw.lastError)
                   : null,
         };
+    }
+
+    _getQuoteAmountFromFxQuoteRequest(fxQuoteRequest){
+        let response = { amount: '', currency: ''}
+        if(!fxQuoteRequest){
+            return response
+        }
+        if(fxQuoteRequest.body.conversionTerms.sourceAmount.amount){
+            response.amount = fxQuoteRequest.body.conversionTerms.sourceAmount.amount;
+            response.currency = fxQuoteRequest.body.conversionTerms.sourceAmount.currency;
+        }
+        else{
+            response.amount = fxQuoteRequest.body.conversionTerms.targetAmount.amount;
+            response.currency = fxQuoteRequest.body.conversionTerms.targetAmount.currency;
+        }
+        return response
+    }
+
+    _getConversionState(raw, fxpConversion){
+        // if there is finalNotification from redis cache return currentState
+        // or the conversion_state is null i.e. currentState is ERROR_OCCURRED
+        if(raw.finalNotification || !fxpConversion.conversion_state)
+            return raw.currentState
+        else
+            return fxpConversion.conversion_state
     }
 
     _convertToApiDetailFormat(fxpConversion){
@@ -202,28 +227,25 @@ class FxpConversion {
                 determiningTransferId: fxpConversion.determining_transfer_id,
                 conversionId: fxpConversion.conversionId,
                 conversionRequestId: fxpConversion.conversion_request_id,
-                conversionState: fxpConversion.conversion_state ? fxpConversion.conversion_state : raw.currentState,
+                conversionState: this._getConversionState(raw, fxpConversion),
                 sourceAmount: {
                     amount: fxpConversion.source_amount,
                     currency: fxpConversion.source_currency,
                 },
                 targetAmount: {
                     amount: fxpConversion.target_amount,
-                    currency: fxpConversion.source_currency
+                    currency: fxpConversion.target_currency,
                 },
                 conversionAcceptedDate: new Date(fxpConversion.completed_at),
                 conversionSettlementBatch: fxpConversion.batchId,
                 conversionType: fxpConversion.direction === 'OUTBOUND' ? 'Payer DFSP conversion' : '',
-                dfspInstitution: null,
+                dfspInstitution: fxpConversion.direction === 'OUTBOUND' ? fxpConversion.counter_party_fsp: fxpConversion.initiating_fsp,
             },
             conversionTerms: {
                 determiningTransferId: fxpConversion.determining_transfer_id,
                 conversionId: fxpConversion.conversion_id,
-                conversionState: raw.currentState,
-                quoteAmount: {
-                    amount : null,
-                    currency: null,
-                },
+                conversionState: this._getConversionState(raw, fxpConversion),
+                quoteAmount: this._getQuoteAmountFromFxQuoteRequest(raw.fxQuoteRequest),
                 quoteAmountType: fxpConversion.amount_type,
                 conversionTerms: this._getConversionTermsFromFxQuoteResponse(raw.fxQuoteResponse),
             },
@@ -231,7 +253,7 @@ class FxpConversion {
                 conversionRequestId: fxpConversion.conversion_request_id,
                 conversionId: fxpConversion.conversion_id,
                 determiningTransferId: fxpConversion.determining_transfer_id,
-                conversionState: fxpConversion.conversion_state,
+                conversionState: this._getConversionState(raw, fxpConversion),
                 fxQuoteRequest: raw.fxQuoteRequest,
                 fxQuoteResponse: raw.fxQuoteResponse,
                 fxTransferPrepare: fxpConversion.direction === 'OUTBOUND' ?

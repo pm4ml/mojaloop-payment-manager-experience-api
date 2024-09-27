@@ -229,7 +229,7 @@ class Transfer {
     }
 
     _calculateExchangeRate(sourceAmount, targetAmount, totalSourceCharges, totalTargetCharges) {
-        return (targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges);
+        return ((targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges)).toFixed(4);
     }
 
     _convertToApiDetailFormat(transfer) {
