@@ -246,10 +246,45 @@ class FxpConversion {
         };
     }
 
-    async findAll() {
+    async findAll(opts) {
         let query = this._db('fx_quote').whereRaw('true');
 
+        const DEFAULT_LIMIT = 100;
+
         query = this._joinFxQuotesAndFxTransfers(query);
+
+        if (opts.id) {
+            query.andWhere('fx_quote.conversion_id', 'LIKE', `%${opts.id}%`);
+        }
+        if (opts.startTimestamp) {
+            query.andWhere('fx_quote.created_at', '>=', new Date(opts.startTimestamp).getTime());
+        }
+        if (opts.endTimestamp) {
+            query.andWhere('fx_quote.created_at', '<', new Date(opts.endTimestamp).getTime());
+        }
+        if (opts.direction) {
+                query.andWhere('fx_quote.direction', '=', opts.direction);
+        }
+        // if (opts.institution) {
+        //     query.andWhere('dfsp', 'LIKE', `%${opts.institution}%`);
+        // }
+        // if (opts.batchId) {
+        //     query.andWhere('batchId', 'LIKE', `%${opts.batchId}%`);
+        // }
+        if (opts.status) {
+            if (opts.status === 'PENDING') {
+                query.andWhereRaw('fx_quote.success IS NULL');
+            } else {
+                query.andWhere('fx_quote.success', opts.status === 'SUCCESS');
+            }
+        }
+        if (opts.offset) {
+            query.offset(opts.offset);
+        }
+        query.limit(opts.limit || DEFAULT_LIMIT);
+        query.orderBy('created_at');
+
+
         const rows = await query;
 
         return rows.map(this._convertToApiFormat.bind(this));
