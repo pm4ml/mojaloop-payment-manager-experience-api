@@ -283,27 +283,32 @@ async function syncDB({ redisCache, db, logger }) {
                 : null;
 
 
-            const fxQuoteBody = JSON.parse(data.fxQuoteResponse.body);
-
-            const fxQuoteRow = {
-                conversion_request_id: data.fxQuoteRequest.body.conversionRequestId,
-                conversion_id:fxQuoteBody.conversionTerms.conversionId,
-                determining_transfer_id:fxQuoteBody.conversionTerms.determiningTransferId,
-                initiating_fsp:fxQuoteBody.conversionTerms.initiatingFsp,
-                counter_party_fsp:fxQuoteBody.conversionTerms.counterPartyFsp,
-                amount_type:fxQuoteBody.conversionTerms.amountType,
-                source_amount:fxQuoteBody.conversionTerms.sourceAmount.amount,
-                source_currency:fxQuoteBody.conversionTerms.sourceAmount.currency,
-                target_amount:fxQuoteBody.conversionTerms.targetAmount.amount,
-                target_currency:fxQuoteBody.conversionTerms.targetAmount.currency,
-                expiration:fxQuoteBody.conversionTerms.expiration,
-                condition:fxQuoteBody.condition,
-                direction: data.direction,
-                raw: JSON.stringify(data),
-                created_at: initiatedTimestamp,
-                completed_at: completedTimestamp,
-                success: getInboundTransferStatus(data)
-            };
+            let fxQuoteRow = null;
+            if(data.fxQuoteResponse && data.fxQuoteRequest){
+                const fxQuoteBody = JSON.parse(data.fxQuoteResponse.body);
+                fxQuoteRow = {
+                    conversion_request_id: data.fxQuoteRequest.body.conversionRequestId,
+                    conversion_id:fxQuoteBody.conversionTerms.conversionId,
+                    determining_transfer_id:fxQuoteBody.conversionTerms.determiningTransferId,
+                    initiating_fsp:fxQuoteBody.conversionTerms.initiatingFsp,
+                    counter_party_fsp:fxQuoteBody.conversionTerms.counterPartyFsp,
+                    amount_type:fxQuoteBody.conversionTerms.amountType,
+                    source_amount:fxQuoteBody.conversionTerms.sourceAmount.amount,
+                    source_currency:fxQuoteBody.conversionTerms.sourceAmount.currency,
+                    target_amount:fxQuoteBody.conversionTerms.targetAmount.amount,
+                    target_currency:fxQuoteBody.conversionTerms.targetAmount.currency,
+                    expiration:fxQuoteBody.conversionTerms.expiration,
+                    condition:fxQuoteBody.condition,
+                    direction: data.direction,
+                    raw: JSON.stringify(data),
+                    created_at: initiatedTimestamp,
+                    completed_at: completedTimestamp,
+                    success: getInboundTransferStatus(data)
+                };
+            }
+            else{
+                logger.log('fxQuoteRequest and fxQuoteResponse keys not present.');
+            }
 
             let fxTransferRow = null;
             if(data.fxPrepare && data.fulfil)
