@@ -282,8 +282,8 @@ class Transfer {
                 },
                 quoteAmountType: raw.quoteRequest && raw.quoteRequest.body.amountType,
                 transferAmount: {
-                    amount: raw.quoteResponse.body.transferAmount.amount,
-                    currency: raw.quoteResponse.body.transferAmount.currency,
+                    amount:  raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.transferAmount && raw.quoteResponse.body.transferAmount.amount,
+                    currency:  raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.transferAmount && raw.quoteResponse.body.transferAmount.currency,
                 },
                 payeeReceiveAmount: {
                     amount: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeReceiveAmount && raw.quoteResponse.body.payeeReceiveAmount.amount,
