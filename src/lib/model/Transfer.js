@@ -48,6 +48,7 @@ class Transfer {
                 'fx_transfer.target_currency as fx_transfer_target_currency',
                 'fx_transfer.source_amount as fx_source_amount',
                 'fx_transfer.target_amount as fx_target_amount',
+                'fx_transfer.commit_request_id as fx_commit_request_id',
             ]);
     }
 
@@ -274,8 +275,8 @@ class Transfer {
             transferTerms: {
                 transferId: transfer.id,
                 quoteAmount: {
-                    amount: raw.quoteRequest && raw.quoteRequest.body && raw.quoteRequest.body.amount.amount,
-                    currency: raw.quoteRequest && raw.quoteRequest.body && raw.quoteRequest.body.amount.currency,
+                    amount: transfer.amount,
+                    currency: transfer.currency,
                 },
                 quoteAmountType: raw.quoteRequest && raw.quoteRequest.body.amountType,
                 transferAmount: {
@@ -324,6 +325,7 @@ class Transfer {
                     raw.quoteRequest &&
                     raw.quoteRequest.body &&
                     raw.quoteRequest.body.quoteId,
+                commitRequestId: transfer.fx_commit_request_id,
                 homeTransferId: raw.homeTransactionId,
                 payerParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payer'),
                 payeeParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payee'),

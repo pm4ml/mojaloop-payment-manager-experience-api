@@ -39,6 +39,7 @@ class FxpConversion {
                 'fx_transfer.fulfilment as fulfilment',
                 'fx_transfer.conversion_state as conversion_state',
                 'fx_transfer.expiration as fx_transfer_expiration',
+                'fx_transfer.commit_request_id as commit_request_id',
             ]);
     }
 
@@ -253,6 +254,7 @@ class FxpConversion {
                 conversionRequestId: fxpConversion.conversion_request_id,
                 conversionId: fxpConversion.conversion_id,
                 determiningTransferId: fxpConversion.determining_transfer_id,
+                commitRequestId: fxpConversion.commit_request_id,
                 conversionState: this._getConversionState(raw, fxpConversion),
                 fxQuoteRequest: raw.fxQuoteRequest,
                 fxQuoteResponse: raw.fxQuoteResponse,
