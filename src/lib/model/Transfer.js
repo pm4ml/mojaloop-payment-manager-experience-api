@@ -265,6 +265,8 @@ class Transfer {
                 raw.quoteRequest.body.payee &&
                 raw.quoteRequest.body.payee.partyIdInfo &&
                 raw.quoteRequest.body.payee.partyIdInfo.fspId,
+            conversionType:
+                transfer.direction > 0 ? 'Payer DFSP conversion': '',
             conversionInstitution:
                 raw.fxQuoteRequest &&
                 raw.fxQuoteRequest.body &&
@@ -280,8 +282,8 @@ class Transfer {
                 },
                 quoteAmountType: raw.quoteRequest && raw.quoteRequest.body.amountType,
                 transferAmount: {
-                    amount: transfer.amount,
-                    currency: transfer.currency,
+                    amount: raw.quoteResponse.body.transferAmount.amount,
+                    currency: raw.quoteResponse.body.transferAmount.currency,
                 },
                 payeeReceiveAmount: {
                     amount: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeReceiveAmount && raw.quoteResponse.body.payeeReceiveAmount.amount,
