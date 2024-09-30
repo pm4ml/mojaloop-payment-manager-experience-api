@@ -311,7 +311,7 @@ async function syncDB({ redisCache, db, logger }) {
             }
 
             let fxTransferRow = null;
-            if(data.fxPrepare && data.fulfil)
+            if(data.fxPrepare)
                 fxTransferRow = {
                     commit_request_id: data.fxPrepare.body.commitRequestId,
                     determining_transfer_id: data.fxPrepare.body.determiningTransferId,
@@ -324,12 +324,16 @@ async function syncDB({ redisCache, db, logger }) {
                     target_currency: data.fxPrepare.body.targetAmount.currency,
                     condition: data.fxPrepare.body.condition,
                     expiration: data.fxPrepare.body.expiration,
-                    conversion_state: data.fulfil.body.conversionState,
-                    fulfilment: data.fulfil.body.fulfilment,
+                    conversion_state: '', // if no fulfil leave empty
+                    fulfilment: '', // if no fulfil leave empty
                     direction: data.direction,
                     created_at: initiatedTimestamp,
                     completed_timestamp: completedTimestamp,
                 };
+            if(data.fulfil){
+                fxTransferRow.fulfilment = data.fulfil.body.fulfilment;
+                fxTransferRow.conversion_state = data.fulfil.body.conversionState;
+            }
             else{
                 logger.log('fxPrepare and fulfil keys not present.');
             }
