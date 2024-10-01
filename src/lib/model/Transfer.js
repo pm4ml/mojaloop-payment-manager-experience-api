@@ -30,11 +30,12 @@ class Transfer {
         this._db = props.db;
     }
 
-    static STATUSES = {
-      null: 'PENDING',
-      1: 'SUCCESS',
-      0: 'ERROR',
-    };
+    // static STATUSES = {
+    //   null: 'PENDING',
+    //   1: 'SUCCESS',
+    //   0: 'ERROR',
+    // };
+    
 
     // Join the fx_transfer, fx_quote and transfer table
     _applyJoin(query){
@@ -816,5 +817,11 @@ class Transfer {
         }
     }
 }
+
+Transfer.STATUSES = {
+    null: 'PENDING',
+    1: 'SUCCESS',
+    0: 'ERROR',
+};
 
 module.exports = Transfer;

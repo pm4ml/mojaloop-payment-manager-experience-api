@@ -12,6 +12,7 @@
 const redis = require('redis');
 const knex = require('knex');
 const { Logger } = require('@mojaloop/sdk-standard-components');
+// eslint-disable-next-line no-unused-vars
 const { addTransferToCache, createTestDb } = require('../utils');
 const redisTransferData = require('../data/redisTransferData.json');
 const { syncDB } = require('../../../src/lib/cacheDatabase/');

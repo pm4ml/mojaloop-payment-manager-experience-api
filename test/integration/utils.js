@@ -13,6 +13,7 @@ const { Logger } = require('@mojaloop/sdk-standard-components');
 const { createMemoryCache } = require('../../src/lib/cacheDatabase/');
 const transferTemplate  = require('./data/transferTemplate.json');
 const lastError  = require('./data/lastError.json');
+// eslint-disable-next-line no-unused-vars
 const Cache = require('../../src/lib/cacheDatabase/cache');
 
 const createTestDb = async () => {
