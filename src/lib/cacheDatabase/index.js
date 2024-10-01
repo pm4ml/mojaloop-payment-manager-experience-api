@@ -79,7 +79,8 @@ async function syncDB({ redisCache, db, logger }) {
             } catch (err) {
                 logger.push({ err }).log('Error parsing JSON cache value');
             }
-        } else {
+        }
+        else {
             data = rawData;
         }
 
@@ -98,88 +99,90 @@ async function syncDB({ redisCache, db, logger }) {
         const rawData = await redisCache.get(key);
         const data = parseData(rawData);
 
-        // this is all a hack right now as we will eventually NOT use the cache as a source
-        // of truth for transfers but rather some sort of dedicated persistence service instead.
-        // Therefore we can afford to do some nasty things in order to get working features...
-        // for now...
+        // If the key is for a transfer
+        if(key.includes('transferModel'))
+        {
 
-        const initiatedTimestamp = data.initiatedTimestamp
-            ? new Date(data.initiatedTimestamp).getTime()
-            : null;
-        const completedTimestamp = data.fulfil
-            ? new Date(data.fulfil.body.completedTimestamp).getTime()
-            : null;
+            // this is all a hack right now as we will eventually NOT use the cache as a source
+            // of truth for transfers but rather some sort of dedicated persistence service instead.
+            // Therefore we can afford to do some nasty things in order to get working features...
+            // for now...
 
-        // the cache data model for inbound transfers is lacking some properties that make it easy to extract
-        // certain information...therefore we have to find it elsewhere...
+            const initiatedTimestamp = data.initiatedTimestamp
+                ? new Date(data.initiatedTimestamp).getTime()
+                : null;
+            const completedTimestamp = data.fulfil
+                ? new Date(data.fulfil.body.completedTimestamp).getTime()
+                : null;
 
-        if (!['INBOUND', 'OUTBOUND'].includes(data.direction))
-            logger
-                .push({ data })
-                .log('Unable to process row. No direction property found');
+            // the cache data model for inbound transfers is lacking some properties that make it easy to extract
+            // certain information...therefore we have to find it elsewhere...
 
-        const row = {
-            id: data.transferId,
-            redis_key: key, // To be used instead of Transfer.cachedKeys
-            raw: JSON.stringify(data),
-            created_at: initiatedTimestamp,
-            completed_at: completedTimestamp,
-            ...(data.direction === 'INBOUND' && {
-                sender: getPartyNameFromQuoteRequest(data.quoteRequest, 'payer'),
-                sender_id_type:
-                  data.quoteRequest?.body?.payer?.partyIdInfo?.partyIdType,
-                sender_id_sub_value:
-                  data.quoteRequest?.body?.payer?.partyIdInfo?.partySubIdOrType,
-                sender_id_value:
-                  data.quoteRequest?.body?.payer?.partyIdInfo?.partyIdentifier,
-                recipient: getPartyNameFromQuoteRequest(data.quoteRequest, 'payee'),
-                recipient_id_type:
-                  data.quoteRequest?.body?.payee?.partyIdInfo?.partyIdType,
-                recipient_id_sub_value:
-                  data.quoteRequest?.body?.payee?.partyIdInfo?.partySubIdOrType,
-                recipient_id_value:
-                  data.quoteRequest?.body?.payee?.partyIdInfo?.partyIdentifier,
-                amount: data.quoteResponse?.body?.transferAmount.amount,
-                currency: data.quoteResponse?.body?.transferAmount.currency,
-                direction: -1,
-                batch_id: '',
-                details: data.quoteRequest?.body?.note,
-                dfsp: data.quoteRequest?.body?.payer?.partyIdInfo.fspId,
-                success: getInboundTransferStatus(data),
-                supported_currencies: JSON.stringify(data.supportedCurrencies),
-            }),
-            ...(data.direction === 'OUTBOUND' && {
-                sender: getName(data.from),
-                sender_id_type: data.from?.idType,
-                sender_id_sub_value: data.from?.idSubType,
-                sender_id_value: data.from?.idValue,
-                recipient: getName(data.to),
-                recipient_id_type: data.to?.idType,
-                recipient_id_sub_value: data.to?.idSubType,
-                recipient_id_value: data.to?.idValue,
-                amount: data.amount,
-                currency: data.currency,
-                direction: 1,
-                batch_id: '', // TODO: Implement
-                details: data.note,
-                dfsp: data.to?.fspId,
-                success: getTransferStatus(data),
-                supported_currencies: JSON.stringify(data.supportedCurrencies),
-            }),
-        };
+            if (!['INBOUND', 'OUTBOUND'].includes(data.direction))
+                logger
+                    .push({ data })
+                    .log('Unable to process row. No direction property found');
 
-        // check if there is a key in the data object named fxQuoteResponse
-        let fx_quote_row = null;
-        if (data.fxQuoteResponse) {
-
-            fx_quote_row = {
+            const row = {
                 id: data.transferId,
                 redis_key: key, // To be used instead of Transfer.cachedKeys
                 raw: JSON.stringify(data),
                 created_at: initiatedTimestamp,
-                // completed_at: data.completedTimestamp,
+                completed_at: completedTimestamp,
                 ...(data.direction === 'INBOUND' && {
+                    sender: getPartyNameFromQuoteRequest(data.quoteRequest, 'payer'),
+                    sender_id_type:
+                      data.quoteRequest?.body?.payer?.partyIdInfo?.partyIdType,
+                    sender_id_sub_value:
+                      data.quoteRequest?.body?.payer?.partyIdInfo?.partySubIdOrType,
+                    sender_id_value:
+                      data.quoteRequest?.body?.payer?.partyIdInfo?.partyIdentifier,
+                    recipient: getPartyNameFromQuoteRequest(data.quoteRequest, 'payee'),
+                    recipient_id_type:
+                      data.quoteRequest?.body?.payee?.partyIdInfo?.partyIdType,
+                    recipient_id_sub_value:
+                      data.quoteRequest?.body?.payee?.partyIdInfo?.partySubIdOrType,
+                    recipient_id_value:
+                      data.quoteRequest?.body?.payee?.partyIdInfo?.partyIdentifier,
+                    amount: data.quoteResponse?.body?.transferAmount.amount,
+                    currency: data.quoteResponse?.body?.transferAmount.currency,
+                    direction: -1,
+                    batch_id: '',
+                    details: data.quoteRequest?.body?.note,
+                    dfsp: data.quoteRequest?.body?.payer?.partyIdInfo.fspId,
+                    success: getInboundTransferStatus(data),
+                    supported_currencies: JSON.stringify(data.supportedCurrencies),
+                }),
+                ...(data.direction === 'OUTBOUND' && {
+                    sender: getName(data.from),
+                    sender_id_type: data.from?.idType,
+                    sender_id_sub_value: data.from?.idSubType,
+                    sender_id_value: data.from?.idValue,
+                    recipient: getName(data.to),
+                    recipient_id_type: data.to?.idType,
+                    recipient_id_sub_value: data.to?.idSubType,
+                    recipient_id_value: data.to?.idValue,
+                    amount: data.amount,
+                    currency: data.currency,
+                    direction: 1,
+                    batch_id: '', // TODO: Implement
+                    details: data.note,
+                    dfsp: data.to?.fspId,
+                    success: getTransferStatus(data),
+                    supported_currencies: JSON.stringify(data.supportedCurrencies),
+                }),
+            };
+
+            // check if there is a key in the data object named fxQuoteResponse
+            let fx_quote_row = null;
+            if (data.fxQuoteResponse) {
+
+                let fxQuoteRequest = JSON.parse(data.fxQuoteRequest.body);
+
+                fx_quote_row = {
+                    conversion_request_id: fxQuoteRequest.conversionRequestId,
                     conversion_id: data.fxQuoteResponse.body.conversionTerms.conversionId,
+                    determining_transfer_id: data.transferId,  // TODO: replace back with determining_transfer_id once Implemented
                     initiating_fsp: data.fxQuoteResponse.body.conversionTerms.initiatingFsp,
                     counter_party_fsp: data.fxQuoteResponse.body.conversionTerms.counterPartyFsp,
                     amount_type: data.fxQuoteResponse.body.conversionTerms.amountType,
@@ -188,31 +191,27 @@ async function syncDB({ redisCache, db, logger }) {
                     target_amount: data.fxQuoteResponse.body.conversionTerms.targetAmount.amount,
                     target_currency: data.fxQuoteResponse.body.conversionTerms.targetAmount.currency,
                     expiration: data.fxQuoteResponse.body.conversionTerms.expiration,
-                }),
-                ...(data.direction === 'OUTBOUND' && {
-                    conversion_id: data.fxQuoteResponse.body.conversionTerms.conversionId,
-                    initiating_fsp: data.fxQuoteResponse.body.conversionTerms.initiatingFsp,
-                    counter_party_fsp: data.fxQuoteResponse.body.conversionTerms.counterPartyFsp,
-                    amount_type: data.fxQuoteResponse.body.conversionTerms.amountType,
-                    source_amount: data.fxQuoteResponse.body.conversionTerms.sourceAmount.amount,
-                    source_currency: data.fxQuoteResponse.body.conversionTerms.sourceAmount.currency,
-                    target_amount: data.fxQuoteResponse.body.conversionTerms.targetAmount.amount,
-                    target_currency: data.fxQuoteResponse.body.conversionTerms.targetAmount.currency,
-                    expiration: data.fxQuoteResponse.body.conversionTerms.expiration
-                }),
-            };
-        } else {
-            // code to handle when fxQuoteResponse key does not exist
-            logger.log('fxQuoteResponse key does not exist');
-        }
+                    condition: data.fxQuoteResponse.body.condition,
+                    direction: data.direction,
+                    raw: JSON.stringify(data),
+                    created_at: initiatedTimestamp,
+                    completed_at: completedTimestamp,
+                    success: getTransferStatus(data)
 
-        let fx_transfer_row = null;
-        if (data.fxTransferRequest && data.fxTransferResponse) {
-            logger.log(`The fxTransferRequest body is ${data.fxTransferRequest.body}`);
-            const fxTransferRequestData = parseData(data.fxTransferRequest.body);
-            fx_transfer_row = {
-                created_at: initiatedTimestamp,
-                ...(data.direction === 'INBOUND' && {
+                };
+            } else {
+                // code to handle when fxQuoteResponse key does not exist
+                logger.log('fxQuoteResponse key does not exist');
+            }
+
+            // Check if the fxTransferRequest and fxTransferResponse are present
+            let fx_transfer_row = null;
+            if (data.fxTransferRequest && data.fxTransferResponse) {
+
+                const fxTransferRequestData = parseData(data.fxTransferRequest.body);
+                fx_transfer_row = {
+                    commit_request_id: fxTransferRequestData.commitRequestId,
+                    determining_transfer_id: fxTransferRequestData.determiningTransferId,
                     initiating_fsp: fxTransferRequestData.initiatingFsp,
                     counter_party_fsp: fxTransferRequestData.counterPartyFsp,
                     amount_type: fxTransferRequestData.amountType,
@@ -220,85 +219,182 @@ async function syncDB({ redisCache, db, logger }) {
                     source_currency: fxTransferRequestData.sourceAmount.currency,
                     target_amount: fxTransferRequestData.targetAmount.amount,
                     target_currency: fxTransferRequestData.targetAmount.currency,
-                    expiration: fxTransferRequestData.expiration,
-                    determining_transfer_id: fxTransferRequestData.determiningTransferId,
                     condition: fxTransferRequestData.condition,
-                    commit_request_id: fxTransferRequestData.commitRequestId,
-                    conversion_state: data.fxTransferResponse.body.conversionState,
-                    completed_timestamp: data.fxTransferResponse.body.completedTimestamp,
-                    fulfilment: data.fxTransferResponse.body.fulfilment,
-                }),
-                ...(data.direction === 'OUTBOUND' && {
-                    initiating_fsp: fxTransferRequestData.initiatingFsp,
-                    counter_party_fsp: fxTransferRequestData.counterPartyFsp,
-                    amount_type: fxTransferRequestData.amountType,
-                    source_amount: fxTransferRequestData.sourceAmount.amount,
-                    source_currency: fxTransferRequestData.sourceAmount.currency,
-                    target_amount: fxTransferRequestData.targetAmount.amount,
-                    target_currency: fxTransferRequestData.targetAmount.currency,
                     expiration: fxTransferRequestData.expiration,
-                    determining_transfer_id: fxTransferRequestData.determiningTransferId,
-                    condition: fxTransferRequestData.condition,
-                    commit_request_id: fxTransferRequestData.commitRequestId,
                     conversion_state: data.fxTransferResponse.body.conversionState,
-                    completed_timestamp: data.fxTransferResponse.body.completedTimestamp,
                     fulfilment: data.fxTransferResponse.body.fulfilment,
-                }),
-            };
+                    direction: data.direction,
+                    created_at: initiatedTimestamp,
+                    completed_timestamp: data.fxTransferResponse.body.completedTimestamp,
 
-            logger.log(`fxTransferResponse body is ${data.fxTransferResponse.body}`);
-        } else {
-            // code to handle when fxQuoteResponse key does not exist
-            logger.log('fxTransferRequest or fxTransferResponse key does not exist');
-        }
+                };
 
-
-        // logger.push({ data }).log('processing cache item');
-
-        // logger.push({ ...row, raw: ''}).log('Row processed');
-
-        const keyIndex = cachedPendingKeys.indexOf(row.id);
-        if (keyIndex === -1) {
-            await db('transfer').insert(row);
-            if(fx_quote_row != undefined && fx_quote_row != null) {
-                await db('fx_quote').insert(fx_quote_row);
+            } else {
+                // code to handle when fxQuoteResponse key does not exist
+                logger.log('fxTransferRequest or fxTransferResponse key does not exist');
             }
-            if(fx_transfer_row != undefined && fx_transfer_row != null) {
-                await db('fx_transfer').insert(fx_transfer_row);
-            }
-            cachedPendingKeys.push(row.id);
-        } else {
-            await db('transfer').where({ id: row.id }).update(row);
-            if(fx_quote_row != null && fx_quote_row != undefined) {
-                try {
-                    await db('fx_quote').update(fx_quote_row);
-                } catch (err) {
-                    console.log(err);
+
+
+            // logger.push({ data }).log('processing cache item');
+
+            // logger.push({ ...row, raw: ''}).log('Row processed');
+
+            const keyIndex = cachedPendingKeys.indexOf(row.id);
+            if (keyIndex === -1) {
+                await db('transfer').insert(row);
+                if(fx_quote_row != undefined && fx_quote_row != null) {
+                    await db('fx_quote').insert(fx_quote_row);
                 }
-            }
-            if(fx_transfer_row != undefined && fx_transfer_row != null) {
-                try {
-                    await db('fx_transfer').update(fx_transfer_row);
-                } catch (err) {
-                    console.log(err);
+                if(fx_transfer_row != undefined && fx_transfer_row != null) {
+                    await db('fx_transfer').insert(fx_transfer_row);
                 }
+                cachedPendingKeys.push(row.id);
+            } else {
+                await db('transfer').where({ id: row.id }).update(row);
+                if(fx_quote_row != null && fx_quote_row != undefined) {
+                    try {
+                        await db('fx_quote').where({conversion_id: fx_quote_row.conversion_id}).update(fx_quote_row);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
+                if(fx_transfer_row != undefined && fx_transfer_row != null) {
+                    try {
+                        await db('fx_transfer').where({commit_request_id:fx_transfer_row.commit_request_id}).update(fx_transfer_row);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
+                // cachedPendingKeys.splice(keyIndex, 1);
             }
-            // cachedPendingKeys.splice(keyIndex, 1);
+
+            if (row.success !== null) {
+                cachedFulfilledKeys.push(key);
+            }
+
+        }
+        // When the redis key starts with fxQuote*
+        else {
+
+            // this is all a hack right now as we will eventually NOT use the cache as a source
+            // of truth for transfers but rather some sort of dedicated persistence service instead.
+            // Therefore we can afford to do some nasty things in order to get working features...
+            // for now...
+
+
+            const initiatedTimestamp = data.initiatedTimestamp
+                ? new Date(data.initiatedTimestamp).getTime()
+                : null;
+            const completedTimestamp = data.fulfil
+                ? new Date(data.fulfil.body.completedTimestamp).getTime()
+                : null;
+
+
+            let fxQuoteRow = null;
+            if(data.fxQuoteResponse && data.fxQuoteRequest){
+                const fxQuoteBody = JSON.parse(data.fxQuoteResponse.body);
+                fxQuoteRow = {
+                    conversion_request_id: data.fxQuoteRequest.body.conversionRequestId,
+                    conversion_id:fxQuoteBody.conversionTerms.conversionId,
+                    determining_transfer_id:fxQuoteBody.conversionTerms.determiningTransferId,
+                    initiating_fsp:fxQuoteBody.conversionTerms.initiatingFsp,
+                    counter_party_fsp:fxQuoteBody.conversionTerms.counterPartyFsp,
+                    amount_type:fxQuoteBody.conversionTerms.amountType,
+                    source_amount:fxQuoteBody.conversionTerms.sourceAmount.amount,
+                    source_currency:fxQuoteBody.conversionTerms.sourceAmount.currency,
+                    target_amount:fxQuoteBody.conversionTerms.targetAmount.amount,
+                    target_currency:fxQuoteBody.conversionTerms.targetAmount.currency,
+                    expiration:fxQuoteBody.conversionTerms.expiration,
+                    condition:fxQuoteBody.condition,
+                    direction: data.direction,
+                    raw: JSON.stringify(data),
+                    created_at: initiatedTimestamp,
+                    completed_at: completedTimestamp,
+                    success: getInboundTransferStatus(data)
+                };
+            }
+            else{
+                logger.log('fxQuoteRequest and fxQuoteResponse keys not present.');
+            }
+
+            let fxTransferRow = null;
+            if(data.fxPrepare)
+                fxTransferRow = {
+                    commit_request_id: data.fxPrepare.body.commitRequestId,
+                    determining_transfer_id: data.fxPrepare.body.determiningTransferId,
+                    initiating_fsp:data.fxPrepare.body.initiatingFsp,
+                    counter_party_fsp: data.fxPrepare.body.counterPartyFsp,
+                    amount_type: data.fxPrepare.body.amountType,
+                    source_amount: data.fxPrepare.body.sourceAmount.amount,
+                    source_currency: data.fxPrepare.body.sourceAmount.currency,
+                    target_amount: data.fxPrepare.body.targetAmount.amount,
+                    target_currency: data.fxPrepare.body.targetAmount.currency,
+                    condition: data.fxPrepare.body.condition,
+                    expiration: data.fxPrepare.body.expiration,
+                    conversion_state: '', // if no fulfil leave empty
+                    fulfilment: '', // if no fulfil leave empty
+                    direction: data.direction,
+                    created_at: initiatedTimestamp,
+                    completed_timestamp: completedTimestamp,
+                };
+            if(data.fulfil){
+                fxTransferRow.fulfilment = data.fulfil.body.fulfilment;
+                fxTransferRow.conversion_state = data.fulfil.body.conversionState;
+            }
+            else{
+                logger.log('fxPrepare and fulfil keys not present.');
+            }
+
+            try {
+                const keyIndex = cachedPendingKeys.indexOf(fxQuoteRow.conversion_id);
+                if(keyIndex === -1){
+                    if(fxQuoteRow !== undefined && fxQuoteRow !== null)
+                        await db('fx_quote').insert(fxQuoteRow);
+                    if(fxTransferRow!== undefined && fxTransferRow!== null)
+                        await db('fx_transfer').insert(fxTransferRow);
+                    cachedPendingKeys.push(fxQuoteRow.conversion_id);
+                }
+                else{
+                    if(fxQuoteRow!= null && fxQuoteRow!= undefined) {
+                        try {
+                            await db('fx_quote').where({conversion_id: fxQuoteRow.conversion_id}).update(fxQuoteRow);
+                        } catch (err) {
+                            console.log(err);
+                        }
+                    }
+                    if(fxTransferRow!= undefined && fxTransferRow!= null) {
+                        try {
+                            await db('fx_transfer').where({commit_request_id: fxTransferRow.commit_request_id}).update(fxTransferRow);
+                        } catch (err) {
+                            console.log(err);
+                        }
+                    }
+                }
+                if (fxQuoteRow.success !== null) {
+                    cachedFulfilledKeys.push(key);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+
         }
 
-        if (row.success !== null) {
-            cachedFulfilledKeys.push(key);
-        }
 
     // const sqlRaw = db('transfer').insert(row).toString();
     // db.raw(sqlRaw.replace(/^insert/i, 'insert or ignore')).then(resolve);
     };
 
-    const keys = await redisCache.keys('transferModel_*');
-    const uncachedOrPendingKeys = keys.filter(
-        (x) => cachedFulfilledKeys.indexOf(x) === -1,
-    );
-    await Promise.all(uncachedOrPendingKeys.map(cacheKey));
+    // Available key patterns in redis
+    const redisKeys = ['transferModel_*', 'fxQuote_in_*'];
+    redisKeys.forEach( async (key) => {
+        const keys = await redisCache.keys(key);
+        const uncachedOrPendingKeys = keys.filter(
+            (x) => cachedFulfilledKeys.indexOf(x) === -1,
+        );
+        await Promise.all(uncachedOrPendingKeys.map(cacheKey));
+    });
+    // const keys = await redisCache.keys('transferModel_*');
+
     // logger.log('In-memory DB sync complete');
 }
 
@@ -320,6 +416,7 @@ const createMemoryCache = async (config) => {
     );
 
     await db.migrate.latest({ directory: `${__dirname}/migrations` });
+
 
     const redisCache = new Cache(config);
     await redisCache.connect();

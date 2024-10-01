@@ -8,18 +8,14 @@
  *       Yevhen Kyriukha - yevhen.kyriukha@modusbox.com                   *
  *       Nguni Phakela - nguni @izyane.com                                *
  **************************************************************************/
-const knex = require('knex');
 
 const TABLE_NAME = 'fx_quote';
 
 async function up(knex) {
     return knex.schema.createTable(TABLE_NAME, (table) => {
-        table.string('id');
-        table.string('redis_key');
-        table.string('raw');
-        table.integer('created_at');
-        table.integer('completed_at');
-        table.string('conversion_id');
+        table.string('conversion_request_id');
+        table.string('conversion_id').primary();
+        table.string('determining_transfer_id');
         table.string('initiating_fsp');
         table.string('counter_party_fsp');
         table.string('amount_type');
@@ -28,6 +24,12 @@ async function up(knex) {
         table.string('target_amount');
         table.string('target_currency');
         table.string('expiration');
+        table.string('condition');
+        table.string('direction');
+        table.string('raw');
+        table.integer('created_at');
+        table.integer('completed_at');
+        table.boolean('success'); // TRUE - Fulfill, FALSE - Error, NULL - Pending
     });
 }
 
