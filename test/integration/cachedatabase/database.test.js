@@ -18,56 +18,56 @@ const { syncDB } = require('../../../src/lib/cacheDatabase/');
 
 
 describe('Database', () => {
-  let db;
-  let logger;
+    let db;
+    let logger;
 
-  beforeAll(async () => {
-    this.logger = new Logger.Logger({
-      context: {
-        app: 'mojaloop-payment-manager-experience-api-service-control-server'
-      },
-      stringify: Logger.buildStringify({ space: 2 }),
+    beforeAll(async () => {
+        this.logger = new Logger.Logger({
+            context: {
+                app: 'mojaloop-payment-manager-experience-api-service-control-server'
+            },
+            stringify: Logger.buildStringify({ space: 2 }),
+        });
+
+        const knexConfig = {
+            client: 'better-sqlite3',
+            connection: {
+                filename: ':memory:',
+            },
+            useNullAsDefault: true,
+        };
+
+        this.db = knex(knexConfig);
+
+        Object.defineProperty(
+            this.db,
+            'createTransaction',
+            async () => new Promise((resolve) => db.transaction(resolve)),
+        );
+
+        await this.db.migrate.latest({ directory: './src/lib/cacheDatabase/migrations' });
     });
 
-    const knexConfig = {
-      client: 'better-sqlite3',
-      connection: {
-        filename: ':memory:',
-      },
-      useNullAsDefault: true,
-    };
+    describe('Integration tests', () => {
+        const redisClient = redis.createClient();
+        redisClient.set('transferModel_out_05efec3c-a689-4e5d-8a78-acb2ccf8ade6', redisTransferData);
 
-    this.db = knex(knexConfig);
+        test('Should fetch cached Redis records', async () => {
+            const redisValue = redisClient.get('transferModel_out_05efec3c-a689-4e5d-8a78-acb2ccf8ade6');
 
-    Object.defineProperty(
-      this.db,
-      'createTransaction',
-      async () => new Promise((resolve) => db.transaction(resolve)),
-    );
+            expect(redisValue).toBe(redisTransferData);
 
-    await this.db.migrate.latest({ directory: `./src/lib/cacheDatabase/migrations` });
-  });
+            await syncDB({ redisCache: redisClient, db: this.db, logger: this.logger });
 
-  describe('Integration tests', () => {
-    const redisClient = redis.createClient();
-    redisClient.set('transferModel_out_05efec3c-a689-4e5d-8a78-acb2ccf8ade6', redisTransferData);
-
-    test('Should fetch cached Redis records', async () => {
-      const redisValue = redisClient.get('transferModel_out_05efec3c-a689-4e5d-8a78-acb2ccf8ade6');
-
-      expect(redisValue).toBe(redisTransferData);
-
-      await syncDB({ redisCache: redisClient, db: this.db, logger: this.logger })
-
-      const updatedRows = await this.db('transfer').select('id', 'success', 'amount');
+            const updatedRows = await this.db('transfer').select('id', 'success', 'amount');
       
-      expect(updatedRows).toMatchObject([
-        {
-          id: '05efec3c-a689-4e5d-8a78-acb2ccf8ade6',
-          success: 1,
-          amount: '10'
-        }
-      ]);
+            expect(updatedRows).toMatchObject([
+                {
+                    id: '05efec3c-a689-4e5d-8a78-acb2ccf8ade6',
+                    success: 1,
+                    amount: '10'
+                }
+            ]);
+        });
     });
-  });
 });
