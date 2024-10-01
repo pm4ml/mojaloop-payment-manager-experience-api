@@ -10,12 +10,13 @@
 
 'use strict';
 
-jest.mock('redis'); 
+jest.mock('redis');
 
-const { CookieStore } = require('@internal/accesscontrol');
+// const { CookieStore } = require('@internal/accesscontrol');
 const { Logger } = require('@mojaloop/sdk-standard-components');
 const redis = require('redis');
 
+// eslint-disable-next-line no-unused-vars
 let logger;
 let store;
 
@@ -23,7 +24,7 @@ describe('Cookie Store', () => {
     beforeEach(() => {
         logger = new Logger.Logger({ context: { app: 'cookie-store-unit-tests'}, stringify: () => ''});
         store = redis.createClient();
-        
+
         // new CookieStore({
         //     logger,
         //     redisUrl: '',

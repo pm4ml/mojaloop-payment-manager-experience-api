@@ -32,6 +32,7 @@ class RedisClient {
     set(key, value) {
         this.data[key] = value;
     }
+    // eslint-disable-next-line no-unused-vars
     destroy(key, value) {
         delete this.data[key];
     }
