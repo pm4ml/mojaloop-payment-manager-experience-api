@@ -31,6 +31,7 @@ class FxpConversion {
         0: 'ERROR',
     };
 
+    // Join the fx_transfer and fx_quote table
     _joinFxQuotesAndFxTransfers(query){
         return query
             .leftJoin('fx_transfer', 'fx_quote.conversion_id','fx_transfer.commit_request_id')
@@ -52,7 +53,6 @@ class FxpConversion {
 
     _parseRawTransferRequestBodies(transferRaw) {
         // operate on a copy of incoming object...we dont want side effects
-
         const raw = JSON.parse(JSON.stringify(transferRaw));
 
         if(
@@ -80,6 +80,7 @@ class FxpConversion {
         return raw;
     }
 
+    // Calculate the total charges for the source and target currency
     _calculateTotalChargesFromCharges(charges, sourceCurrency, targetCurrency){
         if(!charges)
             return {
@@ -90,10 +91,13 @@ class FxpConversion {
         let totalSourceCurrencyCharges = 0;
         let totalTargetCurrencyCharges = 0;
 
+        // Iterate over the charges array to sum the charges for source and target currency
         charges.forEach( charge => {
             const sourceAmount = charge.sourceAmount ? parseFloat(charge.sourceAmount.amount) : 0;
             const targetAmount =charge.targetAmount ? parseFloat(charge.targetAmount.amount) : 0;
 
+            // Sum only when the charge currency is same as source or target currency
+            // Also check sourceAmount and targetAmount and present or not null
             if(charge.sourceAmount && charge.sourceAmount.currency === sourceCurrency)
                 totalSourceCurrencyCharges += sourceAmount;
             if(charge.targetAmount && charge.targetAmount.currency === targetCurrency)
@@ -113,7 +117,7 @@ class FxpConversion {
     }
 
     _calculateExchangeRate(sourceAmount, targetAmount, totalSourceCharges, totalTargetCharges) {
-        // Condition for when exchangeRate calculation is not possible
+        // Condition for when exchangeRate calculation is not possible , also to avoid divide by zero error
         if(!sourceAmount || !targetAmount || ((sourceAmount - totalSourceCharges) === 0))
             return null;
         return ((targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges)).toFixed(4);
@@ -140,14 +144,16 @@ class FxpConversion {
             };
         }
 
-
+        // Get conversionTerms from fxQuoteResponse
         let conversionTerms = fxQuoteResponse.body.conversionTerms;
+        // If conversionTerms is string , parse to JSON
         if(fxQuoteResponse.body && typeof fxQuoteResponse.body.conversionTerms === 'string')
-        conversionTerms = JSON.parse(fxQuoteResponse.body.conversionTerms);
+            conversionTerms = JSON.parse(fxQuoteResponse.body.conversionTerms);
 
         if(!conversionTerms)
             return ;
 
+        // transferAmount object for response
         const transferAmount = {
             sourceAmount : {
                 amount:
@@ -208,10 +214,12 @@ class FxpConversion {
         if(!fxQuoteRequest){
             return response
         }
+        // If sourceAmount has amount, extract quoteAmount from it
         if(fxQuoteRequest.body.conversionTerms.sourceAmount.amount){
             response.amount = fxQuoteRequest.body.conversionTerms.sourceAmount.amount;
             response.currency = fxQuoteRequest.body.conversionTerms.sourceAmount.currency;
         }
+        // If targetAmount has amount, extract quoteAmount from it
         else{
             response.amount = fxQuoteRequest.body.conversionTerms.targetAmount.amount;
             response.currency = fxQuoteRequest.body.conversionTerms.targetAmount.currency;
@@ -278,6 +286,21 @@ class FxpConversion {
         };
     }
 
+    /**
+     * @param opts {Object}
+     * @param [opts.startTimestamp] {string}
+     * @param [opts.endTimestamp] {string}
+     * @param [opts.senderIdType] {string}
+     * @param [opts.senderIdValue] {string}
+     * @param [opts.senderIdSubValue] {string}
+     * @param [opts.recipientIdType] {string}
+     * @param [opts.recipientIdValue] {string}
+     * @param [opts.recipientIdSubValue] {string}
+     * @param [opts.direction] {string}
+     * @param [opts.institution] {string}
+     * @param [opts.batchId] {number}
+     * @param [opts.status] {string}
+     */
     async findAll(opts) {
         let query = this._db('fx_quote').whereRaw('true');
 
@@ -438,6 +461,12 @@ class FxpConversion {
         return Object.keys(ret).map((r) => ret[r]);
     }
 
+    /**
+     *
+     * @param opts {Object}
+     * @param [opts.startTimestamp] {string}
+     * @param [opts.endTimestamp] {string}
+     */
     async fxpErrors(opts){
         // TODO: Implement fxpErrors
         try {

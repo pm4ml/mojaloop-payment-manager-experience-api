@@ -36,6 +36,7 @@ class Transfer {
       0: 'ERROR',
     };
 
+    // Join the fx_transfer, fx_quote and transfer table
     _applyJoin(query){
         return query
             .leftJoin('fx_quote', 'transfer.id', 'fx_quote.determining_transfer_id')
@@ -161,11 +162,16 @@ class Transfer {
             };
         }
 
-        const conversionTerms = fxQuoteResponse.body.conversionTerms;
+        // Get conversionTerms from fxQuoteResponse
+        let conversionTerms = fxQuoteResponse.body.conversionTerms;
+        // If conversionTerms is string , parse to JSON
+        if(fxQuoteResponse.body && typeof fxQuoteResponse.body.conversionTerms === 'string')
+            conversionTerms = JSON.parse(fxQuoteResponse.body.conversionTerms);
 
         if(!conversionTerms)
             return ;
 
+        // transferAmount object for response
         const transferAmount = {
             sourceAmount : {
                 amount:
@@ -202,6 +208,7 @@ class Transfer {
         };
     }
 
+    // Calculate the total charges for the source and target currency
     _calculateTotalChargesFromCharges(charges, sourceCurrency, targetCurrency){
         if(!charges)
             return {
@@ -212,10 +219,12 @@ class Transfer {
         let totalSourceCurrencyCharges = 0;
         let totalTargetCurrencyCharges = 0;
 
+        // Iterate over the charges array to sum the charges for source and target currency
         charges.forEach( charge => {
             const sourceAmount = charge.sourceAmount ? parseFloat(charge.sourceAmount.amount) : 0;
             const targetAmount =charge.targetAmount ? parseFloat(charge.targetAmount.amount) : 0;
-
+            // Sum only when the charge currency is same as source or target currency
+            // Also check sourceAmount and targetAmount and present or not null
             if(charge.sourceAmount && charge.sourceAmount.currency === sourceCurrency)
                 totalSourceCurrencyCharges += sourceAmount;
             if(charge.targetAmount && charge.targetAmount.currency === targetCurrency)
@@ -235,7 +244,7 @@ class Transfer {
     }
 
     _calculateExchangeRate(sourceAmount, targetAmount, totalSourceCharges, totalTargetCharges) {
-        // Condition for when exchangeRate calculation is not possible
+        // Condition for when exchangeRate calculation is not possible , also to avoid divide by zero error
         if(!sourceAmount || !targetAmount || ((sourceAmount - totalSourceCharges) === 0))
             return null;
         return ((targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges)).toFixed(4);
@@ -530,7 +539,21 @@ class Transfer {
         // return this._requests.get('transfers', opts);
     }
 
-    //Transfer, fx_transfer and fx_quote join method
+    /**
+     * @param opts {Object}
+     * @param [opts.startTimestamp] {string}
+     * @param [opts.endTimestamp] {string}
+     * @param [opts.senderIdType] {string}
+     * @param [opts.senderIdValue] {string}
+     * @param [opts.senderIdSubValue] {string}
+     * @param [opts.recipientIdType] {string}
+     * @param [opts.recipientIdValue] {string}
+     * @param [opts.recipientIdSubValue] {string}
+     * @param [opts.direction] {string}
+     * @param [opts.institution] {string}
+     * @param [opts.batchId] {number}
+     * @param [opts.status] {string}
+     */
     async findAllWithFX(opts) {
         if (this.mockData) {
             return mock.getTransfers(opts);
