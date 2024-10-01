@@ -1264,10 +1264,8 @@ components:
     fxpConversions:
       type: object
       properties:
-        id:
+        conversionId:
           type: string
-        batchId:
-          type: integer
         institution:
           type: string
         direction:
@@ -1277,37 +1275,13 @@ components:
           - OUTBOUND
         currency:
           $ref: '#/components/schemas/Currency'
-        value:
+        amount:
           $ref: '#/components/schemas/Amount'
-        type:
-          type: string
-          enum:
-          - P2P
         status:
           $ref: "#/components/schemas/TransferStatus"
         initiatedTimestamp:
           $ref: '#/components/schemas/Timestamp'
-        confirmationNumber:
-          type: integer
-        sender:
-          type: string
-        recipient:
-          type: string
-        senderIdType:
-            $ref: '#/components/schemas/idType'
-        senderIdValue:
-            $ref: '#/components/schemas/idValue'
-        senderIdSubValue:
-            $ref: '#/components/schemas/idSubValue'
-        recipientIdType:
-            $ref: '#/components/schemas/idType'
-        recipientIdValue:
-            $ref: '#/components/schemas/idValue'
-        recipientIdSubValue:
-            $ref: '#/components/schemas/idSubValue'
-        homeTransferId:
-            type: string
-        details:
+        errorType:
           type: string
 
 

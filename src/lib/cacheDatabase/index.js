@@ -99,8 +99,7 @@ async function syncDB({ redisCache, db, logger }) {
         const rawData = await redisCache.get(key);
         const data = parseData(rawData);
 
-        // console.log(data);
-
+        // If the key is for a transfer
         if(key.includes('transferModel'))
         {
 
@@ -205,6 +204,7 @@ async function syncDB({ redisCache, db, logger }) {
                 logger.log('fxQuoteResponse key does not exist');
             }
 
+            // Check if the fxTransferRequest and fxTransferResponse are present
             let fx_transfer_row = null;
             if (data.fxTransferRequest && data.fxTransferResponse) {
 
@@ -273,7 +273,14 @@ async function syncDB({ redisCache, db, logger }) {
             }
 
         }
+        // When the redis key starts with fxQuote*
         else {
+
+            // this is all a hack right now as we will eventually NOT use the cache as a source
+            // of truth for transfers but rather some sort of dedicated persistence service instead.
+            // Therefore we can afford to do some nasty things in order to get working features...
+            // for now...
+
 
             const initiatedTimestamp = data.initiatedTimestamp
                 ? new Date(data.initiatedTimestamp).getTime()
@@ -311,7 +318,7 @@ async function syncDB({ redisCache, db, logger }) {
             }
 
             let fxTransferRow = null;
-            if(data.fxPrepare && data.fulfil)
+            if(data.fxPrepare)
                 fxTransferRow = {
                     commit_request_id: data.fxPrepare.body.commitRequestId,
                     determining_transfer_id: data.fxPrepare.body.determiningTransferId,
@@ -324,12 +331,16 @@ async function syncDB({ redisCache, db, logger }) {
                     target_currency: data.fxPrepare.body.targetAmount.currency,
                     condition: data.fxPrepare.body.condition,
                     expiration: data.fxPrepare.body.expiration,
-                    conversion_state: data.fulfil.body.conversionState,
-                    fulfilment: data.fulfil.body.fulfilment,
+                    conversion_state: '', // if no fulfil leave empty
+                    fulfilment: '', // if no fulfil leave empty
                     direction: data.direction,
                     created_at: initiatedTimestamp,
                     completed_timestamp: completedTimestamp,
                 };
+            if(data.fulfil){
+                fxTransferRow.fulfilment = data.fulfil.body.fulfilment;
+                fxTransferRow.conversion_state = data.fulfil.body.conversionState;
+            }
             else{
                 logger.log('fxPrepare and fulfil keys not present.');
             }
@@ -369,11 +380,11 @@ async function syncDB({ redisCache, db, logger }) {
         }
 
 
-
     // const sqlRaw = db('transfer').insert(row).toString();
     // db.raw(sqlRaw.replace(/^insert/i, 'insert or ignore')).then(resolve);
     };
 
+    // Available key patterns in redis
     const redisKeys = ['transferModel_*', 'fxQuote_in_*'];
     redisKeys.forEach( async (key) => {
         const keys = await redisCache.keys(key);

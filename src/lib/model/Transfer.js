@@ -36,6 +36,7 @@ class Transfer {
       0: 'ERROR',
     };
 
+    // Join the fx_transfer, fx_quote and transfer table
     _applyJoin(query){
         return query
             .leftJoin('fx_quote', 'transfer.id', 'fx_quote.determining_transfer_id')
@@ -48,6 +49,7 @@ class Transfer {
                 'fx_transfer.target_currency as fx_transfer_target_currency',
                 'fx_transfer.source_amount as fx_source_amount',
                 'fx_transfer.target_amount as fx_target_amount',
+                'fx_transfer.commit_request_id as fx_commit_request_id',
             ]);
     }
 
@@ -160,12 +162,16 @@ class Transfer {
             };
         }
 
-        const conversionTerms = fxQuoteResponse.body.conversionTerms;
+        // Get conversionTerms from fxQuoteResponse
+        let conversionTerms = fxQuoteResponse.body.conversionTerms;
+        // If conversionTerms is string , parse to JSON
+        if(fxQuoteResponse.body && typeof fxQuoteResponse.body.conversionTerms === 'string')
+            conversionTerms = JSON.parse(fxQuoteResponse.body.conversionTerms);
 
         if(!conversionTerms)
             return ;
 
-        const charges = this._calculateTotalChargesFromCharges(conversionTerms.charges);
+        // transferAmount object for response
         const transferAmount = {
             sourceAmount : {
                 amount:
@@ -184,6 +190,11 @@ class Transfer {
                 conversionTerms.targetAmount.currency,
             },
         };
+
+        const charges = this._calculateTotalChargesFromCharges(conversionTerms.charges,
+            conversionTerms.sourceAmount.currency,
+            conversionTerms.targetAmount.currency,
+        );
         return {
             charges : charges ,
             expiryDate: conversionTerms.expiration,
@@ -195,10 +206,10 @@ class Transfer {
                 parseFloat(charges.totalTargetCurrencyCharges.amount),
             )
         };
-
     }
 
-    _calculateTotalChargesFromCharges(charges){
+    // Calculate the total charges for the source and target currency
+    _calculateTotalChargesFromCharges(charges, sourceCurrency, targetCurrency){
         if(!charges)
             return {
                 totalSourceCurrencyCharges: { amount: '', currency: ''},
@@ -208,28 +219,35 @@ class Transfer {
         let totalSourceCurrencyCharges = 0;
         let totalTargetCurrencyCharges = 0;
 
+        // Iterate over the charges array to sum the charges for source and target currency
         charges.forEach( charge => {
-            const sourceAmount = parseFloat(charge.sourceAmount.amount);
-            const targetAmount = parseFloat(charge.targetAmount.amount);
-
-            totalSourceCurrencyCharges += sourceAmount;
-            totalTargetCurrencyCharges += targetAmount;
+            const sourceAmount = charge.sourceAmount ? parseFloat(charge.sourceAmount.amount) : 0;
+            const targetAmount =charge.targetAmount ? parseFloat(charge.targetAmount.amount) : 0;
+            // Sum only when the charge currency is same as source or target currency
+            // Also check sourceAmount and targetAmount and present or not null
+            if(charge.sourceAmount && charge.sourceAmount.currency === sourceCurrency)
+                totalSourceCurrencyCharges += sourceAmount;
+            if(charge.targetAmount && charge.targetAmount.currency === targetCurrency)
+                totalTargetCurrencyCharges += targetAmount;
         });
 
         return {
             totalSourceCurrencyCharges: {
                 amount: totalSourceCurrencyCharges.toString(),
-                currency: charges[0].sourceAmount.currency,
+                currency: sourceCurrency,
             },
             totalTargetCurrencyCharges: {
                 amount: totalTargetCurrencyCharges.toString(),
-                currency: charges[0].targetAmount.currency
+                currency: targetCurrency,
             },
         };
     }
 
     _calculateExchangeRate(sourceAmount, targetAmount, totalSourceCharges, totalTargetCharges) {
-        return (targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges);
+        // Condition for when exchangeRate calculation is not possible , also to avoid divide by zero error
+        if(!sourceAmount || !targetAmount || ((sourceAmount - totalSourceCharges) === 0))
+            return null;
+        return ((targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges)).toFixed(4);
     }
 
     _convertToApiDetailFormat(transfer) {
@@ -264,6 +282,8 @@ class Transfer {
                 raw.quoteRequest.body.payee &&
                 raw.quoteRequest.body.payee.partyIdInfo &&
                 raw.quoteRequest.body.payee.partyIdInfo.fspId,
+            conversionType:
+                transfer.direction > 0 ? 'Payer DFSP conversion': '',
             conversionInstitution:
                 raw.fxQuoteRequest &&
                 raw.fxQuoteRequest.body &&
@@ -274,13 +294,13 @@ class Transfer {
             transferTerms: {
                 transferId: transfer.id,
                 quoteAmount: {
-                    amount: raw.quoteRequest && raw.quoteRequest.body && raw.quoteRequest.body.amount.amount,
-                    currency: raw.quoteRequest && raw.quoteRequest.body && raw.quoteRequest.body.amount.currency,
+                    amount: transfer.amount,
+                    currency: transfer.currency,
                 },
                 quoteAmountType: raw.quoteRequest && raw.quoteRequest.body.amountType,
                 transferAmount: {
-                    amount: transfer.amount,
-                    currency: transfer.currency,
+                    amount:  raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.transferAmount && raw.quoteResponse.body.transferAmount.amount,
+                    currency:  raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.transferAmount && raw.quoteResponse.body.transferAmount.currency,
                 },
                 payeeReceiveAmount: {
                     amount: raw.quoteResponse && raw.quoteResponse.body && raw.quoteResponse.body.payeeReceiveAmount && raw.quoteResponse.body.payeeReceiveAmount.amount,
@@ -324,6 +344,7 @@ class Transfer {
                     raw.quoteRequest &&
                     raw.quoteRequest.body &&
                     raw.quoteRequest.body.quoteId,
+                commitRequestId: transfer.fx_commit_request_id,
                 homeTransferId: raw.homeTransactionId,
                 payerParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payer'),
                 payeeParty: this._getPartyFromQuoteRequest(raw.quoteRequest, 'payee'),
@@ -518,7 +539,21 @@ class Transfer {
         // return this._requests.get('transfers', opts);
     }
 
-    //Transfer, fx_transfer and fx_quote join method
+    /**
+     * @param opts {Object}
+     * @param [opts.startTimestamp] {string}
+     * @param [opts.endTimestamp] {string}
+     * @param [opts.senderIdType] {string}
+     * @param [opts.senderIdValue] {string}
+     * @param [opts.senderIdSubValue] {string}
+     * @param [opts.recipientIdType] {string}
+     * @param [opts.recipientIdValue] {string}
+     * @param [opts.recipientIdSubValue] {string}
+     * @param [opts.direction] {string}
+     * @param [opts.institution] {string}
+     * @param [opts.batchId] {number}
+     * @param [opts.status] {string}
+     */
     async findAllWithFX(opts) {
         if (this.mockData) {
             return mock.getTransfers(opts);
