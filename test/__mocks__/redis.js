@@ -28,6 +28,9 @@ class RedisClient {
     set(key, value) {
         this.data[key] = value;
     }
+    destroy(key, value) {
+        delete this.data[key];
+    }
     keys() {
         return Object.keys(this.data);
     }
