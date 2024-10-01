@@ -80,7 +80,7 @@ class FxpConversion {
         return raw;
     }
 
-    _calculateTotalChargesFromCharges(charges){
+    _calculateTotalChargesFromCharges(charges, sourceCurrency, targetCurrency){
         if(!charges)
             return {
                 totalSourceCurrencyCharges: { amount: '', currency: ''},
@@ -91,26 +91,31 @@ class FxpConversion {
         let totalTargetCurrencyCharges = 0;
 
         charges.forEach( charge => {
-            const sourceAmount = parseFloat(charge.sourceAmount.amount);
-            const targetAmount = parseFloat(charge.targetAmount.amount);
+            const sourceAmount = charge.sourceAmount ? parseFloat(charge.sourceAmount.amount) : 0;
+            const targetAmount =charge.targetAmount ? parseFloat(charge.targetAmount.amount) : 0;
 
-            totalSourceCurrencyCharges += sourceAmount;
-            totalTargetCurrencyCharges += targetAmount;
+            if(charge.sourceAmount && charge.sourceAmount.currency === sourceCurrency)
+                totalSourceCurrencyCharges += sourceAmount;
+            if(charge.targetAmount && charge.targetAmount.currency === targetCurrency)
+                totalTargetCurrencyCharges += targetAmount;
         });
 
         return {
             totalSourceCurrencyCharges: {
                 amount: totalSourceCurrencyCharges.toString(),
-                currency: charges[0].sourceAmount.currency,
+                currency: sourceCurrency,
             },
             totalTargetCurrencyCharges: {
                 amount: totalTargetCurrencyCharges.toString(),
-                currency: charges[0].targetAmount.currency
+                currency: targetCurrency,
             },
         };
     }
 
     _calculateExchangeRate(sourceAmount, targetAmount, totalSourceCharges, totalTargetCharges) {
+        // Condition for when exchangeRate calculation is not possible
+        if(!sourceAmount || !targetAmount || ((sourceAmount - totalSourceCharges) === 0))
+            return null;
         return ((targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges)).toFixed(4);
     }
 
@@ -143,7 +148,6 @@ class FxpConversion {
         if(!conversionTerms)
             return ;
 
-        const charges = this._calculateTotalChargesFromCharges(conversionTerms.charges);
         const transferAmount = {
             sourceAmount : {
                 amount:
@@ -162,6 +166,10 @@ class FxpConversion {
                 conversionTerms.targetAmount.currency,
             },
         };
+        const charges = this._calculateTotalChargesFromCharges(conversionTerms.charges,
+            conversionTerms.sourceAmount.currency,
+            conversionTerms.targetAmount.currency,
+        );
         return {
             charges : charges ,
             expiryDate: conversionTerms.expiration,
