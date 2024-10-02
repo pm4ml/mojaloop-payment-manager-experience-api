@@ -1,5 +1,7 @@
 'use strict';
 
+const { getTransfers } = require("@internal/model/mock");
+
 module.exports = {
     uploadEgressEndpointContext: {
         'request': {
@@ -182,5 +184,135 @@ module.exports = {
         },
         params: {},
         query: {}
+    },
+    getTransfersContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/transfers'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': { 
+            'transferId': '1' 
+        }
+    },
+    getTransferDetailsContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/transfers/8/details'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': { 
+            'transferId': '8' 
+        }
+    },
+    getTransferStatusSummaryContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/transferStatusSummary'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'startTimestamp': '2020-11-01T16T14:11:00.371Z',
+            'endTimestamp': '2020-11-17T14:11:06.371Z'
+        }
+    },
+    getBatchesContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/batches'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {}
+    },
+    getBatchContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/batches/1'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {
+            'batchId': '1'
+        },
+        'query': {}
+    },
+    getHourlyFlowContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/hourlyFlow'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'hoursPrevious': 1
+        }
+    },
+    getAvgResponseTimeContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/minuteAverageTransferResponseTime'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'minutePrevious': 1
+        }
+    },
+    getSuccessRateContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/minuteSuccessfulTransferPerc'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'minutePrevious': 1
+        }
+    },
+    getFxpConversionsContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/fxpConversions'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {}
     },
 };

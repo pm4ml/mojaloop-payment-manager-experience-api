@@ -5,6 +5,8 @@ const {
     MonetaryZoneModel,
     DFSPModel,
     Transfer,
+    Batch,
+    FxpConversion,
 } = require('@internal/model');
 
 const endpointsResource = require('./resources/endpointsResource');
@@ -193,5 +195,116 @@ describe('Outbound API handlers:', () => {
 
             expect(spy).toHaveBeenCalledTimes(1);
         });
+
+        test('Retrieve one transfer including fx', async () => {
+            const context = endpointsResource.getTransfersContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'findOne')
+                .mockImplementation(() => {});
+
+            await handlers['/transfers/{transferId}'].get(context);
+
+            const expectedArgument = {
+                'transferId': context.params.transferId
+            };
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve transfer details', async () => {
+            const context = endpointsResource.getTransferDetailsContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'details')
+                .mockImplementation(() => {});
+
+            await handlers['/transfers/{transferId}/details'].get(context);
+
+            const expectedArgument = {
+                'transferId': context.params.transferId
+            };
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve transfer details', async () => {
+            const context = endpointsResource.getTransferStatusSummaryContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'statusSummary')
+                .mockImplementation(() => {});
+
+            await handlers['/transferStatusSummary'].get(context);
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
     });
+
+    describe('Batch tests', () => {
+        test('Retrieve batches', async () => {
+            const context = endpointsResource.getBatchesContext;
+
+            const spy = jest.spyOn(Batch.prototype, 'findAll')
+                .mockImplementation(() => {});
+
+            await handlers['/batches'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve a batch', async () => {
+            const context = endpointsResource.getBatchContext;
+
+            const spy = jest.spyOn(Batch.prototype, 'findOne')
+                .mockImplementation(() => {});
+
+            await handlers['/batches/{batchId}'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve hourly flow', async () => {
+            const context = endpointsResource.getHourlyFlowContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'hourlyFlow')
+                .mockImplementation(() => {});
+
+            await handlers['/hourlyFlow'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve success rate', async () => {
+            const context = endpointsResource.getAvgResponseTimeContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'avgResponseTime')
+                .mockImplementation(() => {});
+
+            await handlers['/minuteAverageTransferResponseTime'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve average response time', async () => {
+            const context = endpointsResource.getSuccessRateContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'successRate')
+                .mockImplementation(() => {});
+
+            await handlers['/minuteSuccessfulTransferPerc'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('Fxp Conversions tests', () => {
+        test('Get Fxp Conversions', async () => {
+            const context = endpointsResource.getFxpConversionsContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'findAll')
+                .mockImplementation(() => {});
+
+            await handlers['/fxpConversions'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+    });
+
 });
