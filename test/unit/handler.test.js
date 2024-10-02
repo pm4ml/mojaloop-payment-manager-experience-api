@@ -305,6 +305,56 @@ describe('Outbound API handlers:', () => {
 
             expect(spy).toHaveBeenCalledTimes(1);
         });
+        test('Get Fxp Conversion Details', async () => {
+            const context = endpointsResource.getFxpConversionDetailsContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'details')
+                .mockImplementation(() => {});
+
+            await handlers['/fxpConversions/{conversionId}/details'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test('Get Fxp Conversions Status Summary', async () => {
+            const context = endpointsResource.getFxpConversionStatusSummaryContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'statusSummary')
+                .mockImplementation(() => {});
+
+            await handlers['/fxpConversionsStatusSummary'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test('Get Fxp Conversions Error', async () => {
+            const context = endpointsResource.getFxpConversionErrorsContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'fxpErrors')
+                .mockImplementation(() => {});
+
+            await handlers['/fxpErrors'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test('Get Fxp Conversions', async () => {
+            const context = endpointsResource.getFxpConversionsSuccessRateContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'successRate')
+                .mockImplementation(() => {});
+
+            await handlers['/minuteSuccessfulFxpConversionsPerc'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test('Get Fxp Conversions', async () => {
+            const context = endpointsResource.getFxpConversionsAvgResponseTimeContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'avgResponseTime')
+                .mockImplementation(() => {});
+
+            await handlers['/minuteAverageFxpConversionsResponseTime'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
     });
 
 });
