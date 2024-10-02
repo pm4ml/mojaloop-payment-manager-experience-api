@@ -176,6 +176,10 @@ jobs:
           version: default
       - run: docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
       - run: |
+          docker buildx create --name mycustombuilder --driver docker-container --bootstrap
+          docker buildx use mycustombuilder
+          docker buildx inspect
+      - run: |
           export IMAGE_TAG=$(echo $CIRCLE_TAG | tr -d v)
           echo "tag is $IMAGE_TAG"
           docker buildx build --push \
