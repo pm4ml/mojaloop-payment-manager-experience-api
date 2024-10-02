@@ -21,6 +21,7 @@ class FxpConversion {
    * @param props.managementEndpoint {string}
    */
     constructor(props) {
+        this.mockData = props.mockData;
         this.logger = props.logger;
         this._db = props.db;
     }
@@ -329,6 +330,9 @@ class FxpConversion {
    * @param [opts.status] {string}
    */
     async findAll(opts) {
+        if (this.mockData) {
+            return mock.getFxpConversions(opts);
+        }
         let query = this._db('fx_quote').whereRaw('true');
 
         const DEFAULT_LIMIT = 100;
@@ -385,7 +389,7 @@ class FxpConversion {
    */
     async details(id) {
         if (this.mockData) {
-            return mock.getTransferDetails({ id });
+            return mock.getFxpConversionDetails({ id });
         }
 
         const query = this._db('fx_quote').where('fx_quote.conversion_id', id);
@@ -403,6 +407,8 @@ class FxpConversion {
    * @param [opts.minutePrevious] {number}
    */
     async successRate(opts) {
+        if(this.mockData)
+            return mock.getFxpConversionsSuccessRate(opts);
         const now = Date.now();
         const statQuery = (successOnly) => {
             const query = this._db('fx_quote')
@@ -441,7 +447,7 @@ class FxpConversion {
    */
     async avgResponseTime(opts) {
         if (this.mockData) {
-            return mock.getTransfersAvgResponseTime(opts);
+            return mock.getFxpConversionsAvgResponseTime(opts);
         }
         const now = Date.now();
         const avgRespTimeQuery = () => {
@@ -475,7 +481,7 @@ class FxpConversion {
    */
     async statusSummary(opts) {
         if (this.mockData) {
-            return mock.getTransferStatusSummary(opts);
+            return mock.getFxpConversionStatusSummary(opts);
         }
         const statusQuery = () => {
             const query = this._db('fx_quote')
@@ -528,7 +534,6 @@ class FxpConversion {
    */
     // eslint-disable-next-line no-unused-vars
     async fxpErrors(opts) {
-    // TODO: Implement fxpErrors
         try {
             let query = this._db('fx_quote').where('success', false);
             query = this._joinFxQuotesAndFxTransfers(query);

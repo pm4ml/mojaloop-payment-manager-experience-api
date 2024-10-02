@@ -10,6 +10,14 @@ const {
 const { getErrors } = require('./Error');
 const { getPositions } = require('./Position');
 const { getFlows } = require('./Flow');
+const {
+    getFxpConversions ,
+    getFxpConversion,
+    getFxpConversionDetails,
+    getFxpConversionStatusSummary,
+    getFxpConversionsSuccessRate,
+    getFxpConversionsAvgResponseTime,
+} = require('./FxpConversion');
 
 module.exports = {
     getBatches,
@@ -23,4 +31,10 @@ module.exports = {
     getErrors,
     getPositions,
     getFlows,
+    getFxpConversions ,
+    getFxpConversion,
+    getFxpConversionDetails,
+    getFxpConversionStatusSummary,
+    getFxpConversionsSuccessRate,
+    getFxpConversionsAvgResponseTime,
 };
