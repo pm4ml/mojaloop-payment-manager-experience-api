@@ -315,4 +315,81 @@ module.exports = {
         'params': {},
         'query': {}
     },
+    getFxpConversionDetailsContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/fxpConversions/3/details'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {
+            'conversionId': 3
+        },
+        'query': {}
+    },
+    getFxpConversionStatusSummaryContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/fxpConversionsStatusSummary'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'startTimestamp': '2020-11-01T16T14:11:00.371Z',
+            'endTimestamp': '2020-11-17T14:11:06.371Z'
+        }
+    },
+    getFxpConversionErrorsContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/fxpErrors'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'startTimestamp': '2020-11-01T16T14:11:00.371Z',
+            'endTimestamp': '2020-11-17T14:11:06.371Z'
+        }
+    },
+    getFxpConversionsSuccessRateContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/minuteSuccessfulFxpConversionsPerc'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'minutePrevious': 1
+        }
+    },
+    getFxpConversionsAvgResponseTimeContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/minuteAverageFxpConversionsResponseTime'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'minutePrevious': 1
+        }
+    },
 };
