@@ -393,4 +393,88 @@ module.exports = {
             'minutePrevious': 1
         }
     },
+    getClientCertificatesContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/dfsp/clientCerts'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+                'managementEndpoint': 'localhost:9000',
+            }
+        },
+        'params': {},
+        'query': {}
+    },
+    createClientCSRContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/dfsp/clientCerts/csr'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+                'managementEndpoint': 'localhost:9000',
+            }
+        },
+        'params': {},
+        'query': {}
+    },
+    getDFSPCAContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/dfsp/ca'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+                'managementEndpoint': 'localhost:9000',
+            }
+        },
+        'params': {},
+        'query': {}
+    },
+    getDFSPServerCertificatesContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/dfsp/serverCerts'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+                'managementEndpoint': 'localhost:9000',
+            }
+        },
+        'params': {},
+        'query': {}
+    },
+    getAllJWSCertificatesContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/dfsp/alljwscerts'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+                'managementEndpoint': 'localhost:9000',
+            }
+        },
+        'params': {},
+        'query': {}
+    },
+    getJWSCertificatesContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/dfsp/jwscerts'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+                'managementEndpoint': 'localhost:9000',
+            }
+        },
+        'params': {},
+        'query': {}
+    },
 };

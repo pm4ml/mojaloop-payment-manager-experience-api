@@ -7,6 +7,7 @@ const {
     Transfer,
     Batch,
     FxpConversion,
+    CertificatesModel
 } = require('@internal/model');
 
 const endpointsResource = require('./resources/endpointsResource');
@@ -359,4 +360,140 @@ describe('Outbound API handlers:', () => {
         });
     });
 
+    describe('Certificates tests', () => {
+        test('Get client certificate', async () => {
+
+            const context = endpointsResource.getClientCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/clientCerts'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Create Client CSR', async () => {        
+            const context = endpointsResource.createClientCSRContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'createClientCSR')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/clientCerts/csr'].post(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get DSFP CA certificate', async () => {
+                
+            const context = endpointsResource.getDFSPCAContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getDFSPCA')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/ca'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Create DFSP CA CSR', async () => {
+            const context = endpointsResource.getDFSPCAContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'createDFSPCA')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/ca'].post(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Update DFSP CA CSR', async () => {
+            const context = endpointsResource.getDFSPCAContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'setDFSPCA')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/ca'].put(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get DFSP Server certificates', async () => {
+            const context = endpointsResource.getDFSPServerCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getDFSPServerCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/serverCerts'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Generate DFSP Server certificates', async () => {
+            const context = endpointsResource.getDFSPServerCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'generateServerCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/serverCerts'].post(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get All JWS Certificates', async () => {
+            const context = endpointsResource.getAllJWSCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getAllJWSCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/alljwscerts'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get JWS Certificates', async () => {
+            const context = endpointsResource.getJWSCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getJWSCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/jwscerts'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get JWS Certificates', async () => {
+            const context = endpointsResource.getJWSCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'uploadJWSCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/jwscerts'].post(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get JWS Certificates', async () => {
+            const context = endpointsResource.getJWSCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'updateJWSCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/jwscerts'].put(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get JWS Certificates', async () => {
+            const context = endpointsResource.getJWSCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'deleteJWSCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/jwscerts'].delete(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+    });
 });
