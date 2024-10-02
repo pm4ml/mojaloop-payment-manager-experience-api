@@ -169,8 +169,6 @@ jobs:
             - ./docker-image.tar
   publish:
     executor: default-machine
-    docker:
-      - image: jdrouet/docker-with-buildx:stable
     steps:
       - checkout
       - setup_remote_docker
