@@ -477,4 +477,32 @@ module.exports = {
         'params': {},
         'query': {}
     },
+    getHubServerCertificatesContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/hub/serverCerts'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+                'managementEndpoint': 'localhost:9000',
+            }
+        },
+        'params': {},
+        'query': {}
+    },
+    getHubCACertificatesContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/hub/ca'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+                'managementEndpoint': 'localhost:9000',
+            }
+        },
+        'params': {},
+        'query': {}
+    },
 };

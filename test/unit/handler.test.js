@@ -495,5 +495,26 @@ describe('Outbound API handlers:', () => {
             expect(spy).toHaveBeenCalledTimes(1);
         });
 
+        test('Get Hub Server Certs', async () => {
+            const context = endpointsResource.getHubServerCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getHubServerCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/hub/serverCerts'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get Hub CA Certs', async () => {
+            const context = endpointsResource.getHubCACertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getHubCA')
+                .mockImplementation(() => {});
+
+            await handlers['/hub/ca'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
     });
 });
