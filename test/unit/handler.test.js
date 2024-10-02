@@ -6,6 +6,7 @@ const {
     DFSPModel,
     Transfer,
     Batch,
+    FxpConversion,
 } = require('@internal/model');
 
 const endpointsResource = require('./resources/endpointsResource');
@@ -269,5 +270,41 @@ describe('Outbound API handlers:', () => {
 
             expect(spy).toHaveBeenCalledTimes(1);
         });
+
+        test('Retrieve success rate', async () => {
+            const context = endpointsResource.getAvgResponseTimeContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'avgResponseTime')
+                .mockImplementation(() => {});
+
+            await handlers['/minuteAverageTransferResponseTime'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve average response time', async () => {
+            const context = endpointsResource.getSuccessRateContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'successRate')
+                .mockImplementation(() => {});
+
+            await handlers['/minuteSuccessfulTransferPerc'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
     });
+
+    describe('Fxp Conversions tests', () => {
+        test('Get Fxp Conversions', async () => {
+            const context = endpointsResource.getFxpConversionsContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'findAll')
+                .mockImplementation(() => {});
+
+            await handlers['/fxpConversions'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+    });
+
 });

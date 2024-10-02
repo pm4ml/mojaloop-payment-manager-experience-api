@@ -258,7 +258,7 @@ module.exports = {
         'query': {}
     },
     getHourlyFlowContext: {
-            'request': {
+        'request': {
             'method': 'GET',
             'utl': '/hourlyFlow'
         },
@@ -271,5 +271,48 @@ module.exports = {
         'query': {
             'hoursPrevious': 1
         }
-    }
+    },
+    getAvgResponseTimeContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/minuteAverageTransferResponseTime'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'minutePrevious': 1
+        }
+    },
+    getSuccessRateContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/minuteSuccessfulTransferPerc'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'minutePrevious': 1
+        }
+    },
+    getFxpConversionsContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/fxpConversions'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {}
+    },
 };
