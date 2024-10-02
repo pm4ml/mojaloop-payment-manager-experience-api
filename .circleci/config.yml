@@ -167,24 +167,36 @@ jobs:
           root: /tmp
           paths:
             - ./docker-image.tar
+  # publish:
+  #   docker:
+  #     - image: jdrouet/docker-with-buildx:0.9.1
+  #   steps:
+  #     - checkout
+  #     - setup_remote_docker:
+  #         version: default
+  #     - run: docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+  #     - run: |
+  #         docker buildx create --name mycustombuilder --driver docker-container --bootstrap
+  #         docker buildx use mycustombuilder
+  #         docker buildx inspect
+  #     - run: |
+  #         export IMAGE_TAG=$(echo $CIRCLE_TAG | tr -d v)
+  #         echo "tag is $IMAGE_TAG"
+  #         docker buildx build --push \
+  #           --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
+  #           --tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$IMAGE_TAG .
   publish:
-    docker:
-      - image: jdrouet/docker-with-buildx:0.9.1
+    executor: default-machine
     steps:
       - checkout
-      - setup_remote_docker:
-          version: default
       - run: docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
-      - run: |
-          docker buildx create --name mycustombuilder --driver docker-container --bootstrap
-          docker buildx use mycustombuilder
-          docker buildx inspect
-      - run: |
-          export IMAGE_TAG=$(echo $CIRCLE_TAG | tr -d v)
-          echo "tag is $IMAGE_TAG"
-          docker buildx build --push \
-            --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
-            --tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$IMAGE_TAG .
+      - run:
+          name: Build Docker image and push
+          command: |
+            export IMAGE_TAG=$(echo $CIRCLE_TAG | tr -d v)
+            echo "tag is $IMAGE_TAG"
+            docker build --tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$IMAGE_TAG .
+            docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$IMAGE_TAG
 
   license-scan:
     executor: default-machine
