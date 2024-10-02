@@ -195,8 +195,8 @@ jobs:
           command: |
             export IMAGE_TAG=$(echo $CIRCLE_TAG | tr -d v)
             echo "tag is $IMAGE_TAG"
-            docker build --push \
-              --tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$IMAGE_TAG .
+            docker build --tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$IMAGE_TAG .
+            docker push $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$IMAGE_TAG
 
   license-scan:
     executor: default-machine
