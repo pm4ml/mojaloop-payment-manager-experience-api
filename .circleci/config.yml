@@ -168,6 +168,7 @@ jobs:
           paths:
             - ./docker-image.tar
   publish:
+    executor: default-machine
     docker:
       - image: jdrouet/docker-with-buildx:stable
     steps:
@@ -180,6 +181,7 @@ jobs:
           docker buildx build --push \
             --platform linux/arm/v7,linux/arm64/v8,linux/amd64 \
             --tag $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME:$IMAGE_TAG .
+ 
 
   license-scan:
     executor: default-machine
