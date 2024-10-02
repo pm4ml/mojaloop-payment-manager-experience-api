@@ -1,6 +1,7 @@
 'use strict';
 
-const { getTransfers } = require("@internal/model/mock");
+// Not sure why this was added
+// const { getTransfers } = require("@internal/model/mock");
 
 module.exports = {
     uploadEgressEndpointContext: {
@@ -195,8 +196,8 @@ module.exports = {
                 'mockData': true,
             }
         },
-        'params': { 
-            'transferId': '1' 
+        'params': {
+            'transferId': '1'
         }
     },
     getTransferDetailsContext: {
@@ -209,8 +210,8 @@ module.exports = {
                 'mockData': true,
             }
         },
-        'params': { 
-            'transferId': '8' 
+        'params': {
+            'transferId': '8'
         }
     },
     getTransferStatusSummaryContext: {

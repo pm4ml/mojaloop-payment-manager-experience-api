@@ -204,9 +204,10 @@ describe('Outbound API handlers:', () => {
 
             await handlers['/transfers/{transferId}'].get(context);
 
-            const expectedArgument = {
-                'transferId': context.params.transferId
-            };
+            // could be used for a future test case
+            // const expectedArgument = {
+            //     'transferId': context.params.transferId
+            // };
 
             expect(spy).toHaveBeenCalledTimes(1);
         });
@@ -219,9 +220,10 @@ describe('Outbound API handlers:', () => {
 
             await handlers['/transfers/{transferId}/details'].get(context);
 
-            const expectedArgument = {
-                'transferId': context.params.transferId
-            };
+            // could be used for a future test case
+            // const expectedArgument = {
+            //     'transferId': context.params.transferId
+            // };
 
             expect(spy).toHaveBeenCalledTimes(1);
         });
