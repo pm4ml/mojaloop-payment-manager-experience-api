@@ -3,8 +3,6 @@ const { currencies, fakeAmount } = require('./common');
 
 const statuses = ['SUCCESS', 'PENDING', 'ERROR'];
 const directions = ['INBOUND', 'OUTBOUND'];
-const types = ['P2P'];
-
 
 /**
  *
