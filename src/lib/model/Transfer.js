@@ -35,7 +35,7 @@ class Transfer {
     //   1: 'SUCCESS',
     //   0: 'ERROR',
     // };
-    
+
 
     // Join the fx_transfer, fx_quote and transfer table
     _applyJoin(query){
@@ -661,6 +661,9 @@ class Transfer {
      * @param [opts.minutePrevious] {number}
      */
     async successRate(opts) {
+        if(this.mockData){
+            return mock.getTransfersSuccessRate(opts);
+        }
         const now = Date.now();
         const statQuery = (successOnly) => {
             const query = this._db('transfer')
