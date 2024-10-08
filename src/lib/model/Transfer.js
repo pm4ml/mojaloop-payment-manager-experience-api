@@ -265,8 +265,9 @@ class Transfer {
             sendAmount:transfer.fx_source_amount ? transfer.fx_source_amount : transfer.amount,
             sendCurrency:transfer.fx_source_currency ? transfer.fx_source_currency: transfer.currency,
             dateSubmitted: new Date(transfer.created_at),
-            receiveAmount: transfer.fx_target_amount ? transfer.fx_target_amount: transfer.amount,
-            receiveCurrency: transfer.fx_target_currency ? transfer.fx_target_currency: transfer.currency,
+            // If needFx is false show default amount and currency else show the fx for receive
+            receiveAmount: !raw.needFx ? transfer.amount: transfer.fx_target_amount ? transfer.fx_target_amount: '',
+            receiveCurrency: !raw.needFx ? transfer.currency: transfer.fx_target_currency? transfer.fx_target_currency: '',
             conversionAcceptedDate : raw.fxTransferResponse && raw.fxTransferResponse.body && raw.fxTransferResponse.body.completedTimestamp,
             senderDetails: {
                 idType: transfer.sender_id_type,
