@@ -23,6 +23,7 @@ const {
     MonetaryZoneModel,
     MetricsModel,
     EndpointsModel,
+    FxpConversion,
 } = require('@internal/model');
 
 
@@ -59,31 +60,33 @@ const getBatch = async (ctx) => {
 };
 
 const getTransfers = async (ctx) => {
-    const { id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId } = ctx.query;
+    const { id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId, offset, limit } = ctx.query;
 
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
-    ctx.body = await transfer.findAll({ id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId });
+    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger, db: ctx.state.db });
+
+    ctx.body = await transfer.findAllWithFX({ id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId, offset, limit });
 };
+
 
 const getTransferStatusSummary = async (ctx) => {
     const { startTimestamp, endTimestamp } = ctx.query;
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.statusSummary({ startTimestamp, endTimestamp });
 };
 
 const getTransfer = async (ctx) => {
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.findOne(ctx.params.transferId);
 };
 
 const getTransferDetails = async (ctx) => {
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.details(ctx.params.transferId);
 };
 
 const getErrors = async (ctx) => {
     const { startTimestamp, endTimestamp } = ctx.query;
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.errors({ startTimestamp, endTimestamp });
 };
 
@@ -95,20 +98,56 @@ const getHourlyPosition = async (ctx) => {
 
 const getHourlyFlow = async (ctx) => {
     const { hoursPrevious } = ctx.query;
-    const transfer = new Transfer(ctx.state.conf);
+    const transfer = new Transfer({...ctx.state.conf, logger:ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.hourlyFlow({ hoursPrevious });
 };
 
 const getTransfersSuccessRate = async (ctx) => {
     const { minutePrevious } = ctx.query;
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({...ctx.state.conf, logger:ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.successRate({ minutePrevious });
 };
 
 const getTransfersAvgResponseTime = async (ctx) => {
     const { minutePrevious } = ctx.query;
-    const transfer = new Transfer({ ...ctx.state.conf, logger: ctx.state.logger });
+    const transfer = new Transfer({...ctx.state.conf, logger:ctx.state.logger, db: ctx.state.db });
     ctx.body = await transfer.avgResponseTime({ minutePrevious });
+};
+
+const getFxpConversions = async (ctx) =>  {
+    const { id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId, offset, limit } = ctx.query;
+
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db:ctx.state.db});
+
+    ctx.body = await fxpConversion.findAll({ id, startTimestamp, endTimestamp, senderIdType, senderIdValue, senderIdSubValue, recipientIdType, recipientIdValue, recipientIdSubValue, direction, institution, status, batchId, offset, limit });
+};
+
+const getFxpConversionStatusSummary = async (ctx) => {
+    const { startTimestamp, endTimestamp } = ctx.query;
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db: ctx.state.db });
+    ctx.body = await fxpConversion.statusSummary({ startTimestamp, endTimestamp });
+};
+
+const getFxpConversionDetails = async (ctx) => {
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db: ctx.state.db });
+    ctx.body = await fxpConversion.details(ctx.params.conversionId);
+};
+
+const getFxpConversionErrors = async (ctx) => {
+    const { startTimestamp, endTimestamp } = ctx.query;
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db: ctx.state.db});
+    ctx.body = await fxpConversion.fxpErrors({ startTimestamp, endTimestamp });
+};
+
+const getFxpConversionsSuccessRate = async (ctx) => {
+    const { minutePrevious } = ctx.query;
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db: ctx.state.db });
+    ctx.body = await fxpConversion.successRate({ minutePrevious });
+};
+const getFxpConversionsAvgResponseTime = async (ctx) => {
+    const { minutePrevious } = ctx.query;
+    const fxpConversion = new FxpConversion({ logger: ctx.state.logger, db: ctx.state.db });
+    ctx.body = await fxpConversion.avgResponseTime({ minutePrevious });
 };
 
 const getMetrics = async (ctx) => {
@@ -593,4 +632,23 @@ module.exports = {
     '/dfsp/allcerts': {
         post: generateAllCerts,
     },
+    '/fxpConversions': {
+        get: getFxpConversions,
+    },
+    '/fxpConversions/{conversionId}/details': {
+        get: getFxpConversionDetails,
+    },
+    '/fxpConversionsStatusSummary': {
+        get: getFxpConversionStatusSummary,
+    },
+    '/fxpErrors': {
+        get: getFxpConversionErrors,
+    },
+    '/minuteSuccessfulFxpConversionsPerc': {
+        get: getFxpConversionsSuccessRate,
+    },
+    '/minuteAverageFxpConversionsResponseTime': {
+        get: getFxpConversionsAvgResponseTime,
+    },
+
 };
