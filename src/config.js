@@ -52,6 +52,6 @@ module.exports = {
         resourceName: env.get('AUTH_RESOURCE_NAME').asString(),
         loggedInLandingUrl: env.get('AUTH_LOGGED_IN_LANDING_URL').asString(),
         rolePermissionMap,
-        enableAuthClient: env.get('ENABLE_AUTH_CLIENT').default('true').asBool(),
+        enableAuthClient: env.get('ENABLE_AUTH_CLIENT').default('false').asBool(),
     }
 };

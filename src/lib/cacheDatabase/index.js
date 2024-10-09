@@ -234,23 +234,37 @@ async function syncDB({ redisCache, db, logger }) {
                 logger.log('fxTransferRequest or fxTransferResponse key does not exist');
             }
 
-
             // logger.push({ data }).log('processing cache item');
-
             // logger.push({ ...row, raw: ''}).log('Row processed');
 
             const keyIndex = cachedPendingKeys.indexOf(row.id);
             if (keyIndex === -1) {
-                await db('transfer').insert(row);
+                try {
+                    await db('transfer').insert(row);
+                } catch (err) {
+                    console.log(err);
+                }
                 if(fx_quote_row != undefined && fx_quote_row != null) {
-                    await db('fx_quote').insert(fx_quote_row);
+                    try {
+                        await db('fx_quote').insert(fx_quote_row);
+                    } catch (err) {
+                        console.log(err);
+                    }
                 }
                 if(fx_transfer_row != undefined && fx_transfer_row != null) {
-                    await db('fx_transfer').insert(fx_transfer_row);
+                    try {
+                        await db('fx_transfer').insert(fx_transfer_row);
+                    } catch (err) {
+                        console.log(err);
+                    }
                 }
                 cachedPendingKeys.push(row.id);
             } else {
-                await db('transfer').where({ id: row.id }).update(row);
+                try {
+                    await db('transfer').where({ id: row.id }).update(row);
+                } catch (err) {
+                    console.log(err);
+                }
                 if(fx_quote_row != null && fx_quote_row != undefined) {
                     try {
                         await db('fx_quote').where({conversion_id: fx_quote_row.conversion_id}).update(fx_quote_row);
@@ -271,7 +285,6 @@ async function syncDB({ redisCache, db, logger }) {
             if (row.success !== null) {
                 cachedFulfilledKeys.push(key);
             }
-
         }
         // When the redis key starts with fxQuote*
         else {
@@ -387,6 +400,7 @@ async function syncDB({ redisCache, db, logger }) {
     // Available key patterns in redis
     const redisKeys = ['transferModel_*', 'fxQuote_in_*'];
     redisKeys.forEach( async (key) => {
+        console.log(key);
         const keys = await redisCache.keys(key);
         const uncachedOrPendingKeys = keys.filter(
             (x) => cachedFulfilledKeys.indexOf(x) === -1,

@@ -11,11 +11,15 @@
 
 'use strict';
 
+// eslint-disable-next-line no-unused-vars
 const redisMock = require('redis-mock');
 
 class RedisClient {
-    __data = {};
+    // __data = {};
 
+    constructor (){
+        this.__data = {};
+    }
     get data() {
         return this.__data;
     }
@@ -27,6 +31,10 @@ class RedisClient {
     }
     set(key, value) {
         this.data[key] = value;
+    }
+    // eslint-disable-next-line no-unused-vars
+    destroy(key, value) {
+        delete this.data[key];
     }
     keys() {
         return Object.keys(this.data);

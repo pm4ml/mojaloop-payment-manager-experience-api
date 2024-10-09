@@ -5,6 +5,9 @@ const {
     MonetaryZoneModel,
     DFSPModel,
     Transfer,
+    Batch,
+    FxpConversion,
+    CertificatesModel
 } = require('@internal/model');
 
 const endpointsResource = require('./resources/endpointsResource');
@@ -190,6 +193,326 @@ describe('Outbound API handlers:', () => {
                 .mockImplementation(() => {});
 
             await handlers['/transfers'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve one transfer including fx', async () => {
+            const context = endpointsResource.getTransfersContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'findOne')
+                .mockImplementation(() => {});
+
+            await handlers['/transfers/{transferId}'].get(context);
+
+            // could be used for a future test case
+            // const expectedArgument = {
+            //     'transferId': context.params.transferId
+            // };
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve transfer details', async () => {
+            const context = endpointsResource.getTransferDetailsContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'details')
+                .mockImplementation(() => {});
+
+            await handlers['/transfers/{transferId}/details'].get(context);
+
+            // could be used for a future test case
+            // const expectedArgument = {
+            //     'transferId': context.params.transferId
+            // };
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve transfer details', async () => {
+            const context = endpointsResource.getTransferStatusSummaryContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'statusSummary')
+                .mockImplementation(() => {});
+
+            await handlers['/transferStatusSummary'].get(context);
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('Batch tests', () => {
+        test('Retrieve batches', async () => {
+            const context = endpointsResource.getBatchesContext;
+
+            const spy = jest.spyOn(Batch.prototype, 'findAll')
+                .mockImplementation(() => {});
+
+            await handlers['/batches'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve a batch', async () => {
+            const context = endpointsResource.getBatchContext;
+
+            const spy = jest.spyOn(Batch.prototype, 'findOne')
+                .mockImplementation(() => {});
+
+            await handlers['/batches/{batchId}'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve hourly flow', async () => {
+            const context = endpointsResource.getHourlyFlowContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'hourlyFlow')
+                .mockImplementation(() => {});
+
+            await handlers['/hourlyFlow'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve success rate', async () => {
+            const context = endpointsResource.getAvgResponseTimeContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'avgResponseTime')
+                .mockImplementation(() => {});
+
+            await handlers['/minuteAverageTransferResponseTime'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Retrieve average response time', async () => {
+            const context = endpointsResource.getSuccessRateContext;
+
+            const spy = jest.spyOn(Transfer.prototype, 'successRate')
+                .mockImplementation(() => {});
+
+            await handlers['/minuteSuccessfulTransferPerc'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('Fxp Conversions tests', () => {
+        test('Get Fxp Conversions', async () => {
+            const context = endpointsResource.getFxpConversionsContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'findAll')
+                .mockImplementation(() => {});
+
+            await handlers['/fxpConversions'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test('Get Fxp Conversion Details', async () => {
+            const context = endpointsResource.getFxpConversionDetailsContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'details')
+                .mockImplementation(() => {});
+
+            await handlers['/fxpConversions/{conversionId}/details'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test('Get Fxp Conversions Status Summary', async () => {
+            const context = endpointsResource.getFxpConversionStatusSummaryContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'statusSummary')
+                .mockImplementation(() => {});
+
+            await handlers['/fxpConversionsStatusSummary'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test('Get Fxp Conversions Error', async () => {
+            const context = endpointsResource.getFxpConversionErrorsContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'fxpErrors')
+                .mockImplementation(() => {});
+
+            await handlers['/fxpErrors'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test('Get Fxp Conversions', async () => {
+            const context = endpointsResource.getFxpConversionsSuccessRateContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'successRate')
+                .mockImplementation(() => {});
+
+            await handlers['/minuteSuccessfulFxpConversionsPerc'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+        test('Get Fxp Conversions', async () => {
+            const context = endpointsResource.getFxpConversionsAvgResponseTimeContext;
+
+            const spy = jest.spyOn(FxpConversion.prototype, 'avgResponseTime')
+                .mockImplementation(() => {});
+
+            await handlers['/minuteAverageFxpConversionsResponseTime'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('Certificates tests', () => {
+        test('Get client certificate', async () => {
+
+            const context = endpointsResource.getClientCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/clientCerts'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Create Client CSR', async () => {        
+            const context = endpointsResource.createClientCSRContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'createClientCSR')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/clientCerts/csr'].post(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get DSFP CA certificate', async () => {
+                
+            const context = endpointsResource.getDFSPCAContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getDFSPCA')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/ca'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Create DFSP CA CSR', async () => {
+            const context = endpointsResource.getDFSPCAContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'createDFSPCA')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/ca'].post(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Update DFSP CA CSR', async () => {
+            const context = endpointsResource.getDFSPCAContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'setDFSPCA')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/ca'].put(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get DFSP Server certificates', async () => {
+            const context = endpointsResource.getDFSPServerCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getDFSPServerCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/serverCerts'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Generate DFSP Server certificates', async () => {
+            const context = endpointsResource.getDFSPServerCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'generateServerCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/serverCerts'].post(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get All JWS Certificates', async () => {
+            const context = endpointsResource.getAllJWSCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getAllJWSCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/alljwscerts'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get JWS Certificates', async () => {
+            const context = endpointsResource.getJWSCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getJWSCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/jwscerts'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get JWS Certificates', async () => {
+            const context = endpointsResource.getJWSCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'uploadJWSCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/jwscerts'].post(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get JWS Certificates', async () => {
+            const context = endpointsResource.getJWSCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'updateJWSCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/jwscerts'].put(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get JWS Certificates', async () => {
+            const context = endpointsResource.getJWSCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'deleteJWSCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/dfsp/jwscerts'].delete(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get Hub Server Certs', async () => {
+            const context = endpointsResource.getHubServerCertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getHubServerCertificates')
+                .mockImplementation(() => {});
+
+            await handlers['/hub/serverCerts'].get(context);
+
+            expect(spy).toHaveBeenCalledTimes(1);
+        });
+
+        test('Get Hub CA Certs', async () => {
+            const context = endpointsResource.getHubCACertificatesContext;
+
+            const spy = jest.spyOn(CertificatesModel.prototype, 'getHubCA')
+                .mockImplementation(() => {});
+
+            await handlers['/hub/ca'].get(context);
 
             expect(spy).toHaveBeenCalledTimes(1);
         });
