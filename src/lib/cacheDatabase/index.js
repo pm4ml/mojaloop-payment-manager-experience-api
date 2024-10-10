@@ -174,42 +174,57 @@ async function syncDB({ redisCache, db, logger }) {
             };
 
             // check if there is a key in the data object named fxQuoteResponse
+            // The empty object is initialised for the case in which fxQuoteResponse is empty so we don't have to deal with null errors
             let fx_quote_row = null;
-            if (data.fxQuoteResponse) {
-
+            if(data.fxQuoteRequest){
                 let fxQuoteRequest = JSON.parse(data.fxQuoteRequest.body);
-
                 fx_quote_row = {
+                    redis_key: key,
                     conversion_request_id: fxQuoteRequest.conversionRequestId,
-                    conversion_id: data.fxQuoteResponse.body.conversionTerms.conversionId,
-                    determining_transfer_id: data.transferId,  // TODO: replace back with determining_transfer_id once Implemented
-                    initiating_fsp: data.fxQuoteResponse.body.conversionTerms.initiatingFsp,
-                    counter_party_fsp: data.fxQuoteResponse.body.conversionTerms.counterPartyFsp,
-                    amount_type: data.fxQuoteResponse.body.conversionTerms.amountType,
-                    source_amount: data.fxQuoteResponse.body.conversionTerms.sourceAmount.amount,
-                    source_currency: data.fxQuoteResponse.body.conversionTerms.sourceAmount.currency,
-                    target_amount: data.fxQuoteResponse.body.conversionTerms.targetAmount.amount,
-                    target_currency: data.fxQuoteResponse.body.conversionTerms.targetAmount.currency,
-                    expiration: data.fxQuoteResponse.body.conversionTerms.expiration,
-                    condition: data.fxQuoteResponse.body.condition,
+                    conversion_id: fxQuoteRequest.conversionTerms.conversionId,
+                    determining_transfer_id : fxQuoteRequest.conversionTerms.determiningTransferId,
+                    initiating_fsp: '',
+                    counter_party_fsp: '' ,
+                    amount_type: '',
+                    source_amount: fxQuoteRequest.conversionTerms.sourceAmount.amount,
+                    source_currency: fxQuoteRequest.conversionTerms.sourceAmount.currency ,
+                    target_amount: '',
+                    target_currency: fxQuoteRequest.conversionTerms.targetAmount.currency,
+                    expiration: '',
+                    condition: '',
                     direction: data.direction,
                     raw: JSON.stringify(data),
                     created_at: initiatedTimestamp,
                     completed_at: completedTimestamp,
                     success: getTransferStatus(data)
-
                 };
+            }
+            else{
+                logger.log('fxQuoteRequest does not exist on', key);
+            }
+            if (data.fxQuoteResponse) {
+                fx_quote_row.conversion_id = data.fxQuoteResponse.body.conversionTerms.conversionId ;
+                fx_quote_row.initiating_fsp = data.fxQuoteResponse.body.conversionTerms.initiatingFsp ;
+                fx_quote_row.counter_party_fsp = data.fxQuoteResponse.body.conversionTerms.counterPartyFsp ;
+                fx_quote_row.amount_type = data.fxQuoteResponse.body.conversionTerms.amountType ;
+                fx_quote_row.source_amount = data.fxQuoteResponse.body.conversionTerms.sourceAmount.amount ;
+                fx_quote_row.source_currency = data.fxQuoteResponse.body.conversionTerms.sourceAmount.currency ;
+                fx_quote_row.target_amount = data.fxQuoteResponse.body.conversionTerms.targetAmount.amount ;
+                fx_quote_row.target_currency = data.fxQuoteResponse.body.conversionTerms.targetAmount.currency ;
+                fx_quote_row.expiration = data.fxQuoteResponse.body.conversionTerms.expiration ;
+                fx_quote_row.condition = data.fxQuoteResponse.body.condition ;
             } else {
                 // code to handle when fxQuoteResponse key does not exist
-                logger.log('fxQuoteResponse key does not exist');
+                logger.log('fxQuoteResponse does not exist on', key);
             }
 
             // Check if the fxTransferRequest and fxTransferResponse are present
             let fx_transfer_row = null;
-            if (data.fxTransferRequest && data.fxTransferResponse) {
+            if (data.fxTransferRequest ) {
 
                 const fxTransferRequestData = parseData(data.fxTransferRequest.body);
                 fx_transfer_row = {
+                    redis_key: key,
                     commit_request_id: fxTransferRequestData.commitRequestId,
                     determining_transfer_id: fxTransferRequestData.determiningTransferId,
                     initiating_fsp: fxTransferRequestData.initiatingFsp,
@@ -221,23 +236,31 @@ async function syncDB({ redisCache, db, logger }) {
                     target_currency: fxTransferRequestData.targetAmount.currency,
                     condition: fxTransferRequestData.condition,
                     expiration: fxTransferRequestData.expiration,
-                    conversion_state: data.fxTransferResponse.body.conversionState,
-                    fulfilment: data.fxTransferResponse.body.fulfilment,
+                    conversion_state: '',  // if not fxTransferResponse leave empty
+                    fulfilment: '', // if not fxTransferResponse leave empty
                     direction: data.direction,
                     created_at: initiatedTimestamp,
-                    completed_timestamp: data.fxTransferResponse.body.completedTimestamp,
+                    completed_timestamp: '',
 
                 };
 
             } else {
-                // code to handle when fxQuoteResponse key does not exist
-                logger.log('fxTransferRequest or fxTransferResponse key does not exist');
+                // code to handle when fxTransferRequest key does not exist
+                logger.log('fxTransferRequest does not exist on',key);
+            }
+            if(data.fxTransferResponse){
+                fx_transfer_row.fulfilment = data.fxTransferResponse.body.fulfilment;
+                fx_transfer_row.conversion_state = data.fxTransferResponse.body.conversionState;
+                fx_transfer_row.completed_timestamp = data.fxTransferResponse.body.completedTimestamp;
+            }
+            else{
+                logger.log('fxTransferResponse does not exist on ',key);
             }
 
             // logger.push({ data }).log('processing cache item');
             // logger.push({ ...row, raw: ''}).log('Row processed');
 
-            const keyIndex = cachedPendingKeys.indexOf(row.id);
+            const keyIndex = cachedPendingKeys.indexOf(row.redis_key);
             if (keyIndex === -1) {
                 try {
                     await db('transfer').insert(row);
@@ -258,23 +281,23 @@ async function syncDB({ redisCache, db, logger }) {
                         console.log(err);
                     }
                 }
-                cachedPendingKeys.push(row.id);
+                cachedPendingKeys.push(row.redis_key);
             } else {
                 try {
-                    await db('transfer').where({ id: row.id }).update(row);
+                    await db('transfer').where({ redis_key: row.redis_key}).update(row);
                 } catch (err) {
                     console.log(err);
                 }
                 if(fx_quote_row != null && fx_quote_row != undefined) {
                     try {
-                        await db('fx_quote').where({conversion_id: fx_quote_row.conversion_id}).update(fx_quote_row);
+                        await db('fx_quote').where({redis_key: fx_quote_row.redis_key}).update(fx_quote_row);
                     } catch (err) {
                         console.log(err);
                     }
                 }
                 if(fx_transfer_row != undefined && fx_transfer_row != null) {
                     try {
-                        await db('fx_transfer').where({commit_request_id:fx_transfer_row.commit_request_id}).update(fx_transfer_row);
+                        await db('fx_transfer').where({redis_key:fx_transfer_row.redis_key}).update(fx_transfer_row);
                     } catch (err) {
                         console.log(err);
                     }
@@ -304,21 +327,21 @@ async function syncDB({ redisCache, db, logger }) {
 
 
             let fxQuoteRow = null;
-            if(data.fxQuoteResponse && data.fxQuoteRequest){
-                const fxQuoteBody = JSON.parse(data.fxQuoteResponse.body);
+            if(data.fxQuoteRequest){
                 fxQuoteRow = {
+                    redis_key: key,
                     conversion_request_id: data.fxQuoteRequest.body.conversionRequestId,
-                    conversion_id:fxQuoteBody.conversionTerms.conversionId,
-                    determining_transfer_id:fxQuoteBody.conversionTerms.determiningTransferId,
-                    initiating_fsp:fxQuoteBody.conversionTerms.initiatingFsp,
-                    counter_party_fsp:fxQuoteBody.conversionTerms.counterPartyFsp,
-                    amount_type:fxQuoteBody.conversionTerms.amountType,
-                    source_amount:fxQuoteBody.conversionTerms.sourceAmount.amount,
-                    source_currency:fxQuoteBody.conversionTerms.sourceAmount.currency,
-                    target_amount:fxQuoteBody.conversionTerms.targetAmount.amount,
-                    target_currency:fxQuoteBody.conversionTerms.targetAmount.currency,
-                    expiration:fxQuoteBody.conversionTerms.expiration,
-                    condition:fxQuoteBody.condition,
+                    conversion_id : data.fxQuoteRequest.body.conversionTerms.conversionId,
+                    determining_transfer_id: data.fxQuoteRequest.body.conversionTerms.determiningTransferId,
+                    initiating_fsp: '',
+                    counter_party_fsp: '',
+                    amount_type:'',
+                    source_amount:data.fxQuoteRequest.body.conversionTerms.sourceAmount.amount,
+                    source_currency:data.fxQuoteRequest.body.conversionTerms.sourceAmount.currency,
+                    target_amount:'',
+                    target_currency:data.fxQuoteRequest.body.conversionTerms.targetAmount.currency,
+                    expiration:'',
+                    condition:'',
                     direction: data.direction,
                     raw: JSON.stringify(data),
                     created_at: initiatedTimestamp,
@@ -327,12 +350,29 @@ async function syncDB({ redisCache, db, logger }) {
                 };
             }
             else{
-                logger.log('fxQuoteRequest and fxQuoteResponse keys not present.');
+                logger.log('fxQuoteRequest not present on ',key);
+            }
+            if(data.fxQuoteResponse){
+                const fxQuoteBody = JSON.parse(data.fxQuoteResponse.body);
+                fxQuoteRow.conversion_id = fxQuoteBody.conversionTerms.conversionId;
+                fxQuoteRow.initiating_fsp = fxQuoteBody.conversionTerms.initiatingFsp;
+                fxQuoteRow.counter_party_fsp = fxQuoteBody.conversionTerms.counterPartyFsp;
+                fxQuoteRow.amount_type = fxQuoteBody.conversionTerms.amountType;
+                fxQuoteRow.source_amount = fxQuoteBody.conversionTerms.sourceAmount.amount;
+                fxQuoteRow.source_currency = fxQuoteBody.conversionTerms.sourceAmount.currency;
+                fxQuoteRow.target_amount = fxQuoteBody.conversionTerms.targetAmount.amount;
+                fxQuoteRow.target_currency = fxQuoteBody.conversionTerms.targetAmount.currency;
+                fxQuoteRow.expiration = fxQuoteBody.conversionTerms.expiration;
+                fxQuoteRow.condition = fxQuoteBody.condition;
+            }
+            else{
+                logger.log('fxQuoteRequest not present on ',key);
             }
 
             let fxTransferRow = null;
             if(data.fxPrepare)
                 fxTransferRow = {
+                    redis_key: key,
                     commit_request_id: data.fxPrepare.body.commitRequestId,
                     determining_transfer_id: data.fxPrepare.body.determiningTransferId,
                     initiating_fsp:data.fxPrepare.body.initiatingFsp,
@@ -350,34 +390,37 @@ async function syncDB({ redisCache, db, logger }) {
                     created_at: initiatedTimestamp,
                     completed_timestamp: completedTimestamp,
                 };
+            else{
+                logger.log('fxPrepare not present in ', key);
+            }
             if(data.fulfil){
                 fxTransferRow.fulfilment = data.fulfil.body.fulfilment;
                 fxTransferRow.conversion_state = data.fulfil.body.conversionState;
             }
             else{
-                logger.log('fxPrepare and fulfil keys not present.');
+                logger.log('fulfil not present in ', key);
             }
 
             try {
-                const keyIndex = cachedPendingKeys.indexOf(fxQuoteRow.conversion_id);
+                const keyIndex = cachedPendingKeys.indexOf(fxQuoteRow.redis_key);
                 if(keyIndex === -1){
                     if(fxQuoteRow !== undefined && fxQuoteRow !== null)
                         await db('fx_quote').insert(fxQuoteRow);
                     if(fxTransferRow!== undefined && fxTransferRow!== null)
                         await db('fx_transfer').insert(fxTransferRow);
-                    cachedPendingKeys.push(fxQuoteRow.conversion_id);
+                    cachedPendingKeys.push(fxQuoteRow.redis_key);
                 }
                 else{
                     if(fxQuoteRow!= null && fxQuoteRow!= undefined) {
                         try {
-                            await db('fx_quote').where({conversion_id: fxQuoteRow.conversion_id}).update(fxQuoteRow);
+                            await db('fx_quote').where({redis_key: fxQuoteRow.redis_key}).update(fxQuoteRow);
                         } catch (err) {
                             console.log(err);
                         }
                     }
                     if(fxTransferRow!= undefined && fxTransferRow!= null) {
                         try {
-                            await db('fx_transfer').where({commit_request_id: fxTransferRow.commit_request_id}).update(fxTransferRow);
+                            await db('fx_transfer').where({redis_key: fxTransferRow.redis_key}).update(fxTransferRow);
                         } catch (err) {
                             console.log(err);
                         }
@@ -400,14 +443,12 @@ async function syncDB({ redisCache, db, logger }) {
     // Available key patterns in redis
     const redisKeys = ['transferModel_*', 'fxQuote_in_*'];
     redisKeys.forEach( async (key) => {
-        console.log(key);
         const keys = await redisCache.keys(key);
         const uncachedOrPendingKeys = keys.filter(
             (x) => cachedFulfilledKeys.indexOf(x) === -1,
         );
         await Promise.all(uncachedOrPendingKeys.map(cacheKey));
     });
-    // const keys = await redisCache.keys('transferModel_*');
 
     // logger.log('In-memory DB sync complete');
 }

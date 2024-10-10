@@ -31,8 +31,8 @@ class FxpConversion {
         return query
             .leftJoin(
                 'fx_transfer',
-                'fx_quote.conversion_id',
-                'fx_transfer.commit_request_id'
+                'fx_quote.redis_key',
+                'fx_transfer.redis_key'
             )
             .select([
                 'fx_quote.*',
@@ -256,7 +256,7 @@ class FxpConversion {
         raw = this._parseRawTransferRequestBodies(raw);
         return {
             conversionDetails: {
-                determiningTransferId: fxpConversion.determining_transfer_id,
+                determiningTransferId: fxpConversion.determining_transfer_id ? fxpConversion.determining_transfer_id : '',
                 conversionId: fxpConversion.conversionId,
                 conversionRequestId: fxpConversion.conversion_request_id,
                 conversionState: this._getConversionState(raw, fxpConversion),
@@ -278,7 +278,7 @@ class FxpConversion {
               : fxpConversion.initiating_fsp,
             },
             conversionTerms: {
-                determiningTransferId: fxpConversion.determining_transfer_id,
+                determiningTransferId: fxpConversion.determining_transfer_id ? fxpConversion.determining_transfer_id : '',
                 conversionId: fxpConversion.conversion_id,
                 conversionState: this._getConversionState(raw, fxpConversion),
                 quoteAmount: this._getQuoteAmountFromFxQuoteRequest(raw.fxQuoteRequest),
@@ -290,7 +290,7 @@ class FxpConversion {
             technicalDetails: {
                 conversionRequestId: fxpConversion.conversion_request_id,
                 conversionId: fxpConversion.conversion_id,
-                determiningTransferId: fxpConversion.determining_transfer_id,
+                determiningTransferId: fxpConversion.determining_transfer_id ? fxpConversion.determining_transfer_id : '',
                 commitRequestId: fxpConversion.commit_request_id,
                 conversionState: this._getConversionState(raw, fxpConversion),
                 fxQuoteRequest: raw.fxQuoteRequest,

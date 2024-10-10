@@ -40,16 +40,16 @@ class Transfer {
     // Join the fx_transfer, fx_quote and transfer table
     _applyJoin(query){
         return query
-            .leftJoin('fx_quote', 'transfer.id', 'fx_quote.determining_transfer_id')
-            .leftJoin('fx_transfer', 'fx_quote.determining_transfer_id', 'fx_transfer.determining_transfer_id')
+            .leftJoin('fx_quote', 'transfer.redis_key', 'fx_quote.redis_key')
+            .leftJoin('fx_transfer', 'fx_quote.redis_key', 'fx_transfer.redis_key')
             .select([
                 'transfer.*',
                 'fx_quote.source_currency as fx_source_currency',
+                'fx_quote.source_amount as fx_source_amount',
                 'fx_quote.target_currency as fx_target_currency',
+                'fx_quote.target_amount as fx_target_amount',
                 'fx_transfer.source_currency as fx_transfer_source_currency',
                 'fx_transfer.target_currency as fx_transfer_target_currency',
-                'fx_transfer.source_amount as fx_source_amount',
-                'fx_transfer.target_amount as fx_target_amount',
                 'fx_transfer.commit_request_id as fx_commit_request_id',
             ]);
     }

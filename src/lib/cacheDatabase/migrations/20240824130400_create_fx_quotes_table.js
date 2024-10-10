@@ -13,8 +13,9 @@ const TABLE_NAME = 'fx_quote';
 
 async function up(knex) {
     return knex.schema.createTable(TABLE_NAME, (table) => {
-        table.string('conversion_request_id');
-        table.string('conversion_id').primary();
+        table.string('redis_key').primary();  // Store for easy joining
+        table.string('conversion_request_id').primary();
+        table.string('conversion_id');
         table.string('determining_transfer_id');
         table.string('initiating_fsp');
         table.string('counter_party_fsp');
