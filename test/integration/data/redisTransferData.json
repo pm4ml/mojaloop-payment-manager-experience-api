@@ -1,5 +1,5 @@
 {
-    "homeTransactionId": "1234",
+    "homeTransactionId": "12345",
     "from": {
         "type": "CONSUMER",
         "idType": "MSISDN",
@@ -19,18 +19,18 @@
         "fspId": "testingtoolkitdfsp",
         "extensionList": [
             {
-                "key": "Excepteur commodo",
-                "value": "exercitation"
+                "key": "ad dolore off",
+                "value": "nostrud deserunt laborum adipisicing pariatur"
             },
             {
-                "key": "est dolore",
-                "value": "qui fugiat anim occaecat"
+                "key": "sit",
+                "value": "Duis"
             }
         ],
-        "firstName": "John",
-        "middleName": "G",
+        "firstName": "Chris",
+        "middleName": "P",
         "lastName": "Lee",
-        "dateOfBirth": "1933-08-20"
+        "dateOfBirth": "1922-12-26"
     },
     "amountType": "SEND",
     "currency": "EUR",
@@ -38,9 +38,9 @@
     "transactionType": "TRANSFER",
     "note": "Note sent to Payee.",
     "skipPartyLookup": false,
-    "transferId": "05efec3c-a689-4e5d-8a78-acb2ccf8ade6",
-    "currentState": "succeeded",
-    "initiatedTimestamp": "2024-09-18T03:49:55.876Z",
+    "transferId": "51c0d9d6-dcac-4eed-beae-4694306f71af",
+    "currentState": "COMPLETED",
+    "initiatedTimestamp": "2024-08-27T06:44:42.651Z",
     "direction": "OUTBOUND",
     "getPartiesRequest": {
         "method": "GET",
@@ -49,7 +49,7 @@
         "path": "/parties/MSISDN/16135551002",
         "headers": {
             "content-type": "application/vnd.interoperability.parties+json;version=1.0",
-            "date": "Wed, 18 Sep 2024 03:49:55 GMT",
+            "date": "Tue, 27 Aug 2024 06:44:42 GMT",
             "fspiop-source": "dfsp1",
             "accept": "application/vnd.interoperability.parties+json;version=1"
         },
@@ -57,22 +57,6 @@
         "body": null
     },
     "getPartiesResponse": {
-        "headers": {
-            "content-type": "application/vnd.interoperability.parties+json;version=1.0",
-            "date": "Wed, 18 Sep 2024 03:49:55 GMT",
-            "x-forwarded-for": "sit qui",
-            "fspiop-source": "testingtoolkitdfsp",
-            "fspiop-destination": "dfsp1",
-            "fspiop-encryption": "anim",
-            "fspiop-signature": "commodo eu",
-            "fspiop-uri": "Excepteur consectetur Ut ut reprehenderit",
-            "fspiop-http-method": "ad quis Excepteur tempor",
-            "traceparent": "00-ccddd521817ea86b3f80280a7c457b-0123456789abcdef0-00",
-            "user-agent": "axios/0.27.2",
-            "content-length": 447,
-            "host": "sdk-scheme-adapter:4000",
-            "connection": "keep-alive"
-        },
         "body": {
             "party": {
                 "partyIdInfo": {
@@ -82,31 +66,149 @@
                     "extensionList": {
                         "extension": [
                             {
-                                "key": "Excepteur commodo",
-                                "value": "exercitation"
+                                "key": "ad dolore off",
+                                "value": "nostrud deserunt laborum adipisicing pariatur"
                             },
                             {
-                                "key": "est dolore",
-                                "value": "qui fugiat anim occaecat"
+                                "key": "sit",
+                                "value": "Duis"
                             }
                         ]
                     }
                 },
-                "name": "M=nLg,.=rooMCoPu}}M-k{{t=J-nCi.C,e=udp",
+                "name": "k Clt-Pc_L in'rLMgMLrgPgJJdk}'MPo{{gp",
+                "merchantClassificationCode": "7",
                 "personalInfo": {
-                    "dateOfBirth": "1933-08-20",
                     "complexName": {
-                        "middleName": "G",
-                        "firstName": "John",
-                        "lastName": "Lee"
-                    }
+                        "firstName": "Chris",
+                        "lastName": "Lee",
+                        "middleName": "P"
+                    },
+                    "dateOfBirth": "1922-12-26"
                 },
-                "merchantClassificationCode": "1739"
+                "supportedCurrencies": [
+                    "TZS"
+                ]
             }
+        },
+        "headers": {
+            "content-type": "application/vnd.interoperability.parties+json;version=1.0",
+            "date": "Tue, 27 Aug 2024 06:44:42 GMT",
+            "x-forwarded-for": "ut est",
+            "fspiop-source": "testingtoolkitdfsp",
+            "fspiop-destination": "dfsp1",
+            "fspiop-encryption": "consectetur eiusmod proident",
+            "fspiop-signature": "id commodo adipisicing non aliqua",
+            "fspiop-uri": "nisi ea veniam in sit",
+            "fspiop-http-method": "adipisicing cillum Excepteur mollit",
+            "traceparent": "00-ccdd97ef44f66398e1fc146e438189-0123456789abcdef0-00",
+            "user-agent": "axios/0.27.2",
+            "content-length": 476,
+            "host": "sdk-scheme-adapter:4000",
+            "connection": "keep-alive"
         }
     },
+    "needFx": true,
+    "supportedCurrencies": [
+        "TZS"
+    ],
     "acceptParty": true,
-    "quoteId": "e0b44d34-ce61-472d-923a-9c6e95cf947f",
+    "fxProviders": [
+        "testfxp1"
+    ],
+    "fxQuoteExpiration": "2024-08-27T06:45:43.923Z",
+    "fxQuoteRequest": {
+        "method": "POST",
+        "host": "mojaloop-testing-toolkit",
+        "port": "4040",
+        "path": "/fxQuotes",
+        "headers": {
+            "content-type": "application/vnd.interoperability.fxQuotes+json;version=2.0",
+            "date": "Tue, 27 Aug 2024 06:44:43 GMT",
+            "fspiop-source": "dfsp1",
+            "fspiop-destination": "testfxp1",
+            "accept": "application/vnd.interoperability.fxQuotes+json;version=2",
+            "content-length": 331
+        },
+        "agent": "[REDACTED]",
+        "body": "{\"conversionRequestId\":\"c74bccab-29e7-471c-95f8-59591169f33f\",\"conversionTerms\":{\"conversionId\":\"08ae7b6d-e909-4957-a145-8d7233e3ba6a\",\"initiatingFsp\":\"dfsp1\",\"counterPartyFsp\":\"testfxp1\",\"amountType\":\"SEND\",\"sourceAmount\":{\"currency\":\"EUR\",\"amount\":\"10\"},\"targetAmount\":{\"currency\":\"TZS\"},\"expiration\":\"2024-08-27T06:45:43.923Z\"}}"
+    },
+    "fxQuoteResponse": {
+        "body": {
+            "conversionTerms": {
+                "conversionId": "08ae7b6d-e909-4957-a145-8d7233e3ba6a",
+                "initiatingFsp": "PayerFSP",
+                "counterPartyFsp": "testfxp1",
+                "amountType": "SEND",
+                "sourceAmount": {
+                    "currency": "EUR",
+                    "amount": "10"
+                },
+                "targetAmount": {
+                    "currency": "TZS",
+                    "amount": "500"
+                },
+                "expiration": "2023-12-25T14:17:09.663+01:00",
+                "charges": [
+                    {
+                        "chargeType": "string",
+                        "sourceAmount": {
+                            "currency": "EUR",
+                            "amount": "33"
+                        },
+                        "targetAmount": {
+                            "currency": "TZS",
+                            "amount": "6000"
+                        }
+                    },
+                    {
+                        "chargeType": "sint",
+                        "targetAmount": {
+                            "currency": "TMT",
+                            "amount": "92892885"
+                        },
+                        "sourceAmount": {
+                            "currency": "CRC",
+                            "amount": "873681215868.4"
+                        }
+                    }
+                ],
+                "extensionList": {
+                    "extension": [
+                        {
+                            "key": "pariatur in",
+                            "value": "in culpa adipisicing"
+                        },
+                        {
+                            "key": "Ut do",
+                            "value": "Ut dolore aliqua"
+                        }
+                    ]
+                },
+                "determiningTransferId": "b51ec534-ee48-4575-b6a9-ead2955b8069"
+            },
+            "condition": "f5sqb7tBTWPd5Y8BDFdMm9BJR_MNI4isf8p8n4D5pHA"
+        },
+        "headers": {
+            "content-type": "application/vnd.interoperability.fxQuotes+json;version=2.0",
+            "date": "Tue, 27 Aug 2024 06:44:43 GMT",
+            "x-forwarded-for": "commodo exercitation enim mollit",
+            "fspiop-source": "testfxp1",
+            "fspiop-destination": "dfsp1",
+            "fspiop-encryption": "et",
+            "fspiop-signature": "deserunt dolor consectetur aliquip",
+            "fspiop-uri": "in minim culpa",
+            "fspiop-http-method": "ad irure nisi",
+            "traceparent": "00-ccddd98bb75e421a32b6db65dd6f5d-0123456789abcdef0-00",
+            "user-agent": "axios/0.27.2",
+            "content-length": 812,
+            "host": "sdk-scheme-adapter:4000",
+            "connection": "keep-alive"
+        }
+    },
+    "fxQuoteResponseSource": "testfxp1",
+    "acceptConversion": true,
+    "quoteId": "e0c5b57d-bcde-48df-a505-3083c4f889e0",
     "quoteRequest": {
         "method": "POST",
         "host": "mojaloop-testing-toolkit",
@@ -114,119 +216,100 @@
         "path": "/quotes",
         "headers": {
             "content-type": "application/vnd.interoperability.quotes+json;version=1.0",
-            "date": "Wed, 18 Sep 2024 03:49:57 GMT",
+            "date": "Tue, 27 Aug 2024 06:44:45 GMT",
             "fspiop-source": "dfsp1",
             "fspiop-destination": "testingtoolkitdfsp",
             "accept": "application/vnd.interoperability.quotes+json;version=1",
-            "content-length": 962
+            "content-length": 966
         },
         "agent": "[REDACTED]",
-        "body": {
-            "quoteId": "e0b44d34-ce61-472d-923a-9c6e95cf947f",
-            "transactionId": "05efec3c-a689-4e5d-8a78-acb2ccf8ade6",
-            "amountType": "SEND",
-            "amount": {
-                "currency": "EUR",
-                "amount": "10"
-            },
-            "expiration": "2024-09-18T03: 50: 57.445Z",
-            "payer": {
-                "partyIdInfo": {
-                    "partyIdType": "MSISDN",
-                    "partyIdentifier": "16135551001",
-                    "fspId": "dfsp1"
-                },
-                "personalInfo": {
-                    "complexName": {
-                        "firstName": "Henrik",
-                        "middleName": "Johannes",
-                        "lastName": "Karlsson"
-                    },
-                    "dateOfBirth": "1966-06-16"
-                },
-                "name": "string"
-            },
-            "payee": {
-                "partyIdInfo": {
-                    "partyIdType": "MSISDN",
-                    "partyIdentifier": "16135551002",
-                    "fspId": "testingtoolkitdfsp",
-                    "extensionList": {
-                        "extension": [
-                            {
-                                "key": "Excepteur commodo",
-                                "value": "exercitation"
-                            },
-                            {
-                                "key": "est dolore",
-                                "value": "qui fugiat anim occaecat"
-                            }
-                        ]
-                    }
-                },
-                "personalInfo": {
-                    "complexName": {
-                        "firstName": "John",
-                        "middleName": "G",
-                        "lastName": "Lee"
-                    },
-                    "dateOfBirth": "1933-08-20"
-                },
-                "merchantClassificationCode": "123"
-            },
-            "transactionType": {
-                "scenario": "TRANSFER",
-                "initiator": "PAYER",
-                "initiatorType": "CONSUMER"
-            },
-            "note": "Note sent to Payee."
-        }
+        "body": "{\"quoteId\":\"e0c5b57d-bcde-48df-a505-3083c4f889e0\",\"transactionId\":\"51c0d9d6-dcac-4eed-beae-4694306f71af\",\"amountType\":\"SEND\",\"amount\":{\"currency\":\"TZS\",\"amount\":\"500\"},\"expiration\":\"2024-08-27T06:45:45.093Z\",\"payer\":{\"partyIdInfo\":{\"partyIdType\":\"MSISDN\",\"partyIdentifier\":\"16135551001\",\"fspId\":\"dfsp1\"},\"personalInfo\":{\"complexName\":{\"firstName\":\"Henrik\",\"middleName\":\"Johannes\",\"lastName\":\"Karlsson\"},\"dateOfBirth\":\"1966-06-16\"},\"name\":\"string\"},\"payee\":{\"partyIdInfo\":{\"partyIdType\":\"MSISDN\",\"partyIdentifier\":\"16135551002\",\"fspId\":\"testingtoolkitdfsp\",\"extensionList\":{\"extension\":[{\"key\":\"ad dolore off\",\"value\":\"nostrud deserunt laborum adipisicing pariatur\"},{\"key\":\"sit\",\"value\":\"Duis\"}]}},\"personalInfo\":{\"complexName\":{\"firstName\":\"Chris\",\"middleName\":\"P\",\"lastName\":\"Lee\"},\"dateOfBirth\":\"1922-12-26\"},\"merchantClassificationCode\":\"123\"},\"transactionType\":{\"scenario\":\"TRANSFER\",\"initiator\":\"PAYER\",\"initiatorType\":\"CONSUMER\"},\"note\":\"Note sent to Payee.\"}"
     },
     "quoteResponse": {
         "headers": {
             "content-type": "application/vnd.interoperability.quotes+json;version=1.1",
-            "date": "Wed, 18 Sep 2024 03:49:57 GMT",
-            "x-forwarded-for": "occaecat ullamco esse cupidatat ea",
+            "date": "Tue, 27 Aug 2024 06:44:45 GMT",
+            "x-forwarded-for": "pariatur enim in",
             "fspiop-source": "testingtoolkitdfsp",
             "fspiop-destination": "dfsp1",
-            "fspiop-encryption": "Lorem ex ullamco sint",
-            "fspiop-signature": "ullamco",
-            "fspiop-uri": "mollit sed aliquip non Ut",
-            "fspiop-http-method": "incididunt dolore esse do laboris",
-            "traceparent": "00-ccdd6c3f7c7381267f8e7f71328ae1-0123456789abcdef0-00",
+            "fspiop-encryption": "voluptate sit laborum id in",
+            "fspiop-signature": "aliquip aliqua adipisicing ullamco",
+            "fspiop-uri": "officia Lorem",
+            "fspiop-http-method": "aliqua cupidatat occaecat",
+            "traceparent": "00-ccddba8ce1e02447bb1b8b83a0a366-0123456789abcdef0-00",
             "user-agent": "axios/0.27.2",
-            "content-length": 1999,
+            "content-length": 2013,
             "host": "sdk-scheme-adapter:4000",
             "connection": "keep-alive"
         },
         "body": {
             "transferAmount": {
-                "currency": "EUR",
-                "amount": "10"
+                "currency": "TZS",
+                "amount": "500"
             },
-            "expiration": "2024-09-19T03:49:57.688Z",
-            "ilpPacket": "AYIEwAAAAAAAAAPoJ2cudGVzdGluZ3Rvb2xraXRkZnNwLm1zaXNkbi4xNjEzNTU1MTAwMoIEjGV5SjBjbUZ1YzJGamRHbHZia2xrSWpvaU1EVmxabVZqTTJNdFlUWTRPUzAwWlRWa0xUaGhOemd0WVdOaU1tTmpaamhoWkdVMklpd2ljWFZ2ZEdWSlpDSTZJbVV3WWpRMFpETTBMV05sTmpFdE5EY3laQzA1TWpOaExUbGpObVU1TldObU9UUTNaaUlzSW5CaGVXVmxJanA3SW5CaGNuUjVTV1JKYm1adklqcDdJbkJoY25SNVNXUlVlWEJsSWpvaVRWTkpVMFJPSWl3aWNHRnlkSGxKWkdWdWRHbG1hV1Z5SWpvaU1UWXhNelUxTlRFd01ESWlMQ0ptYzNCSlpDSTZJblJsYzNScGJtZDBiMjlzYTJsMFpHWnpjQ0lzSW1WNGRHVnVjMmx2Ymt4cGMzUWlPbnNpWlhoMFpXNXphVzl1SWpwYmV5SnJaWGtpT2lKRmVHTmxjSFJsZFhJZ1kyOXRiVzlrYnlJc0luWmhiSFZsSWpvaVpYaGxjbU5wZEdGMGFXOXVJbjBzZXlKclpYa2lPaUpsYzNRZ1pHOXNiM0psSWl3aWRtRnNkV1VpT2lKeGRXa2dablZuYVdGMElHRnVhVzBnYjJOallXVmpZWFFpZlYxOWZTd2ljR1Z5YzI5dVlXeEpibVp2SWpwN0ltTnZiWEJzWlhoT1lXMWxJanA3SW1acGNuTjBUbUZ0WlNJNklrcHZhRzRpTENKdGFXUmtiR1ZPWVcxbElqb2lSeUlzSW14aGMzUk9ZVzFsSWpvaVRHVmxJbjBzSW1SaGRHVlBaa0pwY25Sb0lqb2lNVGt6TXkwd09DMHlNQ0o5TENKdFpYSmphR0Z1ZEVOc1lYTnphV1pwWTJGMGFXOXVRMjlrWlNJNklqRXlNeUo5TENKd1lYbGxjaUk2ZXlKd1lYSjBlVWxrU1c1bWJ5STZleUp3WVhKMGVVbGtWSGx3WlNJNklrMVRTVk5FVGlJc0luQmhjblI1U1dSbGJuUnBabWxsY2lJNklqRTJNVE0xTlRVeE1EQXhJaXdpWm5Od1NXUWlPaUprWm5Od01TSjlMQ0p3WlhKemIyNWhiRWx1Wm04aU9uc2lZMjl0Y0d4bGVFNWhiV1VpT25zaVptbHljM1JPWVcxbElqb2lTR1Z1Y21scklpd2liV2xrWkd4bFRtRnRaU0k2SWtwdmFHRnVibVZ6SWl3aWJHRnpkRTVoYldVaU9pSkxZWEpzYzNOdmJpSjlMQ0prWVhSbFQyWkNhWEowYUNJNklqRTVOall0TURZdE1UWWlmU3dpYm1GdFpTSTZJbk4wY21sdVp5SjlMQ0poYlc5MWJuUWlPbnNpWTNWeWNtVnVZM2tpT2lKRlZWSWlMQ0poYlc5MWJuUWlPaUl4TUNKOUxDSjBjbUZ1YzJGamRHbHZibFI1Y0dVaU9uc2ljMk5sYm1GeWFXOGlPaUpVVWtGT1UwWkZVaUlzSW1sdWFYUnBZWFJ2Y2lJNklsQkJXVVZTSWl3aWFXNXBkR2xoZEc5eVZIbHdaU0k2SWtOUFRsTlZUVVZTSW4xOQA",
-            "condition": "vUHIbYkDefsWbox_k0RUPQjgqr7_RUN-HMKNqN_cEXM",
-            "payeeReceiveAmount": {
-                "currency": "EUR",
-                "amount": "9.7"
-            },
-            "geoCode": {
-                "latitude": "90.0000",
-                "longitude": "-9"
-            },
+            "expiration": "2024-08-28T06:44:45.252Z",
+            "ilpPacket": "AYIExgAAAAAAAMNQJ2cudGVzdGluZ3Rvb2xraXRkZnNwLm1zaXNkbi4xNjEzNTU1MTAwMoIEkmV5SjBjbUZ1YzJGamRHbHZia2xrSWpvaU5URmpNR1E1WkRZdFpHTmhZeTAwWldWa0xXSmxZV1V0TkRZNU5ETXdObVkzTVdGbUlpd2ljWFZ2ZEdWSlpDSTZJbVV3WXpWaU5UZGtMV0pqWkdVdE5EaGtaaTFoTlRBMUxUTXdPRE5qTkdZNE9EbGxNQ0lzSW5CaGVXVmxJanA3SW5CaGNuUjVTV1JKYm1adklqcDdJbkJoY25SNVNXUlVlWEJsSWpvaVRWTkpVMFJPSWl3aWNHRnlkSGxKWkdWdWRHbG1hV1Z5SWpvaU1UWXhNelUxTlRFd01ESWlMQ0ptYzNCSlpDSTZJblJsYzNScGJtZDBiMjlzYTJsMFpHWnpjQ0lzSW1WNGRHVnVjMmx2Ymt4cGMzUWlPbnNpWlhoMFpXNXphVzl1SWpwYmV5SnJaWGtpT2lKaFpDQmtiMnh2Y21VZ2IyWm1JaXdpZG1Gc2RXVWlPaUp1YjNOMGNuVmtJR1JsYzJWeWRXNTBJR3hoWW05eWRXMGdZV1JwY0dsemFXTnBibWNnY0dGeWFXRjBkWElpZlN4N0ltdGxlU0k2SW5OcGRDSXNJblpoYkhWbElqb2lSSFZwY3lKOVhYMTlMQ0p3WlhKemIyNWhiRWx1Wm04aU9uc2lZMjl0Y0d4bGVFNWhiV1VpT25zaVptbHljM1JPWVcxbElqb2lRMmh5YVhNaUxDSnRhV1JrYkdWT1lXMWxJam9pVUNJc0lteGhjM1JPWVcxbElqb2lUR1ZsSW4wc0ltUmhkR1ZQWmtKcGNuUm9Jam9pTVRreU1pMHhNaTB5TmlKOUxDSnRaWEpqYUdGdWRFTnNZWE56YVdacFkyRjBhVzl1UTI5a1pTSTZJakV5TXlKOUxDSndZWGxsY2lJNmV5SndZWEowZVVsa1NXNW1ieUk2ZXlKd1lYSjBlVWxrVkhsd1pTSTZJazFUU1ZORVRpSXNJbkJoY25SNVNXUmxiblJwWm1sbGNpSTZJakUyTVRNMU5UVXhNREF4SWl3aVpuTndTV1FpT2lKa1puTndNU0o5TENKd1pYSnpiMjVoYkVsdVptOGlPbnNpWTI5dGNHeGxlRTVoYldVaU9uc2labWx5YzNST1lXMWxJam9pU0dWdWNtbHJJaXdpYldsa1pHeGxUbUZ0WlNJNklrcHZhR0Z1Ym1Weklpd2liR0Z6ZEU1aGJXVWlPaUpMWVhKc2MzTnZiaUo5TENKa1lYUmxUMlpDYVhKMGFDSTZJakU1TmpZdE1EWXRNVFlpZlN3aWJtRnRaU0k2SW5OMGNtbHVaeUo5TENKaGJXOTFiblFpT25zaVkzVnljbVZ1WTNraU9pSlVXbE1pTENKaGJXOTFiblFpT2lJMU1EQWlmU3dpZEhKaGJuTmhZM1JwYjI1VWVYQmxJanA3SW5OalpXNWhjbWx2SWpvaVZGSkJUbE5HUlZJaUxDSnBibWwwYVdGMGIzSWlPaUpRUVZsRlVpSXNJbWx1YVhScFlYUnZjbFI1Y0dVaU9pSkRUMDVUVlUxRlVpSjlmUQA",
+            "condition": "RTEwnntHo6yT4QlF2AUD5yWFAkx7M01S6UpYUsU0UsE",
             "payeeFspCommission": {
-                "currency": "EUR",
-                "amount": "0.2"
+                "currency": "TZS",
+                "amount": "0.3"
             },
             "payeeFspFee": {
-                "currency": "EUR",
-                "amount": "0.5"
+                "currency": "TZS",
+                "amount": "0.2"
+            },
+            "geoCode": {
+                "latitude": "+7.274",
+                "longitude": "180.0000"
+            },
+            "payeeReceiveAmount": {
+                "currency": "TZS",
+                "amount": "500"
             }
         }
     },
     "quoteResponseSource": "testingtoolkitdfsp",
     "acceptQuote": true,
+    "fxTransferExpiration": "2024-08-27T06:45:45.983Z",
+    "fxTransferRequest": {
+        "method": "POST",
+        "host": "mojaloop-testing-toolkit",
+        "port": "4040",
+        "path": "/fxTransfers",
+        "headers": {
+            "content-type": "application/vnd.interoperability.fxTransfers+json;version=2.0",
+            "date": "Tue, 27 Aug 2024 06:44:45 GMT",
+            "fspiop-source": "dfsp1",
+            "fspiop-destination": "testfxp1",
+            "accept": "application/vnd.interoperability.fxTransfers+json;version=2",
+            "content-length": 392
+        },
+        "agent": "[REDACTED]",
+        "body": "{\"initiatingFsp\":\"PayerFSP\",\"counterPartyFsp\":\"testfxp1\",\"amountType\":\"SEND\",\"sourceAmount\":{\"currency\":\"EUR\",\"amount\":\"10\"},\"targetAmount\":{\"currency\":\"TZS\",\"amount\":\"500\"},\"expiration\":\"2024-08-27T06:45:45.983Z\",\"determiningTransferId\":\"51c0d9d6-dcac-4eed-beae-4694306f71af\",\"condition\":\"f5sqb7tBTWPd5Y8BDFdMm9BJR_MNI4isf8p8n4D5pHA\",\"commitRequestId\":\"08ae7b6d-e909-4957-a145-8d7233e3ba6a\"}"
+    },
+    "fxTransferResponse": {
+        "body": {
+            "conversionState": "RESERVED",
+            "fulfilment": "WLctttbu2HvTsa1XWvUoGRcQozHsqeu9Ahl2JW9Bsu8",
+            "completedTimestamp": "2024-08-27T06:44:46.180Z"
+        },
+        "headers": {
+            "content-type": "application/vnd.interoperability.fxTransfers+json;version=2.0",
+            "date": "Tue, 27 Aug 2024 06:44:45 GMT",
+            "x-forwarded-for": "ut Excepteur nostrud",
+            "fspiop-source": "testfxp1",
+            "fspiop-destination": "dfsp1",
+            "fspiop-encryption": "sint laborum",
+            "fspiop-signature": "ullamco et amet ex Excepteur",
+            "fspiop-uri": "labore",
+            "fspiop-http-method": "ea",
+            "traceparent": "00-ccdd3431e36c7296c58cdc5668d93a-0123456789abcdef0-00",
+            "user-agent": "axios/0.27.2",
+            "content-length": 137,
+            "host": "sdk-scheme-adapter:4000",
+            "connection": "keep-alive"
+        }
+    },
     "prepare": {
         "method": "POST",
         "host": "mojaloop-testing-toolkit",
@@ -234,43 +317,32 @@
         "path": "/transfers",
         "headers": {
             "content-type": "application/vnd.interoperability.transfers+json;version=1.0",
-            "date": "Wed, 18 Sep 2024 03:49:58 GMT",
+            "date": "Tue, 27 Aug 2024 06:44:46 GMT",
             "fspiop-source": "dfsp1",
             "fspiop-destination": "testingtoolkitdfsp",
             "accept": "application/vnd.interoperability.transfers+json;version=1",
-            "content-length": 1886
+            "content-length": 1895
         },
         "agent": "[REDACTED]",
-        "body": {
-            "transferId": "05efec3c-a689-4e5d-8a78-acb2ccf8ade6",
-            "payeeFsp": "testingtoolkitdfsp",
-            "payerFsp": "dfsp1",
-            "amount": {
-                "currency": "EUR",
-                "amount": "10"
-            },
-            "ilpPacket": "AYIEwAAAAAAAAAPoJ2cudGVzdGluZ3Rvb2xraXRkZnNwLm1zaXNkbi4xNjEzNTU1MTAwMoIEjGV5SjBjbUZ1YzJGamRHbHZia2xrSWpvaU1EVmxabVZqTTJNdFlUWTRPUzAwWlRWa0xUaGhOemd0WVdOaU1tTmpaamhoWkdVMklpd2ljWFZ2ZEdWSlpDSTZJbVV3WWpRMFpETTBMV05sTmpFdE5EY3laQzA1TWpOaExUbGpObVU1TldObU9UUTNaaUlzSW5CaGVXVmxJanA3SW5CaGNuUjVTV1JKYm1adklqcDdJbkJoY25SNVNXUlVlWEJsSWpvaVRWTkpVMFJPSWl3aWNHRnlkSGxKWkdWdWRHbG1hV1Z5SWpvaU1UWXhNelUxTlRFd01ESWlMQ0ptYzNCSlpDSTZJblJsYzNScGJtZDBiMjlzYTJsMFpHWnpjQ0lzSW1WNGRHVnVjMmx2Ymt4cGMzUWlPbnNpWlhoMFpXNXphVzl1SWpwYmV5SnJaWGtpT2lKRmVHTmxjSFJsZFhJZ1kyOXRiVzlrYnlJc0luWmhiSFZsSWpvaVpYaGxjbU5wZEdGMGFXOXVJbjBzZXlKclpYa2lPaUpsYzNRZ1pHOXNiM0psSWl3aWRtRnNkV1VpT2lKeGRXa2dablZuYVdGMElHRnVhVzBnYjJOallXVmpZWFFpZlYxOWZTd2ljR1Z5YzI5dVlXeEpibVp2SWpwN0ltTnZiWEJzWlhoT1lXMWxJanA3SW1acGNuTjBUbUZ0WlNJNklrcHZhRzRpTENKdGFXUmtiR1ZPWVcxbElqb2lSeUlzSW14aGMzUk9ZVzFsSWpvaVRHVmxJbjBzSW1SaGRHVlBaa0pwY25Sb0lqb2lNVGt6TXkwd09DMHlNQ0o5TENKdFpYSmphR0Z1ZEVOc1lYTnphV1pwWTJGMGFXOXVRMjlrWlNJNklqRXlNeUo5TENKd1lYbGxjaUk2ZXlKd1lYSjBlVWxrU1c1bWJ5STZleUp3WVhKMGVVbGtWSGx3WlNJNklrMVRTVk5FVGlJc0luQmhjblI1U1dSbGJuUnBabWxsY2lJNklqRTJNVE0xTlRVeE1EQXhJaXdpWm5Od1NXUWlPaUprWm5Od01TSjlMQ0p3WlhKemIyNWhiRWx1Wm04aU9uc2lZMjl0Y0d4bGVFNWhiV1VpT25zaVptbHljM1JPWVcxbElqb2lTR1Z1Y21scklpd2liV2xrWkd4bFRtRnRaU0k2SWtwdmFHRnVibVZ6SWl3aWJHRnpkRTVoYldVaU9pSkxZWEpzYzNOdmJpSjlMQ0prWVhSbFQyWkNhWEowYUNJNklqRTVOall0TURZdE1UWWlmU3dpYm1GdFpTSTZJbk4wY21sdVp5SjlMQ0poYlc5MWJuUWlPbnNpWTNWeWNtVnVZM2tpT2lKRlZWSWlMQ0poYlc5MWJuUWlPaUl4TUNKOUxDSjBjbUZ1YzJGamRHbHZibFI1Y0dVaU9uc2ljMk5sYm1GeWFXOGlPaUpVVWtGT1UwWkZVaUlzSW1sdWFYUnBZWFJ2Y2lJNklsQkJXVVZTSWl3aWFXNXBkR2xoZEc5eVZIbHdaU0k2SWtOUFRsTlZUVVZTSW4xOQA",
-            "condition": "vUHIbYkDefsWbox_k0RUPQjgqr7_RUN-HMKNqN_cEXM",
-            "expiration": "2024-09-18T03: 50: 58.782Z"
-        }
+        "body": "{\"transferId\":\"51c0d9d6-dcac-4eed-beae-4694306f71af\",\"payeeFsp\":\"testingtoolkitdfsp\",\"payerFsp\":\"dfsp1\",\"amount\":{\"currency\":\"TZS\",\"amount\":\"500\"},\"ilpPacket\":\"AYIExgAAAAAAAMNQJ2cudGVzdGluZ3Rvb2xraXRkZnNwLm1zaXNkbi4xNjEzNTU1MTAwMoIEkmV5SjBjbUZ1YzJGamRHbHZia2xrSWpvaU5URmpNR1E1WkRZdFpHTmhZeTAwWldWa0xXSmxZV1V0TkRZNU5ETXdObVkzTVdGbUlpd2ljWFZ2ZEdWSlpDSTZJbVV3WXpWaU5UZGtMV0pqWkdVdE5EaGtaaTFoTlRBMUxUTXdPRE5qTkdZNE9EbGxNQ0lzSW5CaGVXVmxJanA3SW5CaGNuUjVTV1JKYm1adklqcDdJbkJoY25SNVNXUlVlWEJsSWpvaVRWTkpVMFJPSWl3aWNHRnlkSGxKWkdWdWRHbG1hV1Z5SWpvaU1UWXhNelUxTlRFd01ESWlMQ0ptYzNCSlpDSTZJblJsYzNScGJtZDBiMjlzYTJsMFpHWnpjQ0lzSW1WNGRHVnVjMmx2Ymt4cGMzUWlPbnNpWlhoMFpXNXphVzl1SWpwYmV5SnJaWGtpT2lKaFpDQmtiMnh2Y21VZ2IyWm1JaXdpZG1Gc2RXVWlPaUp1YjNOMGNuVmtJR1JsYzJWeWRXNTBJR3hoWW05eWRXMGdZV1JwY0dsemFXTnBibWNnY0dGeWFXRjBkWElpZlN4N0ltdGxlU0k2SW5OcGRDSXNJblpoYkhWbElqb2lSSFZwY3lKOVhYMTlMQ0p3WlhKemIyNWhiRWx1Wm04aU9uc2lZMjl0Y0d4bGVFNWhiV1VpT25zaVptbHljM1JPWVcxbElqb2lRMmh5YVhNaUxDSnRhV1JrYkdWT1lXMWxJam9pVUNJc0lteGhjM1JPWVcxbElqb2lUR1ZsSW4wc0ltUmhkR1ZQWmtKcGNuUm9Jam9pTVRreU1pMHhNaTB5TmlKOUxDSnRaWEpqYUdGdWRFTnNZWE56YVdacFkyRjBhVzl1UTI5a1pTSTZJakV5TXlKOUxDSndZWGxsY2lJNmV5SndZWEowZVVsa1NXNW1ieUk2ZXlKd1lYSjBlVWxrVkhsd1pTSTZJazFUU1ZORVRpSXNJbkJoY25SNVNXUmxiblJwWm1sbGNpSTZJakUyTVRNMU5UVXhNREF4SWl3aVpuTndTV1FpT2lKa1puTndNU0o5TENKd1pYSnpiMjVoYkVsdVptOGlPbnNpWTI5dGNHeGxlRTVoYldVaU9uc2labWx5YzNST1lXMWxJam9pU0dWdWNtbHJJaXdpYldsa1pHeGxUbUZ0WlNJNklrcHZhR0Z1Ym1Weklpd2liR0Z6ZEU1aGJXVWlPaUpMWVhKc2MzTnZiaUo5TENKa1lYUmxUMlpDYVhKMGFDSTZJakU1TmpZdE1EWXRNVFlpZlN3aWJtRnRaU0k2SW5OMGNtbHVaeUo5TENKaGJXOTFiblFpT25zaVkzVnljbVZ1WTNraU9pSlVXbE1pTENKaGJXOTFiblFpT2lJMU1EQWlmU3dpZEhKaGJuTmhZM1JwYjI1VWVYQmxJanA3SW5OalpXNWhjbWx2SWpvaVZGSkJUbE5HUlZJaUxDSnBibWwwYVdGMGIzSWlPaUpRUVZsRlVpSXNJbWx1YVhScFlYUnZjbFI1Y0dVaU9pSkRUMDVUVlUxRlVpSjlmUQA\",\"condition\":\"RTEwnntHo6yT4QlF2AUD5yWFAkx7M01S6UpYUsU0UsE\",\"expiration\":\"2024-08-27T06:45:46.684Z\"}"
     },
     "fulfil": {
         "body": {
             "transferState": "COMMITTED",
-            "completedTimestamp": "2024-09-18T03:49:59.255Z",
-            "fulfilment": "2rCOTJZ690tBS02XY0IeaT0jm--3cYQ055fpq4cfPdk"
+            "fulfilment": "kDOgQH81DGGZ7nZaExSCAB9Y2e74Po564CStclCoukI",
+            "completedTimestamp": "2024-08-27T06:44:47.005Z"
         },
         "headers": {
             "content-type": "application/vnd.interoperability.transfers+json;version=1.1",
-            "date": "Wed, 18 Sep 2024 03:49:58 GMT",
-            "x-forwarded-for": "Excepteur nulla",
+            "date": "Tue, 27 Aug 2024 06:44:46 GMT",
+            "x-forwarded-for": "ullamco cupidatat",
             "fspiop-source": "testingtoolkitdfsp",
             "fspiop-destination": "dfsp1",
-            "fspiop-encryption": "dolor",
-            "fspiop-signature": "ut fugiat enim ea cupidatat",
-            "fspiop-uri": "sit quis et",
-            "fspiop-http-method": "adipisicing consectetur aliquip",
-            "traceparent": "00-ccdde15dc0442a6494f23ac8811fbf-0123456789abcdef0-00",
+            "fspiop-encryption": "aute commodo tempor",
+            "fspiop-signature": "cillum",
+            "fspiop-uri": "minim sint esse sit in",
+            "fspiop-http-method": "Duis laboris esse",
+            "traceparent": "00-ccdd43861bd878cd4665752a831fe9-0123456789abcdef0-00",
             "user-agent": "axios/0.27.2",
             "content-length": 136,
             "host": "sdk-scheme-adapter:4000",

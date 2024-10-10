@@ -171,7 +171,7 @@ const loginRouteHandler = async (ctx, next, client, generators, authConfig) => {
         code_challenge_method: 'S256',
     });
 
-    ctx.state.logger.log('Redirecting to auth URL in response to login request');
+    ctx.state.logger.log(`Redirecting to auth URL in response to login request: ${authUrl}`);
     ctx.redirect(authUrl);
 };
 
@@ -254,9 +254,14 @@ const authRouteHandler = async (ctx, next, client, authConfig) => {
  *
  * @returns {undefined}
  */
+// eslint-disable-next-line no-unused-vars
 const userInfoRouteHandler = async (ctx, next, client) => {
-    // call the userinfo endpoing on the auth service to get more info on the user
-    const userInfo = await client.userinfo(ctx.session.auth.tokenSet.access_token);
+    // call the userinfo endpoint on the auth service to get more info on the user
+    const { tokenSet }  = ctx.session.auth;
+    ctx.state.logger.log(`tokenSet: ${JSON.stringify(tokenSet)}`);
+
+    const userInfo = {};
+    // const userInfo = await client.userinfo(tokenSet.access_token);
     ctx.state.logger.push(userInfo).log('Got user info from authentication service');
     ctx.body = userInfo;
 };
@@ -274,3 +279,6 @@ module.exports = {
     createAuthenticatorMiddleware,
     //createAuthorizerMiddleware,
 };
+
+
+// https://keycloak.devpm4ml.labsk8s901.mojaloop.live/realms/pm4mls/protocol/openid-connect/auth?response_type=code&client_id=pm4ml-customer-ui

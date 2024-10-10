@@ -30,25 +30,26 @@ class Transfer {
         this._db = props.db;
     }
 
-    static STATUSES = {
-      null: 'PENDING',
-      1: 'SUCCESS',
-      0: 'ERROR',
-    };
+    // static STATUSES = {
+    //   null: 'PENDING',
+    //   1: 'SUCCESS',
+    //   0: 'ERROR',
+    // };
+
 
     // Join the fx_transfer, fx_quote and transfer table
     _applyJoin(query){
         return query
-            .leftJoin('fx_quote', 'transfer.id', 'fx_quote.determining_transfer_id')
-            .leftJoin('fx_transfer', 'fx_quote.determining_transfer_id', 'fx_transfer.determining_transfer_id')
+            .leftJoin('fx_quote', 'transfer.redis_key', 'fx_quote.redis_key')
+            .leftJoin('fx_transfer', 'fx_quote.redis_key', 'fx_transfer.redis_key')
             .select([
                 'transfer.*',
                 'fx_quote.source_currency as fx_source_currency',
+                'fx_quote.source_amount as fx_source_amount',
                 'fx_quote.target_currency as fx_target_currency',
+                'fx_quote.target_amount as fx_target_amount',
                 'fx_transfer.source_currency as fx_transfer_source_currency',
                 'fx_transfer.target_currency as fx_transfer_target_currency',
-                'fx_transfer.source_amount as fx_source_amount',
-                'fx_transfer.target_amount as fx_target_amount',
                 'fx_transfer.commit_request_id as fx_commit_request_id',
             ]);
     }
@@ -264,8 +265,9 @@ class Transfer {
             sendAmount:transfer.fx_source_amount ? transfer.fx_source_amount : transfer.amount,
             sendCurrency:transfer.fx_source_currency ? transfer.fx_source_currency: transfer.currency,
             dateSubmitted: new Date(transfer.created_at),
-            receiveAmount: transfer.fx_target_amount ? transfer.fx_target_amount: transfer.amount,
-            receiveCurrency: transfer.fx_target_currency ? transfer.fx_target_currency: transfer.currency,
+            // If needFx is false show default amount and currency else show the fx for receive
+            receiveAmount: !raw.needFx ? transfer.amount: transfer.fx_target_amount ? transfer.fx_target_amount: '',
+            receiveCurrency: !raw.needFx ? transfer.currency: transfer.fx_target_currency? transfer.fx_target_currency: '',
             conversionAcceptedDate : raw.fxTransferResponse && raw.fxTransferResponse.body && raw.fxTransferResponse.body.completedTimestamp,
             senderDetails: {
                 idType: transfer.sender_id_type,
@@ -660,6 +662,9 @@ class Transfer {
      * @param [opts.minutePrevious] {number}
      */
     async successRate(opts) {
+        if(this.mockData){
+            return mock.getTransfersSuccessRate(opts);
+        }
         const now = Date.now();
         const statQuery = (successOnly) => {
             const query = this._db('transfer')
@@ -816,5 +821,11 @@ class Transfer {
         }
     }
 }
+
+Transfer.STATUSES = {
+    null: 'PENDING',
+    1: 'SUCCESS',
+    0: 'ERROR',
+};
 
 module.exports = Transfer;

@@ -43,8 +43,6 @@ class CookieStore {
         });
     }
 
-
-
     async get(key) { // , maxAge, { rolling, ctx }) {
         if(!this._connected) {
             throw new Error('CookieStore instance not connected to cache');

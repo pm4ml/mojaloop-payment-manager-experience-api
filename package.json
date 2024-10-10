@@ -1,6 +1,6 @@
 {
   "name": "mojaloop-payment-manager-experience-api-service",
-  "version": "2.0.5",
+  "version": "3.0.1",
   "description": "Mojaloop Payment Manager - Experience API Service",
   "main": "index.js",
   "author": "Murthy kakarlamudi, ModusBox Inc.",
@@ -12,10 +12,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/modusintegration/mojaloop-payment-manager-management-api-service.git"
+    "url": "git@github.com:pm4ml/mojaloop-payment-manager-experience-api.git"
   },
   "scripts": {
     "start": "node src/index.js",
+    "start:dev": "node -r dotenv/config src/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "jest --ci --reporters=default --reporters=jest-junit --env=node test/unit",
