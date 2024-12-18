@@ -141,7 +141,6 @@ class EndpointsModel {
             state: 'NEW'
         });
     }
-
     /**
      * Get Hub Egress Endpoints from MCM Server
      */

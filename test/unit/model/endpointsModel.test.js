@@ -96,6 +96,15 @@ describe('EndpointsModel', () => {
         expect(mockRequests.delete).toHaveBeenCalledWith(`dfsp/endpoints/${opts.epId}`);
     });
 
+    test('deleteDFSPIngressEndpointsUrlById should call the correct endpoint', async () => {
+        const opts = { epId: '123' };
+        mockRequests.delete.mockResolvedValueOnce({});
+
+        await endpointsModel.deleteDFSPIngressEndpointsUrlById(opts);
+
+        expect(mockRequests.delete).toHaveBeenCalledWith(`dfsp/endpoints/${opts.epId}`);
+    });
+
     test('uploadDFSPIngressEndpoints should call the correct endpoint', async () => {
         const opts = { type: 'IP' };
         const body = { address: '192.168.0.1', ports: [80, 443] };

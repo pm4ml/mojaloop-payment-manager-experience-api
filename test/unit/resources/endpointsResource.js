@@ -112,6 +112,132 @@ module.exports = {
         },
         'params': { 'epId': '1' }
     },
+    getIngressEndpointContext: {
+        'request': {
+            'method': 'GET',
+            'url': '/dfsp/endpoints/ingress/ips/1',
+            'body': {
+                'value': {
+                    'address': '163.10.24.29/32',
+                    'ports': [
+                        '9900'
+                    ]
+                }
+            },
+            'header': {
+            }
+        },
+        'response': {
+            'header': {
+                'vary': 'Origin',
+                'access-control-allow-origin': 'http://localhost:8080'
+            }
+        },
+        'state': {
+            'conf': {
+                'inboundPort': 3000,
+                'mockData': false,
+                'logIndent': 2,
+                'managementEndpoint': 'localhost:9000',
+                'dfspId': 'pm4mltest'
+            },
+        },
+        'params': { 'epId': '1' }
+    },
+    getEgressEndpointContext: {
+        'request': {
+            'method': 'GET',
+            'url': '/dfsp/endpoints/egress/ips/1',
+            'body': {
+                'value': {
+                    'address': '163.10.24.29/32',
+                    'ports': [
+                        '9900'
+                    ]
+                }
+            },
+            'header': {
+            }
+        },
+        'response': {
+            'header': {
+                'vary': 'Origin',
+                'access-control-allow-origin': 'http://localhost:8080'
+            }
+        },
+        'state': {
+            'conf': {
+                'inboundPort': 3000,
+                'mockData': false,
+                'logIndent': 2,
+                'managementEndpoint': 'localhost:9000',
+                'dfspId': 'pm4mltest'
+            },
+        },
+        'params': { 'epId': '1' }
+    },
+    getHubIngressContext: {
+        'request': {
+            'method': 'GET',
+            'url': '/hub/endpoints/ingress',
+            'body': {
+                'value': {
+                    'address': '163.10.24.29/32',
+                    'ports': [
+                        '9900'
+                    ]
+                }
+            },
+            'header': {
+            }
+        },
+        'response': {
+            'header': {
+                'vary': 'Origin',
+                'access-control-allow-origin': 'http://localhost:8080'
+            }
+        },
+        'state': {
+            'conf': {
+                'inboundPort': 3000,
+                'mockData': false,
+                'logIndent': 2,
+                'managementEndpoint': 'localhost:9000',
+                'dfspId': 'pm4mltest'
+            },
+        }
+    },
+    getHubEgressContext: {
+        'request': {
+            'method': 'GET',
+            'url': '/hub/endpoints/egress',
+            'body': {
+                'value': {
+                    'address': '163.10.24.29/32',
+                    'ports': [
+                        '9900'
+                    ]
+                }
+            },
+            'header': {
+            }
+        },
+        'response': {
+            'header': {
+                'vary': 'Origin',
+                'access-control-allow-origin': 'http://localhost:8080'
+            }
+        },
+        'state': {
+            'conf': {
+                'inboundPort': 3000,
+                'mockData': false,
+                'logIndent': 2,
+                'managementEndpoint': 'localhost:9000',
+                'dfspId': 'pm4mltest'
+            },
+        }
+    },
     deleteEndpointContext: {
         'state': {
             'conf': {
@@ -124,6 +250,28 @@ module.exports = {
         },
         'response': {},
         'params': { 'epId': '1' }
+    },
+    getDFSPdetails: {
+        'request': {
+            'method': 'GET',
+            'url': '/dfsp/details'
+        },
+        'state': {
+            'conf': {
+                'managementEndpoint': 'localhost:9000',
+            },
+        },
+    },
+    getAllDFSP: {
+        'request': {
+            'method': 'GET',
+            'url': '/dfsps'
+        },
+        'state': {
+            'conf': {
+                'managementEndpoint': 'localhost:9000',
+            },
+        },
     },
     getMonetaryZones: {
         'request': {
