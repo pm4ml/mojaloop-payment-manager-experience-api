@@ -1,145 +1,215 @@
-const { Requests } = require('@internal/requests');
-const EndpointsModel = require('../../../src/lib/model/EndpointsModel');
+const { Requests } = require("@internal/requests");
+const EndpointsModel = require("../../../src/lib/model/EndpointsModel");
+const { url } = require("koa-router");
 
-jest.mock('@internal/requests');
+jest.mock("@internal/requests");
 
-describe('EndpointsModel', () => {
-    let endpointsModel;
-    let mockRequests;
+describe("EndpointsModel", () => {
+  let endpointsModel;
+  let mockRequests;
 
-    beforeEach(() => {
-        mockRequests = new Requests();
-        endpointsModel = new EndpointsModel({
-            logger: console,
-            managementEndpoint: 'http://example.com',
-        });
-        endpointsModel._requests = mockRequests;
+  beforeEach(() => {
+    mockRequests = new Requests();
+    endpointsModel = new EndpointsModel({
+      logger: console,
+      managementEndpoint: "http://example.com",
     });
+    endpointsModel._requests = mockRequests;
+  });
 
-    afterEach(() => {
-        jest.clearAllMocks();
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("getDFSPEgressEndpoints should call the correct endpoint", async () => {
+    const opts = { type: "IP" };
+    mockRequests.get.mockResolvedValueOnce({});
+
+    await endpointsModel.getDFSPEgressEndpoints(opts);
+
+    expect(mockRequests.get).toHaveBeenCalledWith("dfsp/endpoints", {
+      direction: "EGRESS",
+      type: opts.type,
     });
+  });
 
-    test('getDFSPEgressEndpoints should call the correct endpoint', async () => {
-        const opts = { type: 'IP' };
-        mockRequests.get.mockResolvedValueOnce({});
+  test("uploadDFSPEgressEndpoints should call the correct endpoint with IP type", async () => {
+    const opts = { type: "IP" };
+    const body = { address: "192.168.0.1", ports: [80, 443] };
+    mockRequests.post.mockResolvedValueOnce({});
 
-        await endpointsModel.getDFSPEgressEndpoints(opts);
+    await endpointsModel.uploadDFSPEgressEndpoints(opts, body);
 
-        expect(mockRequests.get).toHaveBeenCalledWith('dfsp/endpoints', {
-            direction: 'EGRESS',
-            type: opts.type,
-        });
+    expect(mockRequests.post).toHaveBeenCalledWith("dfsp/endpoints", {
+      address: body.address,
+      ports: body.ports,
+      type: opts.type,
+      direction: "EGRESS",
     });
+  });
 
-    test('uploadDFSPEgressEndpoints should call the correct endpoint with IP type', async () => {
-        const opts = { type: 'IP' };
-        const body = { address: '192.168.0.1', ports: [80, 443] };
-        mockRequests.post.mockResolvedValueOnce({});
+  test("uploadDFSPEgressEndpoints should call the correct endpoint with URL type", async () => {
+    const opts = { type: "URL" };
+    const body = { address: "http://example.com" };
+    mockRequests.post.mockResolvedValueOnce({});
 
-        await endpointsModel.uploadDFSPEgressEndpoints(opts, body);
+    await endpointsModel.uploadDFSPEgressEndpoints(opts, body);
 
-        expect(mockRequests.post).toHaveBeenCalledWith('dfsp/endpoints', {
-            address: body.address,
-            ports: body.ports,
-            type: opts.type,
-            direction: 'EGRESS',
-        });
+    expect(mockRequests.post).toHaveBeenCalledWith("dfsp/endpoints", {
+      url: body.address,
+      type: opts.type,
+      direction: "EGRESS",
     });
+  });
 
-    test('uploadDFSPEgressEndpoints should call the correct endpoint with URL type', async () => {
-        const opts = { type: 'URL' };
-        const body = { address: 'http://example.com' };
-        mockRequests.post.mockResolvedValueOnce({});
+  test("getDFSPIngressEndpoints should call the correct endpoint", async () => {
+    const opts = { type: "IP" };
+    mockRequests.get.mockResolvedValueOnce({});
 
-        await endpointsModel.uploadDFSPEgressEndpoints(opts, body);
+    await endpointsModel.getDFSPIngressEndpoints(opts);
 
-        expect(mockRequests.post).toHaveBeenCalledWith('dfsp/endpoints', {
-            url: body.address,
-            type: opts.type,
-            direction: 'EGRESS',
-        });
+    expect(mockRequests.get).toHaveBeenCalledWith("dfsp/endpoints", {
+      direction: "INGRESS",
+      type: opts.type,
     });
+  });
 
-    test('getDFSPIngressEndpoints should call the correct endpoint', async () => {
-        const opts = { type: 'IP' };
-        mockRequests.get.mockResolvedValueOnce({});
+  test("deleteDFSPEndpoints should call the correct endpoint", async () => {
+    const opts = { epId: "123" };
+    mockRequests.delete.mockResolvedValueOnce({});
 
-        await endpointsModel.getDFSPIngressEndpoints(opts);
+    await endpointsModel.deleteDFSPEndpoints(opts);
 
-        expect(mockRequests.get).toHaveBeenCalledWith('dfsp/endpoints', {
-            direction: 'INGRESS',
-            type: opts.type,
-        });
+    expect(mockRequests.delete).toHaveBeenCalledWith(
+      `dfsp/endpoints/${opts.epId}`
+    );
+  });
+
+  test("deleteDFSPIngressEndpointsUrlById should call the correct endpoint", async () => {
+    const opts = { epId: "123" };
+    mockRequests.delete.mockResolvedValueOnce({});
+
+    await endpointsModel.deleteDFSPIngressEndpointsUrlById(opts);
+
+    expect(mockRequests.delete).toHaveBeenCalledWith(
+      `dfsp/endpoints/${opts.epId}`
+    );
+  });
+
+  test("getHubIngressEndpoints should call the correct endpoint", async () => {
+    mockRequests.get.mockResolvedValueOnce({});
+
+    await endpointsModel.getHubIngressEndpoints();
+
+    expect(mockRequests.get).toHaveBeenCalledWith("hub/endpoints", {
+      direction: "INGRESS",
+      state: "NEW",
     });
+  });
 
-    test('updateDFSPEndpoints should call the correct endpoint with IP type', async () => {
-        const opts = { type: 'IP', epId: '123', address: '192.168.0.1', ports: [80, 443], direction: 'EGRESS' };
-        mockRequests.put.mockResolvedValueOnce({});
+  test("getHubEgressEndpoints should call the correct endpoint", async () => {
+    mockRequests.get.mockResolvedValueOnce({});
 
-        await endpointsModel.updateDFSPEndpoints(opts);
+    await endpointsModel.getHubEgressEndpoints();
 
-        expect(mockRequests.put).toHaveBeenCalledWith(`dfsp/endpoints/${opts.epId}`, {
-            address: opts.address,
-            ports: opts.ports,
-            type: opts.type,
-            direction: opts.direction,
-        });
+    expect(mockRequests.get).toHaveBeenCalledWith("hub/endpoints", {
+      direction: "EGRESS",
+      state: "NEW",
     });
+  });
 
-    test('deleteDFSPEndpoints should call the correct endpoint', async () => {
-        const opts = { epId: '123' };
-        mockRequests.delete.mockResolvedValueOnce({});
+  ///
+  test("updateDFSPEndpoints should call the correct endpoint with IP type", async () => {
+    const opts = {
+      type: "IP",
+      epId: "123",
+      address: "192.168.0.1",
+      ports: [80, 443],
+      direction: "EGRESS",
+    };
+    mockRequests.put.mockResolvedValueOnce({});
 
-        await endpointsModel.deleteDFSPEndpoints(opts);
+    await endpointsModel.updateDFSPEndpoints(opts);
 
-        expect(mockRequests.delete).toHaveBeenCalledWith(`dfsp/endpoints/${opts.epId}`);
+    expect(mockRequests.put).toHaveBeenCalledWith(
+      `dfsp/endpoints/${opts.epId}`,
+      {
+        address: opts.address,
+        ports: opts.ports,
+        type: opts.type,
+        direction: opts.direction,
+      }
+    );
+  });
+
+  test("updateDFSPEndpoints should call the correct endpoint with URL type", async () => {
+    const opts = {
+      type: "URL",
+      epId: "123",
+      address: "https://example.com",
+      direction: "EGRESS",
+    };
+    mockRequests.put.mockResolvedValueOnce({});
+
+    await endpointsModel.updateDFSPEndpoints(opts);
+
+    expect(mockRequests.put).toHaveBeenCalledWith(
+      `dfsp/endpoints/${opts.epId}`,
+      {
+        url: opts.address,
+        type: opts.type,
+        direction: opts.direction,
+      }
+    );
+  });
+
+  it("should update endpoint with IP address and ports", async () => {
+    const opts = { type: "IP", epId: "123" };
+    const body = { ip: "192.168.1.100", ports: [80, 443] };
+
+    await endpointsModel.updateDFSPIngressEndpointsUrlById(opts, body);
+
+    expect(mockRequests.put).toHaveBeenCalledWith("dfsp/endpoints/123", {
+      address: "192.168.1.100",
+      ports: [80, 443],
     });
+  });
 
-    test('deleteDFSPIngressEndpointsUrlById should call the correct endpoint', async () => {
-        const opts = { epId: '123' };
-        mockRequests.delete.mockResolvedValueOnce({});
+  it("should update endpoint with URL", async () => {
+    const opts = { type: "URL", epId: "456" };
+    const body = { address: "https://example.com" };
 
-        await endpointsModel.deleteDFSPIngressEndpointsUrlById(opts);
+    await endpointsModel.updateDFSPIngressEndpointsUrlById(opts, body);
 
-        expect(mockRequests.delete).toHaveBeenCalledWith(`dfsp/endpoints/${opts.epId}`);
+    expect(mockRequests.put).toHaveBeenCalledWith("dfsp/endpoints/456", {
+      url: "https://example.com",
     });
+  });
 
-    test('uploadDFSPIngressEndpoints should call the correct endpoint', async () => {
-        const opts = { type: 'IP' };
-        const body = { address: '192.168.0.1', ports: [80, 443] };
-        mockRequests.post.mockResolvedValueOnce({});
+  it("should upload endpoint with IP address and ports", async () => {
+    const opts = { type: "IP" };
+    const body = { address: "192.168.0.1", ports: [80, 443] };
 
-        await endpointsModel.uploadDFSPIngressEndpoints(opts, body);
+    await endpointsModel.uploadDFSPIngressEndpoints(opts, body);
 
-        expect(mockRequests.post).toHaveBeenCalledWith('dfsp/endpoints', {
-            address: body.address,
-            ports: body.ports,
-            type: opts.type,
-            direction: 'INGRESS',
-        });
+    expect(mockRequests.post).toHaveBeenCalledWith("dfsp/endpoints", {
+      type: opts.type,
+      direction: "INGRESS",
+      address: body.address,
+      ports: body.ports,
     });
+  });
 
-    test('getHubIngressEndpoints should call the correct endpoint', async () => {
-        mockRequests.get.mockResolvedValueOnce({});
+  it("should upload endpoint with URL", async () => {
+    const opts = { type: "URL" };
+    const body = { url: "https://example.com" };
 
-        await endpointsModel.getHubIngressEndpoints();
+    await endpointsModel.uploadDFSPIngressEndpoints(opts, body);
 
-        expect(mockRequests.get).toHaveBeenCalledWith('hub/endpoints', {
-            direction: 'INGRESS',
-            state: 'NEW',
-        });
+    expect(mockRequests.post).toHaveBeenCalledWith("dfsp/endpoints", {
+      type: opts.type,
+      direction: "INGRESS",
+      url: body.address,
     });
-
-    test('getHubEgressEndpoints should call the correct endpoint', async () => {
-        mockRequests.get.mockResolvedValueOnce({});
-
-        await endpointsModel.getHubEgressEndpoints();
-
-        expect(mockRequests.get).toHaveBeenCalledWith('hub/endpoints', {
-            direction: 'EGRESS',
-            state: 'NEW',
-        });
-    });
+  });
 });
-
