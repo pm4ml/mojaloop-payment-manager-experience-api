@@ -1,6 +1,5 @@
-// const Transfer = require('../../src/lib/model/Transfer');
-jest.mock('@internal/requests');
-
+const Transfer = require('../../../src/lib/model/Transfer');
+const mock = require('../../../src/lib/model/mock');
 
 const mockDb = {
     select: jest.fn().mockReturnThis(),
@@ -11,290 +10,334 @@ const mockDb = {
     del: jest.fn().mockReturnThis(),
     whereRaw: jest.fn().mockReturnThis(),
     andWhere: jest.fn().mockReturnThis(),
-};
-
-const transfer = {
-    findAll: async (opts) => {
-        const query = mockDb.select().whereRaw('true');
-        if (opts.startTimestamp) {
-            query.andWhere('created_at', '>=', new Date(opts.startTimestamp).getTime());
-        }
-        if (opts.endTimestamp) {
-            query.andWhere('created_at', '<', new Date(opts.endTimestamp).getTime());
-        }
-        if (opts.senderIdType) {
-            query.andWhere('sender_id_type', 'LIKE', `%${opts.senderIdType}%`);
-        }
-        if (opts.senderIdValue) {
-            query.andWhere('sender_id_value', 'LIKE', `%${opts.senderIdValue}%`);
-        }
-        return query;
-    },
-    findOne: async (id) => {
-        const query = mockDb.where('id', id).first();
-        return query;
-    },
-    create: async (newTransfer) => {
-        const query = mockDb.insert(newTransfer);
-        return query;
-    },
-    update: async (id, updatedTransfer) => {
-        const query = mockDb.where('id', id).update(updatedTransfer);
-        return query;
-    },
-    delete: async (id) => {
-        const query = mockDb.where('id', id).del();
-        return query;
-    },
+    leftJoin: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    offset: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+    count: jest.fn().mockReturnThis(),
+    sum: jest.fn().mockReturnThis(),
+    groupByRaw: jest.fn().mockReturnThis(),
+    raw: jest.fn().mockReturnThis(),
 };
 
 describe('Transfer Model', () => {
-    // test('findAll should query the database with the correct filters', async () => {
-    //     const opts = {
-    //         startTimestamp: '2023-01-01T00:00:00Z',
-    //         endTimestamp: '2023-01-31T23:59:59Z',
-    //         senderIdType: 'email',
-    //         senderIdValue: 'test@example.com'
+    let transfer;
+
+    beforeEach(() => {
+        transfer = new Transfer({
+            mockData: true,
+            logger: console,
+            db: mockDb,
+        });
+
+        jest.clearAllMocks();
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('should initialize with provided props', () => {
+        expect(transfer.mockData).toBe(true);
+        expect(transfer._db).toBe(mockDb);
+    });
+
+    test('should return correct statuses', () => {
+        expect(Transfer.STATUSES).toEqual({
+            null: 'PENDING',
+            1: 'SUCCESS',
+            0: 'ERROR',
+        });
+    });
+
+    test('should apply join correctly', () => {
+        const query = mockDb;
+        transfer._applyJoin(query);
+        expect(query.leftJoin).toHaveBeenCalledWith('fx_quote', 'transfer.redis_key', 'fx_quote.redis_key');
+        expect(query.leftJoin).toHaveBeenCalledWith('fx_transfer', 'fx_quote.redis_key', 'fx_transfer.redis_key');
+        expect(query.select).toHaveBeenCalledWith([
+            'transfer.*',
+            'fx_quote.source_currency as fx_source_currency',
+            'fx_quote.source_amount as fx_source_amount',
+            'fx_quote.target_currency as fx_target_currency',
+            'fx_quote.target_amount as fx_target_amount',
+            'fx_transfer.source_currency as fx_transfer_source_currency',
+            'fx_transfer.target_currency as fx_transfer_target_currency',
+            'fx_transfer.commit_request_id as fx_commit_request_id',
+        ]);
+    });
+
+    test('should convert transfer to API format correctly', () => {
+        const transferData = {
+            id: '1',
+            batch_id: 'batch1',
+            dfsp: 'dfsp1',
+            direction: 1,
+            currency: 'USD',
+            amount: '100',
+            success: 1,
+            created_at: '2020-01-01T00:00:00Z',
+            sender: 'sender1',
+            sender_id_type: 'type1',
+            sender_id_sub_value: 'sub1',
+            sender_id_value: 'value1',
+            recipient: 'recipient1',
+            recipient_id_type: 'type2',
+            recipient_id_sub_value: 'sub2',
+            recipient_id_value: 'value2',
+            raw: JSON.stringify({ homeTransactionId: 'home1', lastError: { httpStatusCode: 500 } }),
+            details: 'details1',
+        };
+        const result = transfer._convertToApiFormat(transferData);
+        expect(result).toEqual({
+            id: '1',
+            batchId: 'batch1',
+            institution: 'dfsp1',
+            direction: 'OUTBOUND',
+            currency: 'USD',
+            amount: 100,
+            type: 'P2P',
+            status: 'SUCCESS',
+            initiatedTimestamp: '2020-01-01T00:00:00.000Z',
+            confirmationNumber: 0,
+            sender: 'sender1',
+            senderIdType: 'type1',
+            senderIdSubValue: 'sub1',
+            senderIdValue: 'value1',
+            recipient: 'recipient1',
+            recipientIdType: 'type2',
+            recipientIdSubValue: 'sub2',
+            recipientIdValue: 'value2',
+            homeTransferId: 'home1',
+            details: 'details1',
+            errorType: null,
+        });
+    });
+
+    test('should convert last error to error type correctly', () => {
+        const error = { mojaloopError: { errorInformation: { errorDescription: 'error' } } };
+        const result = Transfer._transferLastErrorToErrorType(error);
+        expect(result).toBe('error');
+
+        const error2 = { httpStatusCode: 500 };
+        const result2 = Transfer._transferLastErrorToErrorType(error2);
+        expect(result2).toBe('HTTP 500');
+    });
+
+    test('should parse raw transfer request bodies correctly', () => {
+        const transferRaw = {
+            getPartiesRequest: { body: '{"key":"value"}' },
+            quoteRequest: { body: '{"key":"value"}' },
+            quoteResponse: { body: '{"key":"value"}' },
+            fxQuoteResponse: { body: '{"key":"value"}' },
+            fxQuoteRequest: { body: '{"key":"value"}' },
+            fxTransferRequest: { body: '{"key":"value"}' },
+            fxTransferResponse: { body: '{"key":"value"}' },
+            prepare: { body: '{"key":"value"}' },
+            fulfil: { body: '{"key":"value"}' },
+        };
+        const result = transfer._parseRawTransferRequestBodies(transferRaw);
+        expect(result).toEqual({
+            getPartiesRequest: { body: { key: 'value' } },
+            quoteRequest: { body: { key: 'value' } },
+            quoteResponse: { body: { key: 'value' } },
+            fxQuoteResponse: { body: { key: 'value' } },
+            fxQuoteRequest: { body: { key: 'value' } },
+            fxTransferRequest: { body: { key: 'value' } },
+            fxTransferResponse: { body: { key: 'value' } },
+            prepare: { body: { key: 'value' } },
+            fulfil: { body: { key: 'value' } },
+        });
+    });
+
+    test('should get conversion terms from fx quote response correctly', () => {
+        const fxQuoteResponse = {
+            body: {
+                conversionTerms: '{"sourceAmount":{"amount":"100","currency":"USD"},"targetAmount":{"amount":"200","currency":"EUR"},"charges":[],"expiration":"2020-01-01T00:00:00Z"}',
+            },
+        };
+        const result = transfer._getConversionTermsFromFxQuoteResponse(fxQuoteResponse);
+        expect(result).toEqual({
+            charges: {
+                totalSourceCurrencyCharges: { amount: '0', currency: 'USD' },
+                totalTargetCurrencyCharges: { amount: '0', currency: 'EUR' },
+            },
+            expiryDate: '2020-01-01T00:00:00Z',
+            transferAmount: {
+                sourceAmount: { amount: '100', currency: 'USD' },
+                targetAmount: { amount: '200', currency: 'EUR' },
+            },
+            exchangeRate: '2.0000',
+        });
+    });
+
+    test('should calculate total charges correctly', () => {
+        const charges = [
+            { sourceAmount: { amount: '10', currency: 'USD' }, targetAmount: { amount: '20', currency: 'EUR' } },
+            { sourceAmount: { amount: '5', currency: 'USD' }, targetAmount: { amount: '10', currency: 'EUR' } },
+        ];
+        const result = transfer._calculateTotalChargesFromCharges(charges, 'USD', 'EUR');
+        expect(result).toEqual({
+            totalSourceCurrencyCharges: { amount: '15', currency: 'USD' },
+            totalTargetCurrencyCharges: { amount: '30', currency: 'EUR' },
+        });
+    });
+
+    test('should calculate exchange rate correctly', () => {
+        const result = transfer._calculateExchangeRate(100, 200, 10, 20);
+        expect(result).toBe('2.0000');
+    });
+
+    // test('should convert transfer to API detail format correctly', () => {
+    //     const transferData = {
+    //         id: '1',
+    //         batch_id: 'batch1',
+    //         dfsp: 'dfsp1',
+    //         direction: 1,
+    //         currency: 'USD',
+    //         amount: '100',
+    //         success: 1,
+    //         created_at: '2020-01-01T00:00:00Z',
+    //         sender: 'sender1',
+    //         sender_id_type: 'type1',
+    //         sender_id_sub_value: 'sub1',
+    //         sender_id_value: 'value1',
+    //         recipient: 'recipient1',
+    //         recipient_id_type: 'type2',
+    //         recipient_id_sub_value: 'sub2',
+    //         recipient_id_value: 'value2',
+    //         raw: JSON.stringify({ homeTransactionId: 'home1', lastError: { httpStatusCode: 500 } }),
+    //         details: 'details1',
     //     };
 
-    //     mockDb.select.mockResolvedValueOnce([
-    //         { id: '1', raw: '{"id":"1","amount":100}' },
-    //         { id: '2', raw: '{"id":"2","amount":200}' },
-    //     ]);
-
-    //     const result = await transfer.findAll(opts);
-
-    //     expect(mockDb.whereRaw).toHaveBeenCalledWith('true');
-    //     expect(mockDb.andWhere).toHaveBeenCalledWith('created_at', '>=', new Date(opts.startTimestamp).getTime());
-    //     expect(mockDb.andWhere).toHaveBeenCalledWith('created_at', '<', new Date(opts.endTimestamp).getTime());
-    //     expect(mockDb.andWhere).toHaveBeenCalledWith('sender_id_type', 'LIKE', `%${opts.senderIdType}%`);
-    //     expect(mockDb.andWhere).toHaveBeenCalledWith('sender_id_value', 'LIKE', `%${opts.senderIdValue}%`);
-    //     expect(result).toEqual([
-    //         { id: '1', amount: 100 },
-    //         { id: '2', amount: 200 },
-    //     ]);
+    //     const result = transfer._convertToApiDetailFormat(transferData);
+    //     expect(result).toEqual(expect.objectContaining({
+    //         transferId: '1',
+    //         transferState: 'SUCCESS',
+    //         direction: 'OUTBOUND',
+    //         sendAmount: '100',
+    //         sendCurrency: 'USD',
+    //         dateSubmitted: new Date('2020-01-01T00:00:00Z'),
+    //     }));
     // });
 
-    // test('findOne should query the database with the correct ID', async () => {
-    //     const id = '12345';
-
-    //     mockDb.where.mockReturnThis();
-    //     mockDb.first.mockResolvedValueOnce({ id: '12345', raw: '{"id":"12345","amount":100}' });
-
-    //     const result = await transfer.findOne(id);
-
-    //     expect(mockDb.where).toHaveBeenCalledWith('id', id);
-    //     expect(result).toEqual({ id: '12345', amount: 100 });
-    // });
-
-    // test('create should insert a new transfer into the database', async () => {
-    //     const newTransfer = { id: '3', amount: 300 };
-
-    //     mockDb.insert.mockResolvedValueOnce([newTransfer.id]);
-
-    //     const result = await transfer.create(newTransfer);
-
-    //     expect(mockDb.insert).toHaveBeenCalledWith(newTransfer);
-    //     expect(result).toEqual(newTransfer.id);
-    // });
-
-    test('create should throw an error for invalid data', async () => {
-        const invalidTransfer = { amount: 300 }; // Missing 'id'
-
-        mockDb.insert.mockRejectedValueOnce(new Error('Invalid data'));
-
-        await expect(transfer.create(invalidTransfer)).rejects.toThrow('Invalid data');
-    });
-
-    test('update should modify an existing transfer in the database', async () => {
-        const updatedTransfer = { id: '1', amount: 150 };
-
-        mockDb.where.mockReturnThis();
-        mockDb.update.mockResolvedValueOnce(1);
-
-        const result = await transfer.update(updatedTransfer.id, updatedTransfer);
-
-        expect(mockDb.where).toHaveBeenCalledWith('id', updatedTransfer.id);
-        expect(mockDb.update).toHaveBeenCalledWith(updatedTransfer);
-        expect(result).toEqual(1);
-    });
-
-    test('update should throw an error for invalid data', async () => {
-        const invalidTransfer = { amount: 150 }; // Missing 'id'
-
-        mockDb.where.mockReturnThis();
-        mockDb.update.mockRejectedValueOnce(new Error('Invalid data'));
-
-        await expect(transfer.update('1', invalidTransfer)).rejects.toThrow('Invalid data');
-    });
-
-    test('delete should remove a transfer from the database', async () => {
-        const id = '1';
-
-        mockDb.where.mockReturnThis();
-        mockDb.del.mockResolvedValueOnce(1);
-
-        const result = await transfer.delete(id);
-
-        expect(mockDb.where).toHaveBeenCalledWith('id', id);
-        expect(mockDb.del).toHaveBeenCalled();
-        expect(result).toEqual(1);
-    });
-
-    test('delete should throw an error for non-existing ID', async () => {
-        const id = 'non-existing-id';
-
-        mockDb.where.mockReturnThis();
-        mockDb.del.mockRejectedValueOnce(new Error('Transfer not found'));
-
-        await expect(transfer.delete(id)).rejects.toThrow('Transfer not found');
-    });
-
-    // test('findAll should return all transfers without filters', async () => {
-    //     mockDb.select.mockResolvedValueOnce([
-    //         { id: '1', raw: '{"id":"1","amount":100}' },
-    //         { id: '2', raw: '{"id":"2","amount":200}' },
-    //     ]);
-
-    //     const result = await transfer.findAll({});
-
-    //     expect(mockDb.whereRaw).toHaveBeenCalledWith('true');
-    //     expect(result).toEqual([
-    //         { id: '1', amount: 100 },
-    //         { id: '2', amount: 200 },
-    //     ]);
-    // });
-
-    // test('findAll should return transfers filtered by amount', async () => {
-    //     const opts = { amount: 100 };
-
-    //     mockDb.select.mockResolvedValueOnce([
-    //         { id: '1', raw: '{"id":"1","amount":100}' },
-    //     ]);
-
-    //     const result = await transfer.findAll(opts);
-
-    //     expect(mockDb.whereRaw).toHaveBeenCalledWith('true');
-    //     expect(mockDb.andWhere).toHaveBeenCalledWith('amount', opts.amount);
-    //     expect(result).toEqual([
-    //         { id: '1', amount: 100 },
-    //     ]);
-    // });
-
-    // test('findAll should return transfers filtered by senderIdType and senderIdValue', async () => {
-    //     const opts = {
-    //         senderIdType: 'email',
-    //         senderIdValue: 'test@example.com'
+    // test('should get party from quote request correctly', () => {
+    //     const quoteRequest = {
+    //         body: {
+    //             payer: {
+    //                 partyIdInfo: { partyIdType: 'type1', partyIdentifier: 'value1', partySubIdOrType: 'sub1', fspId: 'fsp1' },
+    //                 name: 'payer1',
+    //                 personalInfo: { complexName: { firstName: 'first', middleName: 'middle', lastName: 'last' }, dateOfBirth: '2000-01-01' },
+    //                 merchantClassificationCode: 'code1',
+    //                 extensionList: { extension: [] },
+    //             },
+    //         },
     //     };
-    
-    //     mockDb.select.mockResolvedValueOnce([
-    //         { id: '1', raw: '{"id":"1","amount":100}' },
-    //     ]);
-    
-    //     const result = await transfer.findAll(opts);
-    
-    //     expect(mockDb.whereRaw).toHaveBeenCalledWith('true');
-    //     expect(mockDb.andWhere).toHaveBeenCalledWith('sender_id_type', 'LIKE', `%${opts.senderIdType}%`);
-    //     expect(mockDb.andWhere).toHaveBeenCalledWith('sender_id_value', 'LIKE', `%${opts.senderIdValue}%`);
-    //     expect(result).toEqual([
-    //         { id: '1', amount: 100 },
-    //     ]);
+    //     const result = transfer._getPartyFromQuoteRequest(quoteRequest, 'payer');
+    //     expect(result).toEqual({
+    //         idType: 'type1',
+    //         idValue: 'value1',
+    //         idSubType: 'sub1',
+    //         displayName: 'payer1',
+    //         firstName: 'first',
+    //         middleName: 'middle',
+    //         lastName: 'last',
+    //         dateOfBirth: '2000-01-01',
+    //         merchantClassificationCode: 'code1',
+    //         fspId: 'fsp1',
+    //         extensionList: [],
+    //     });
     // });
 
-    test('findOne should return null for non-existing ID', async () => {
-        const id = 'non-existing-id';
-    
-        mockDb.where.mockReturnThis();
-        mockDb.first.mockResolvedValueOnce(null);
-    
-        const result = await transfer.findOne(id);
-    
-        expect(mockDb.where).toHaveBeenCalledWith('id', id);
-        expect(result).toBeNull();
+    test('should convert complex name to display name correctly', () => {
+        const complexName = { firstName: 'first', middleName: 'middle', lastName: 'last' };
+        const result = transfer._complexNameToDisplayName(complexName);
+        expect(result).toBe('first middle last');
     });
 
-    // test('create should insert a new transfer into the database', async () => {
-    //     const newTransfer = { id: '3', amount: 300 };
-    
-    //     mockDb.insert.mockResolvedValueOnce([newTransfer.id]);
-    
-    //     const result = await transfer.create(newTransfer);
-    
-    //     expect(mockDb.insert).toHaveBeenCalledWith(newTransfer);
-    //     expect(result).toEqual(newTransfer.id);
-    // });
-
-    test('update should return 0 for non-existing ID', async () => {
-        const updatedTransfer = { id: 'non-existing-id', amount: 150 };
-    
-        mockDb.where.mockReturnThis();
-        mockDb.update.mockResolvedValueOnce(0);
-    
-        const result = await transfer.update(updatedTransfer.id, updatedTransfer);
-    
-        expect(mockDb.where).toHaveBeenCalledWith('id', updatedTransfer.id);
-        expect(mockDb.update).toHaveBeenCalledWith(updatedTransfer);
-        expect(result).toEqual(0);
+    test('should convert party to transfer party correctly', () => {
+        const party = {
+            idType: 'type1',
+            idValue: 'value1',
+            idSubType: 'sub1',
+            displayName: 'display',
+            firstName: 'first',
+            middleName: 'middle',
+            lastName: 'last',
+            dateOfBirth: '2000-01-01',
+            merchantClassificationCode: 'code1',
+            fspId: 'fsp1',
+            extensionList: [],
+        };
+        const result = transfer._convertToTransferParty(party);
+        expect(result).toEqual({
+            type: '',
+            idType: 'type1',
+            idValue: 'value1',
+            idSubType: 'sub1',
+            displayName: 'display',
+            firstName: 'first',
+            middleName: 'middle',
+            lastName: 'last',
+            dateOfBirth: '2000-01-01',
+            merchantClassificationCode: 'code1',
+            fspId: 'fsp1',
+            extensionList: [],
+        });
     });
 
-    test('delete should return 0 for non-existing ID', async () => {
-        const id = 'non-existing-id';
-    
-        mockDb.where.mockReturnThis();
-        mockDb.del.mockResolvedValueOnce(0);
-    
-        const result = await transfer.delete(id);
-    
-        expect(mockDb.where).toHaveBeenCalledWith('id', id);
-        expect(mockDb.del).toHaveBeenCalled();
-        expect(result).toEqual(0);
-    });
-
-    // test('findAll should return all transfers without filters', async () => {
-    //     mockDb.select.mockResolvedValueOnce([
-    //         { id: '1', raw: '{"id":"1","amount":100}' },
-    //         { id: '2', raw: '{"id":"2","amount":200}' },
-    //     ]);
-    
+    // test('should find all transfers correctly', async () => {
+    //     mockDb.mockReturnValueOnce([{ id: '1', raw: '{}' }]);
     //     const result = await transfer.findAll({});
-    
-    //     expect(mockDb.whereRaw).toHaveBeenCalledWith('true');
-    //     expect(result).toEqual([
-    //         { id: '1', amount: 100 },
-    //         { id: '2', amount: 200 },
-    //     ]);
+    //     expect(result).toEqual([{ id: '1', raw: {} }]);
     // });
 
-    // test('findAll should return transfers filtered by amount', async () => {
-    //     const opts = { amount: 100 };
-    
-    //     mockDb.select.mockResolvedValueOnce([
-    //         { id: '1', raw: '{"id":"1","amount":100}' },
-    //     ]);
-    
-    //     const result = await transfer.findAll(opts);
-    
-    //     expect(mockDb.whereRaw).toHaveBeenCalledWith('true');
-    //     expect(mockDb.andWhere).toHaveBeenCalledWith('amount', opts.amount);
-    //     expect(result).toEqual([
-    //         { id: '1', amount: 100 },
-    //     ]);
+    // test('should find all transfers with FX correctly', async () => {
+    //     mockDb.mockReturnValueOnce([{ id: '1', raw: '{}' }]);
+    //     const result = await transfer.findAllWithFX({});
+    //     expect(result).toEqual([{ id: '1', raw: {} }]);
     // });
 
-    // test('findAll should return transfers filtered by ID', async () => {
-    //     const opts = { id: '1' };
-    
-    //     mockDb.select.mockResolvedValueOnce([
-    //         { id: '1', raw: '{"id":"1","amount":100}' },
-    //     ]);
-    
-    //     const result = await transfer.findAll(opts);
-    
-    //     expect(mockDb.whereRaw).toHaveBeenCalledWith('true');
-    //     expect(mockDb.andWhere).toHaveBeenCalledWith('id', 'LIKE', `%${opts.id}%`);
-    //     expect(result).toEqual([
-    //         { id: '1', amount: 100 },
-    //     ]);
+    // test('should find one transfer correctly', async () => {
+    //     mockDb.mockReturnValueOnce({ id: '1', raw: '{}' });
+    //     const result = await transfer.findOne('1');
+    //     expect(result).toEqual({ id: '1', raw: {} });
     // });
 
+    // test('should find transfer details correctly', async () => {
+    //     mockDb.mockReturnValueOnce([{ id: '1', raw: '{}' }]);
+    //     const result = await transfer.details('1');
+    //     expect(result).toEqual(expect.objectContaining({ transferId: '1' }));
+    // });
+
+    // test('should calculate success rate correctly', async () => {
+    //     mockDb.mockReturnValueOnce([{ timestamp: 1, count: 10 }]);
+    //     mockDb.mockReturnValueOnce([{ timestamp: 1, count: 5 }]);
+    //     const result = await transfer.successRate({});
+    //     expect(result).toEqual([{ timestamp: 1, percentage: 50 }]);
+    // });
+
+    // test('should calculate average response time correctly', async () => {
+    //     mockDb.mockReturnValueOnce([{ timestamp: 1, averageResponseTime: 1000 }]);
+    //     const result = await transfer.avgResponseTime({});
+    //     expect(result).toEqual([{ timestamp: 1, averageResponseTime: 1000 }]);
+    // });
+
+    // test('should retrieve status summary correctly', async () => {
+    //     mockDb.mockReturnValueOnce([{ success: 1, count: 10 }]);
+    //     const result = await transfer.statusSummary({});
+    //     expect(result).toEqual([{ status: 'SUCCESS', count: 10 }, { status: 'PENDING', count: 0 }, { status: 'ERROR', count: 0 }]);
+    // });
+
+    // test('should retrieve hourly flow correctly', async () => {
+    //     mockDb.mockReturnValueOnce([{ timestamp: 1, currency: 'USD', direction: 1, sum: 100 }]);
+    //     const result = await transfer.hourlyFlow({});
+    //     expect(result).toEqual([{ timestamp: 1, currency: 'USD', inbound: 0, outbound: 100 }]);
+    // });
+
+    // test('should retrieve transfer errors correctly', async () => {
+    //     mockDb.mockReturnValueOnce([{ id: '1', raw: '{}' }]);
+    //     const result = await transfer.errors({});
+    //     expect(result).toEqual([{ id: '1', raw: {} }]);
+    // });
 });
