@@ -85,7 +85,13 @@ describe('Transfer Model', () => {
             recipient_id_type: 'type2',
             recipient_id_sub_value: 'sub2',
             recipient_id_value: 'value2',
-            raw: JSON.stringify({ homeTransactionId: 'home1', lastError: { httpStatusCode: 500 } }),
+            raw: JSON.stringify({
+                homeTransactionId: 'home1',
+                lastError: { httpStatusCode: 500 },
+                getPartiesRequest: { body: {} },
+                quoteRequest: { body: {} },
+                quoteResponse: { body: {} }
+            }),
             details: 'details1',
         };
         const result = transfer._convertToApiFormat(transferData);
@@ -188,66 +194,124 @@ describe('Transfer Model', () => {
         expect(result).toBe('2.0000');
     });
 
-    // test('should convert transfer to API detail format correctly', () => {
-    //     const transferData = {
-    //         id: '1',
-    //         batch_id: 'batch1',
-    //         dfsp: 'dfsp1',
-    //         direction: 1,
-    //         currency: 'USD',
-    //         amount: '100',
-    //         success: 1,
-    //         created_at: '2020-01-01T00:00:00Z',
-    //         sender: 'sender1',
-    //         sender_id_type: 'type1',
-    //         sender_id_sub_value: 'sub1',
-    //         sender_id_value: 'value1',
-    //         recipient: 'recipient1',
-    //         recipient_id_type: 'type2',
-    //         recipient_id_sub_value: 'sub2',
-    //         recipient_id_value: 'value2',
-    //         raw: JSON.stringify({ homeTransactionId: 'home1', lastError: { httpStatusCode: 500 } }),
-    //         details: 'details1',
-    //     };
+    test('should return mock data when mockData is true', async () => {
+        const mockId = '123';
+        const mockDataResponse = { id: mockId };
 
-    //     const result = transfer._convertToApiDetailFormat(transferData);
-    //     expect(result).toEqual(expect.objectContaining({
-    //         transferId: '1',
-    //         transferState: 'SUCCESS',
-    //         direction: 'OUTBOUND',
-    //         sendAmount: '100',
-    //         sendCurrency: 'USD',
-    //         dateSubmitted: new Date('2020-01-01T00:00:00Z'),
-    //     }));
-    // });
+        mock.getTransferDetails = jest.fn().mockReturnValueOnce(mockDataResponse);
 
-    // test('should get party from quote request correctly', () => {
-    //     const quoteRequest = {
-    //         body: {
-    //             payer: {
-    //                 partyIdInfo: { partyIdType: 'type1', partyIdentifier: 'value1', partySubIdOrType: 'sub1', fspId: 'fsp1' },
-    //                 name: 'payer1',
-    //                 personalInfo: { complexName: { firstName: 'first', middleName: 'middle', lastName: 'last' }, dateOfBirth: '2000-01-01' },
-    //                 merchantClassificationCode: 'code1',
-    //                 extensionList: { extension: [] },
-    //             },
-    //         },
-    //     };
-    //     const result = transfer._getPartyFromQuoteRequest(quoteRequest, 'payer');
-    //     expect(result).toEqual({
-    //         idType: 'type1',
-    //         idValue: 'value1',
-    //         idSubType: 'sub1',
-    //         displayName: 'payer1',
-    //         firstName: 'first',
-    //         middleName: 'middle',
-    //         lastName: 'last',
-    //         dateOfBirth: '2000-01-01',
-    //         merchantClassificationCode: 'code1',
-    //         fspId: 'fsp1',
-    //         extensionList: [],
-    //     });
-    // });
+        const result = await transfer.details(mockId);
+
+        expect(mock.getTransferDetails).toHaveBeenCalledWith({ id: mockId });
+        expect(result).toEqual(mockDataResponse);
+    });
+
+    test('should convert transfer to API detail format correctly', () => {
+        const transferData = {
+            id: '1',
+            batch_id: 'batch1',
+            dfsp: 'dfsp1',
+            direction: 1,
+            currency: 'USD',
+            amount: '100',
+            success: 1,
+            created_at: '2020-01-01T00:00:00Z',
+            sender: 'sender1',
+            sender_id_type: 'type1',
+            sender_id_sub_value: 'sub1',
+            sender_id_value: 'value1',
+            recipient: 'recipient1',
+            recipient_id_type: 'type2',
+            recipient_id_sub_value: 'sub2',
+            recipient_id_value: 'value2',
+            supported_currencies: '["USD", "EUR"]',
+            raw: JSON.stringify({
+                homeTransactionId: 'home1',
+                lastError: { httpStatusCode: 500 },
+                getPartiesRequest: { body: {} },
+                quoteRequest: { 
+                    body: {
+                        payee: {
+                            partyIdInfo: { fspId: 'fsp1' }
+                        },
+                        amountType: 'SEND',
+                        transactionId: 'tx1'
+                    } 
+                },
+                quoteResponse: { 
+                    body: {
+                        transferAmount: { amount: '100', currency: 'USD' },
+                        payeeReceiveAmount: { amount: '95', currency: 'USD' },
+                        payeeFspFee: { amount: '5', currency: 'USD' },
+                        expiration: '2020-01-02T00:00:00Z'
+                    } 
+                },
+                prepare: { body: {} },
+                fulfil: { body: { transferState: 'COMMITTED' } },
+                needFx: false,
+                transactionType: 'TRANSFER',
+                currentState: 'COMPLETED'
+            }),
+            details: 'details1'
+        };
+
+        const result = transfer._convertToApiDetailFormat(transferData);
+
+        expect(result).toEqual(expect.objectContaining({
+            transferId: '1',
+            transferState: 'SUCCESS',
+            direction: 'OUTBOUND',
+            sendAmount: '100',
+            sendCurrency: 'USD',
+            dateSubmitted: new Date('2020-01-01T00:00:00Z'),
+            needFx: false,
+            transactionType: 'TRANSFER',
+            receiveAmount: '100',
+            receiveCurrency: 'USD',
+            recipientCurrencies: ['USD', 'EUR'],
+            recipientInstitution: 'fsp1',
+            transferTerms: expect.objectContaining({
+                transferId: '1',
+                quoteAmount: {
+                    amount: '100',
+                    currency: 'USD'
+                },
+                quoteAmountType: 'SEND',
+                transferAmount: {
+                    amount: '100',
+                    currency: 'USD'
+                }
+            })
+        }));
+    });
+
+    test('should get party from quote request correctly', () => {
+        const quoteRequest = {
+            body: {
+                payer: {
+                    partyIdInfo: { partyIdType: 'type1', partyIdentifier: 'value1', partySubIdOrType: 'sub1', fspId: 'fsp1' },
+                    name: 'payer1',
+                    personalInfo: { complexName: { firstName: 'first', middleName: 'middle', lastName: 'last' }, dateOfBirth: '2000-01-01' },
+                    merchantClassificationCode: 'code1',
+                    extensionList: { extension: [] },
+                },
+            },
+        };
+        const result = transfer._getPartyFromQuoteRequest(quoteRequest, 'payer');
+        expect(result).toEqual({
+            idType: 'type1',
+            idValue: 'value1',
+            idSubType: 'sub1',
+            displayName: 'payer1',
+            firstName: 'first',
+            middleName: 'middle',
+            lastName: 'last',
+            dateOfBirth: '2000-01-01',
+            merchantClassificationCode: 'code1',
+            fspId: 'fsp1',
+            extensionList: undefined,
+        });
+    });
 
     test('should convert complex name to display name correctly', () => {
         const complexName = { firstName: 'first', middleName: 'middle', lastName: 'last' };
@@ -286,58 +350,107 @@ describe('Transfer Model', () => {
         });
     });
 
-    // test('should find all transfers correctly', async () => {
-    //     mockDb.mockReturnValueOnce([{ id: '1', raw: '{}' }]);
-    //     const result = await transfer.findAll({});
-    //     expect(result).toEqual([{ id: '1', raw: {} }]);
-    // });
+    test('avgResponseTime should return mock data when mockData is true', async () => {
+        const mockAvgResponseTime = [
+            { timestamp: 1609459200000, averageResponseTime: 1200 },
+            { timestamp: 1609459260000, averageResponseTime: 1300 },
+        ];
+    
+        mock.getTransfersAvgResponseTime = jest
+            .fn()
+            .mockResolvedValue(mockAvgResponseTime);
+    
+        const opts = { minutePrevious: 10 };
+        const result = await transfer.avgResponseTime(opts);
+        expect(result).toEqual(mockAvgResponseTime);
+    });
+    
+    test('should return mock data when mockData is true', async () => {
+        const mockOpts = { limit: 10 };
+        const mockTransfers = [{ id: 'mock1' }];
+        
+        mock.getTransfers = jest.fn().mockResolvedValue(mockTransfers);
+        
+        const result = await transfer.findAll(mockOpts);
+        expect(result).toEqual(mockTransfers);
+        expect(mock.getTransfers).toHaveBeenCalledWith(mockOpts);
+    });
 
-    // test('should find all transfers with FX correctly', async () => {
-    //     mockDb.mockReturnValueOnce([{ id: '1', raw: '{}' }]);
-    //     const result = await transfer.findAllWithFX({});
-    //     expect(result).toEqual([{ id: '1', raw: {} }]);
-    // });
+    test('should calculate exchange rate with negative amounts', () => {
+        const result = transfer._calculateExchangeRate('-100', '-200', '-10', '-20');
+        expect(result).toBe('2.0000');
+    });
 
-    // test('should find one transfer correctly', async () => {
-    //     mockDb.mockReturnValueOnce({ id: '1', raw: '{}' });
-    //     const result = await transfer.findOne('1');
-    //     expect(result).toEqual({ id: '1', raw: {} });
-    // });
+    test('should handle empty charges array', () => {
+        const result = transfer._calculateTotalChargesFromCharges([], 'USD', 'EUR');
+        expect(result).toEqual({
+            totalSourceCurrencyCharges: { amount: '0', currency: 'USD' },
+            totalTargetCurrencyCharges: { amount: '0', currency: 'EUR' }
+        });
+    });
 
-    // test('should find transfer details correctly', async () => {
-    //     mockDb.mockReturnValueOnce([{ id: '1', raw: '{}' }]);
-    //     const result = await transfer.details('1');
-    //     expect(result).toEqual(expect.objectContaining({ transferId: '1' }));
-    // });
+    test('should handle null values in complex name', () => {
+        const result = transfer._complexNameToDisplayName({
+            firstName: null,
+            middleName: 'middle',
+            lastName: null
+        });
+        expect(result).toBe('middle');
+    });
 
-    // test('should calculate success rate correctly', async () => {
-    //     mockDb.mockReturnValueOnce([{ timestamp: 1, count: 10 }]);
-    //     mockDb.mockReturnValueOnce([{ timestamp: 1, count: 5 }]);
-    //     const result = await transfer.successRate({});
-    //     expect(result).toEqual([{ timestamp: 1, percentage: 50 }]);
-    // });
+    test('should handle empty complex name object', () => {
+        const result = transfer._complexNameToDisplayName({});
+        expect(result).toBe('');
+    });
 
-    // test('should calculate average response time correctly', async () => {
-    //     mockDb.mockReturnValueOnce([{ timestamp: 1, averageResponseTime: 1000 }]);
-    //     const result = await transfer.avgResponseTime({});
-    //     expect(result).toEqual([{ timestamp: 1, averageResponseTime: 1000 }]);
-    // });
+    test('should handle missing party fields in quote request', () => {
+        const quoteRequest = {
+            body: {
+                payer: {
+                    partyIdInfo: {}
+                }
+            }
+        };
+        const result = transfer._getPartyFromQuoteRequest(quoteRequest, 'payer');
+        expect(result).toEqual({
+            idType: undefined,
+            idValue: undefined,
+            idSubType: undefined,
+            displayName: undefined,
+            firstName: undefined,
+            middleName: undefined,
+            lastName: undefined,
+            dateOfBirth: undefined,
+            merchantClassificationCode: undefined,
+            fspId: undefined,
+            extensionList: undefined
+        });
+    });
 
-    // test('should retrieve status summary correctly', async () => {
-    //     mockDb.mockReturnValueOnce([{ success: 1, count: 10 }]);
-    //     const result = await transfer.statusSummary({});
-    //     expect(result).toEqual([{ status: 'SUCCESS', count: 10 }, { status: 'PENDING', count: 0 }, { status: 'ERROR', count: 0 }]);
-    // });
+    test('should parse raw transfer request bodies with invalid JSON', () => {
+        const transferRaw = {
+            getPartiesRequest: { body: 'invalid json' },
+            quoteRequest: { body: 'invalid json' }
+        };
+        expect(() => transfer._parseRawTransferRequestBodies(transferRaw)).toThrow();
+    });
 
-    // test('should retrieve hourly flow correctly', async () => {
-    //     mockDb.mockReturnValueOnce([{ timestamp: 1, currency: 'USD', direction: 1, sum: 100 }]);
-    //     const result = await transfer.hourlyFlow({});
-    //     expect(result).toEqual([{ timestamp: 1, currency: 'USD', inbound: 0, outbound: 100 }]);
-    // });
+    test('should handle missing conversion terms in fx quote response', () => {
+        const fxQuoteResponse = {
+            body: {}
+        };
+        const result = transfer._getConversionTermsFromFxQuoteResponse(fxQuoteResponse);
+        expect(result).toBeUndefined();
+    });
 
-    // test('should retrieve transfer errors correctly', async () => {
-    //     mockDb.mockReturnValueOnce([{ id: '1', raw: '{}' }]);
-    //     const result = await transfer.errors({});
-    //     expect(result).toEqual([{ id: '1', raw: {} }]);
-    // });
+    test('should handle invalid conversion terms JSON in fx quote response', () => {
+        const fxQuoteResponse = {
+            body: {
+                conversionTerms: 'invalid json'
+            }
+        };
+        expect(() => transfer._getConversionTermsFromFxQuoteResponse(fxQuoteResponse)).toThrow();
+    });
+
+    
 });
