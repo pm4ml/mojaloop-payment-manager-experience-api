@@ -121,8 +121,7 @@ describe("Inbound API handlers:", () => {
       expect(spy.mock.calls[0][0]).toStrictEqual(expectedArgument);
     });
 
-    ////// New Test Case
-    test("Upload DFSP Ingress Endpoints", async () => {
+    test("Upload DFSP Ingress Endpoints with URL calls the Endpoints Model with the expected arguments", async () => {
       const context = endpointsResource.uploadIngressEndpointContext;
 
       const spy = jest
@@ -140,7 +139,7 @@ describe("Inbound API handlers:", () => {
       expect(spy.mock.calls[0][1]).toStrictEqual(context.request.body);
     });
 
-    test("Update DFSP Ingress Endpoints Url By Id", async () => {
+    test("Update DFSP Ingress Endpoints Url By Id calls the Endpoints Model with the expected arguments", async () => {
       const context = endpointsResource.updateIngressEndpointContext;
 
       const spy = jest
@@ -159,7 +158,7 @@ describe("Inbound API handlers:", () => {
       expect(spy.mock.calls[0][1]).toStrictEqual(context.request.body);
     });
 
-    test("Get DFSP Ingress Endpoints", async () => {
+    test("Get DFSP Ingress Endpoints with IP calls the Endpoints Model with the expected arguments", async () => {
       const context = endpointsResource.getIngressEndpointContext;
 
       const spy = jest
@@ -177,7 +176,7 @@ describe("Inbound API handlers:", () => {
       expect(context.body).toBe("mocked response");
     });
 
-    test("Get DFSP Egress Endpoint", async () => {
+    test("Get DFSP Egress Endpoint with IP calls the Endpoints Model with the expected arguments", async () => {
       const context = endpointsResource.getEgressEndpointContext;
 
       const spy = jest
@@ -195,7 +194,7 @@ describe("Inbound API handlers:", () => {
       expect(context.body).toBe("mocked response");
     });
 
-    test("Get DFSP Ingress Endpoints With URL", async () => {
+    test("Get DFSP Ingress Endpoints With URL calls the Endpoints Model with the expected arguments", async () => {
       const context = endpointsResource.getIngressEndpointContext;
 
       const spy = jest
@@ -212,7 +211,7 @@ describe("Inbound API handlers:", () => {
       expect(context.body).toBe("mocked response");
     });
 
-    test("Delete DFSP Ingress Endpoints Url By Id", async () => {
+    test("Delete DFSP Ingress Endpoints Url By Id calls the Endpoints Model with the expected arguments", async () => {
       const context = endpointsResource.deleteEndpointContext;
 
       const spy = jest
@@ -229,7 +228,7 @@ describe("Inbound API handlers:", () => {
       expect(spy.mock.calls[0][0]).toStrictEqual(expectedArgument);
     });
 
-    test("Get Hub Ingress Endpoints", async () => {
+    test("Get Hub Ingress Endpoints calls the Endpoints Model with the expected arguments", async () => {
       const context = endpointsResource.getHubIngressContext;
 
       const spy = jest
@@ -242,21 +241,20 @@ describe("Inbound API handlers:", () => {
       expect(context.body).toBe("mocked response");
     });
 
-    test("Get Hub Egress Endpoints", async () => {
+    test("Get Hub Egress Endpoints calls the Endpoints Model with the expected arguments", async () => {
       const context = endpointsResource.getHubEgressContext;
 
       const spy = jest
         .spyOn(EndpointsModel.prototype, "getHubEgressEndpoints")
-        .mockImplementation(() => {});
-      // .mockImplementation(() => Promise.resolve("mocked response"));
+        .mockImplementation(() => Promise.resolve("mocked response"));
 
       await handlers["/hub/endpoints/egress"].get(context);
 
       expect(spy).toHaveBeenCalledTimes(1);
-      // expect(context.body).toBe("mocked response");
+      expect(context.body).toBe("mocked response");
     });
 
-    test("Get DFSP Details", async () => {
+    test("Get DFSP Details calls the Endpoints Model with the expected arguments", async () => {
       const context = endpointsResource.getDFSPdetails;
 
       const spy = jest
@@ -268,7 +266,7 @@ describe("Inbound API handlers:", () => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
 
-    test("Get All DFSP", async () => {
+    test("Get All DFSP calls the Endpoints Model with the expected arguments", async () => {
       const context = endpointsResource.getAllDFSP;
 
       const spy = jest
