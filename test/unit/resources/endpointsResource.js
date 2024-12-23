@@ -238,6 +238,21 @@ module.exports = {
             },
         }
     },
+    getDfspStatus: {
+        'request': {
+            'method': 'GET',
+            'url': '/status',
+            'body': null
+        },
+        'state': {
+            'conf': {
+                'dfspId': "test-dfsp-id",
+                'managementEndpoint': "http://test-endpoint"
+            },
+            'logger': console
+        },
+        'response': {},
+    },
     deleteEndpointContext: {
         'state': {
             'conf': {
@@ -643,6 +658,20 @@ module.exports = {
         'request': {
             'method': 'GET',
             'utl': '/hub/ca'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+                'managementEndpoint': 'localhost:9000',
+            }
+        },
+        'params': {},
+        'query': {}
+    },
+    generateAllCertificatesContext: {
+        'request': {
+            'method': 'POST',
+            'utl': '/dfsp/allcerts'
         },
         'state': {
             'conf': {
