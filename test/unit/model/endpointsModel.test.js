@@ -1,6 +1,6 @@
 const { Requests } = require('@internal/requests');
 const EndpointsModel = require('../../../src/lib/model/EndpointsModel');
-const { url } = require('koa-router');
+// const { url } = require('koa-router');
 
 jest.mock('@internal/requests');
 

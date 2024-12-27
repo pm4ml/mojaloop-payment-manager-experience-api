@@ -7,10 +7,6 @@ const {
     getTransferStatusSummary,
 } = require('../../../src/lib/model/mock/Transfer');
 const faker = require('faker');
-const {
-    fakeAmount,
-    currencies,
-} = require('../../../src/lib/model/mock/common');
 
 jest.mock('faker');
 jest.mock('../../../src/lib/model/mock/common', () => ({
@@ -193,7 +189,6 @@ describe('Transfer Functions', () => {
     test('getTransferDetails should generate a new id if opts.id is not provided', () => {
         const opts = {}; // No id provided
         const result = getTransferDetails(opts);
-
         expect(result.id).toBeDefined();
         expect(result.id).toMatch(
             /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
