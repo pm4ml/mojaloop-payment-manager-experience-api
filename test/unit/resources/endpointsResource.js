@@ -246,8 +246,8 @@ module.exports = {
         },
         'state': {
             'conf': {
-                'dfspId': "test-dfsp-id",
-                'managementEndpoint': "http://test-endpoint"
+                'dfspId': 'test-dfsp-id',
+                'managementEndpoint': 'http://test-endpoint'
             },
             'logger': console
         },
