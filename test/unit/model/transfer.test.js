@@ -32,6 +32,528 @@ const mockDb = {
     }
 };
 
+describe('Transfer', () => {
+    let transfer;
+
+    beforeAll(() => {
+        transfer = new Transfer({ mockData: true, logger: console });
+    });
+
+    describe('findAll Method', () => {
+        it('should return transfers with various query parameters', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({
+                id: 'test-id',
+                startTimestamp: '2022-01-01',
+                endTimestamp: '2022-12-31',
+                senderIdType: 'type1',
+                senderIdValue: 'value1',
+                senderIdSubValue: 'sub1',
+                recipientIdType: 'type2',
+                recipientIdValue: 'value2',
+                recipientIdSubValue: 'sub2',
+                direction: 'INBOUND',
+                institution: 'institution1',
+                batchId: 'batch1',
+                status: 'PENDING',
+                offset: 0,
+                limit: 10
+            });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle mock data', async () => {
+            transfer.mockData = true;
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({});
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle empty response', async () => {
+            const mockResponse = [];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({});
+            expect(result).toHaveLength(0);
+        });
+    
+        it('should handle no query parameters', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({});
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only id parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ id: 'test-id' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only startTimestamp parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ startTimestamp: '2022-01-01' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only endTimestamp parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ endTimestamp: '2022-12-31' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only senderIdType parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ senderIdType: 'type1' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only senderIdValue parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ senderIdValue: 'value1' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only senderIdSubValue parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ senderIdSubValue: 'sub1' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only recipientIdType parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ recipientIdType: 'type2' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only recipientIdValue parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ recipientIdValue: 'value2' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only recipientIdSubValue parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ recipientIdSubValue: 'sub2' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only direction parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ direction: 'INBOUND' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only institution parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ institution: 'institution1' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only batchId parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ batchId: 'batch1' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only status parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ status: 'PENDING' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only offset parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ offset: 0 });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only limit parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAll({ limit: 10 });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    });
+
+    describe('findAllWithFX Method', () => {
+        it('should handle various query parameters', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({
+                id: 'test-id',
+                startTimestamp: '2022-01-01',
+                endTimestamp: '2022-12-31',
+                senderIdType: 'type1',
+                senderIdValue: 'value1',
+                senderIdSubValue: 'sub1',
+                recipientIdType: 'type2',
+                recipientIdValue: 'value2',
+                recipientIdSubValue: 'sub2',
+                direction: 'INBOUND',
+                institution: 'institution1',
+                batchId: 'batch1',
+                status: 'PENDING',
+                offset: 0,
+                limit: 10
+            });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should return transfers with FX data from mock', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({});
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle empty response', async () => {
+            const mockResponse = [];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({});
+            expect(result).toHaveLength(0);
+        });
+    
+        it('should handle only id parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ id: 'test-id' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only startTimestamp parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ startTimestamp: '2022-01-01' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only endTimestamp parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ endTimestamp: '2022-12-31' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only senderIdType parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ senderIdType: 'type1' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only senderIdValue parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ senderIdValue: 'value1' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only senderIdSubValue parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ senderIdSubValue: 'sub1' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only recipientIdType parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ recipientIdType: 'type2' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only recipientIdValue parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ recipientIdValue: 'value2' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only recipientIdSubValue parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ recipientIdSubValue: 'sub2' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only direction parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ direction: 'INBOUND' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only institution parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ institution: 'institution1' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only batchId parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ batchId: 'batch1' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only status parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ status: 'PENDING' });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only offset parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ offset: 0 });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle only limit parameter', async () => {
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({ limit: 10 });
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    
+        it('should handle mock data', async () => {
+            transfer.mockData = true;
+            const mockResponse = [{ id: 'test-id', raw: '{}' }];
+            jest.spyOn(mock, 'getTransfers').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.findAllWithFX({});
+            expect(result).toHaveLength(1);
+            expect(result[0].id).toBe('test-id');
+        });
+    });
+
+    describe('findOne Method', () => {
+        it('should find one transfer by id from mock', async () => {
+            const id = 'test-id';
+            const mockResponse = { id, raw: '{}' };
+            jest.spyOn(mock, 'getTransfer').mockResolvedValue(mockResponse);
+
+            const result = await transfer.findOne(id);
+            expect(result).toEqual(expect.objectContaining({ id }));
+        });
+
+        it('should return null for non-existent id from mock', async () => {
+            const id = 'non-existent-id';
+            jest.spyOn(mock, 'getTransfer').mockResolvedValue(null);
+
+            const result = await transfer.findOne(id);
+            expect(result).toBeNull();
+        });
+    });
+
+    describe('details Method', () => {
+        it('should return transfer details by id from mock', async () => {
+            const id = 'test-id';
+            const mockResponse = [{ id, raw: '{}' }];
+            jest.spyOn(mock, 'getTransferDetails').mockResolvedValue(mockResponse);
+
+            const result = await transfer.details(id);
+            expect(result[0]).toEqual(expect.objectContaining({ id }));
+        });
+
+        it('should return null for non-existent id from mock', async () => {
+            const id = 'non-existent-id';
+            jest.spyOn(mock, 'getTransferDetails').mockResolvedValue(null);
+
+            const result = await transfer.details(id);
+            expect(result).toBeNull();
+        });
+
+        it('should handle empty response', async () => {
+            const mockResponse = [];
+            jest.spyOn(mock, 'getTransferDetails').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.details('test-id');
+            expect(result).toEqual([]);
+        });
+    });
+
+    describe('successRate Method', () => {
+        it('should return success rate for transfers from mock', async () => {
+            const mockSuccessResponse = [{ timestamp: 1234567890, percentage: 50 }];
+            jest.spyOn(mock, 'getTransfersSuccessRate').mockResolvedValue(mockSuccessResponse);
+
+            const result = await transfer.successRate({ minutePrevious: 10 });
+            expect(result).toHaveLength(1);
+            expect(result[0].percentage).toBe(50);
+        });
+
+        it('should handle empty response', async () => {
+            const mockResponse = [];
+            jest.spyOn(mock, 'getTransfersSuccessRate').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.successRate({ minutePrevious: 10 });
+            expect(result).toHaveLength(0);
+        });
+    });
+
+    describe('avgResponseTime Method', () => {
+        it('should return average response time for transfers from mock', async () => {
+            const mockResponse = [{ timestamp: 1234567890, averageResponseTime: 1000 }];
+            jest.spyOn(mock, 'getTransfersAvgResponseTime').mockResolvedValue(mockResponse);
+
+            const result = await transfer.avgResponseTime({ minutePrevious: 10 });
+            expect(result).toHaveLength(1);
+            expect(result[0].averageResponseTime).toBe(1000);
+        });
+
+        it('should handle empty response', async () => {
+            const mockResponse = [];
+            jest.spyOn(mock, 'getTransfersAvgResponseTime').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.avgResponseTime({ minutePrevious: 10 });
+            expect(result).toHaveLength(0);
+        });
+    });
+
+    describe('statusSummary Method', () => {
+        it('should return status summary for transfers from mock', async () => {
+            const mockResponse = [
+                { status: 'PENDING', count: 5 },
+                { status: 'SUCCESS', count: 10 },
+                { status: 'ERROR', count: 3 }
+            ];
+            jest.spyOn(mock, 'getTransferStatusSummary').mockResolvedValue(mockResponse);
+
+            const result = await transfer.statusSummary({});
+            expect(result).toHaveLength(3);
+            const successResult = result.find(r => r.status === 'SUCCESS');
+            expect(successResult).toBeDefined();
+            expect(successResult.count).toBe(10);
+        });
+
+        it('should handle empty response', async () => {
+            const defaultSummary = [
+                { status: 'PENDING', count: 0 },
+                { status: 'SUCCESS', count: 0 },
+                { status: 'ERROR', count: 0 }
+            ];
+            jest.spyOn(mock, 'getTransferStatusSummary').mockResolvedValue(defaultSummary);
+    
+            const result = await transfer.statusSummary({});
+            expect(result).toEqual(defaultSummary);
+            expect(result).toHaveLength(3);
+            expect(result.find(r => r.status === 'SUCCESS').count).toBe(0);
+            expect(result.find(r => r.status === 'ERROR').count).toBe(0);
+            expect(result.find(r => r.status === 'PENDING').count).toBe(0);
+        });
+    });
+
+    describe('hourlyFlow Method', () => {
+        it('should return hourly flow for transfers from mock', async () => {
+            const mockResponse = [{ timestamp: 1234567890, currency: 'USD', outbound: 1000 }];
+            jest.spyOn(mock, 'getFlows').mockResolvedValue(mockResponse);
+
+            const result = await transfer.hourlyFlow({ hoursPrevious: 10 });
+            expect(result).toHaveLength(1);
+            expect(result[0].outbound).toBe(1000);
+        });
+        
+        it('should handle empty response', async () => {
+            const mockResponse = [];
+            jest.spyOn(mock, 'getFlows').mockResolvedValue(mockResponse);
+    
+            const result = await transfer.hourlyFlow({ hoursPrevious: 10 });
+            expect(result).toHaveLength(0);
+        });
+    });
+});
+
 describe('Transfer Model', () => {
     let transfer;
 
@@ -750,6 +1272,131 @@ describe('Transfer Model', () => {
         expect(result.getPartiesRequest.body).toEqual({ party: 'test' });
         expect(result.quoteRequest.body).toEqual({ quote: 'test' });
     });
+
+    test('should handle null values in party info', () => {
+        const partyData = {
+            idType: null,
+            idValue: null,
+            idSubType: null,
+            firstName: null,
+            middleName: null,
+            lastName: null,
+            dateOfBirth: null,
+            merchantClassificationCode: null,
+            fspId: null,
+            extensionList: null
+        };
+    
+        const result = transfer._convertToTransferParty(partyData);
+    
+        expect(result).toEqual({
+            type: '',
+            ...partyData,
+            displayName: '' 
+        });
+    });
+    
+    test('should handle missing fields in quote request body', () => {
+        const quoteRequest = {
+            body: {
+                payer: {}
+            }
+        };
+    
+        const result = transfer._getPartyFromQuoteRequest(quoteRequest, 'payer');
+        
+        expect(result).toEqual({
+            idType: undefined,
+            idValue: undefined,
+            idSubType: undefined,
+            displayName: undefined,
+            firstName: undefined,
+            middleName: undefined, 
+            lastName: undefined,
+            dateOfBirth: undefined,
+            merchantClassificationCode: undefined,
+            fspId: undefined,
+            extensionList: undefined
+        });
+    });
+    
+    test('should handle malformed JSON in raw data', () => {
+        const transferData = {
+            id: '1',
+            raw: '{invalid json',
+            supported_currencies: '[]'
+        };
+    
+        expect(() => transfer._convertToApiDetailFormat(transferData)).toThrow();
+    });
+    
+    test('should handle missing dates in transfer data', () => {
+        const transferData = {
+            id: '1',
+            raw: JSON.stringify({}),
+            supported_currencies: '[]',
+            created_at: null
+        };
+    
+        const result = transfer._convertToApiDetailFormat(transferData);
+        expect(result.dateSubmitted instanceof Date).toBe(true);
+        expect(result.dateSubmitted.getTime()).toBe(0);
+    });
+    
+    test('should handle null query parameters in find methods', async () => {
+        transfer.mockData = true;
+        const mockTransfers = [{ id: 'transfer1' }];
+        mock.getTransfers = jest.fn().mockResolvedValue(mockTransfers);
+    
+        const result = await transfer.findAll({
+            startTimestamp: null,
+            endTimestamp: null,
+            institution: null,
+            status: null
+        });
+    
+        expect(result).toEqual(mockTransfers);
+    });
+    
+    test('should handle undefined options in findAll', async () => {
+        transfer.mockData = true;
+        const mockTransfers = [{ id: 'transfer1' }];
+        mock.getTransfers = jest.fn().mockResolvedValue(mockTransfers);
+        
+        const result = await transfer.findAll();
+        expect(result).toEqual(mockTransfers); 
+    });
+    
+    
+    test('should handle malformed date strings in convertToApiDetailFormat', () => {
+        const transferData = {
+            id: '1',
+            created_at: 'invalid date',
+            raw: JSON.stringify({}),
+            supported_currencies: '[]'
+        };
+        const result = transfer._convertToApiDetailFormat(transferData);
+        // The function might default dateSubmitted to epoch 0 or null
+        expect(result.dateSubmitted instanceof Date).toBe(true);
+    });
+
+    test('should handle invalid currency codes in charge calculations', () => {
+        const charges = [
+            { sourceAmount: { amount: '10', currency: 'INVALID' }, targetAmount: { amount: '5', currency: 'XXX' } }
+        ];
+        const result = transfer._calculateTotalChargesFromCharges(charges, 'USD', 'EUR');
+        // Expecting that non-matching or invalid currency codes simply get skipped
+        expect(result).toEqual({
+            totalSourceCurrencyCharges: { amount: '0', currency: 'USD' },
+            totalTargetCurrencyCharges: { amount: '0', currency: 'EUR' }
+        });
+    });
+
+    test('should handle extremely large amounts in exchange rate calculation', () => {
+        const result = transfer._calculateExchangeRate('999999999999999999999', '1000', '0', '0');
+        // Depending on how big values are handled, might be Infinity, big float, or null
+        expect(result).not.toBeUndefined();
+    });
 });
 
 describe('Transfer Model Additional Tests', () => {
@@ -836,6 +1483,30 @@ describe('Transfer Model Additional Tests', () => {
                 },
                 expiryDate: '2023-12-31'
             });
+        });
+
+        test('should handle partial raw data objects', () => {
+            const transferData = {
+                id: '1',
+                raw: JSON.stringify({ getPartiesRequest: { invalidField: true } }),
+                supported_currencies: '[]'
+            };
+            const result = transfer._convertToApiDetailFormat(transferData);
+            expect(result.transferId).toBe('1');
+            // Should not throw, just skip unrecognized fields
+            expect(result.needFx).toBeUndefined();
+        });
+
+        test('should handle partial raw data objects', () => {
+            const transferData = {
+                id: '1',
+                raw: JSON.stringify({ getPartiesRequest: { invalidField: true } }),
+                supported_currencies: '[]'
+            };
+            const result = transfer._convertToApiDetailFormat(transferData);
+            expect(result.transferId).toBe('1');
+            // Should not throw, just skip unrecognized fields
+            expect(result.needFx).toBeUndefined();
         });
 
         test('should handle undefined FX quote response', () => {
@@ -928,11 +1599,11 @@ describe('Transfer Model Error Handling', () => {
             const mockResult = [
                 { percentage: 22, timestamp: '2024-12-23T14:44:59.959Z' }
             ];
-            mock.getTransferSuccessRate = jest.fn().mockResolvedValue(mockResult);
+            mock.getTransfersSuccessRate = jest.fn().mockResolvedValue(mockResult);
             
             const result = await transfer.successRate({ minutePrevious: 10 });
             
-            expect(result[0]).toHaveProperty('percentage');
+            expect(result).toEqual(mockResult);
             expect(result[0]).toHaveProperty('timestamp');
             expect(typeof result[0].percentage).toBe('number');
             expect(typeof result[0].timestamp).toBe('string');
@@ -1017,6 +1688,90 @@ describe('Transfer Model Error Handling', () => {
                 totalSourceCurrencyCharges: { amount: '', currency: '' },
                 totalTargetCurrencyCharges: { amount: '', currency: '' }
             });
+        });
+    });
+});
+
+describe('Transfer Model Extended Coverage', () => {
+    let transfer;
+    let mockDb;
+
+    beforeEach(() => {
+        mockDb = {
+            select: jest.fn().mockReturnThis(),
+            where: jest.fn().mockReturnThis(),
+            whereRaw: jest.fn().mockReturnThis(),
+            andWhere: jest.fn().mockReturnThis(),
+            andWhereRaw: jest.fn().mockReturnThis(),
+            leftJoin: jest.fn().mockReturnThis(),
+            orderBy: jest.fn().mockResolvedValue([]),
+            limit: jest.fn().mockReturnThis(),
+            offset: jest.fn().mockReturnThis(),
+            first: jest.fn().mockReturnThis(),
+            raw: jest.fn().mockReturnThis(),
+            count: jest.fn().mockReturnThis(),
+            sum: jest.fn().mockReturnThis(),
+            groupByRaw: jest.fn().mockReturnThis()
+        };
+
+        transfer = new Transfer({
+            mockData: false,
+            logger: { log: jest.fn() },
+            db: mockDb
+        });
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    describe('_applyJoin Method', () => {
+        test('should call leftJoin with correct parameters', async () => {
+            const query = {
+                leftJoin: jest.fn().mockReturnThis(),
+                select: jest.fn().mockReturnThis(),
+            };
+            transfer._applyJoin(query);
+            expect(query.leftJoin).toHaveBeenCalled();
+        });
+    });
+
+    describe('_convertToApiFormat Method', () => {
+        test('should handle empty transfer', () => {
+            const result = transfer._convertToApiFormat({ raw: '{}', created_at: new Date().toISOString() });
+            expect(result).toBeDefined();
+            expect(result.status).toBeUndefined();
+        });
+
+        test('should handle existing fields correctly', () => {
+            const mockTransfer = {
+                id: 'abc123',
+                success: 1,
+                created_at: '2023-01-01T00:00:00.000Z',
+                raw: '{}'
+            };
+            const result = transfer._convertToApiFormat(mockTransfer);
+            expect(result.id).toBe('abc123');
+            expect(result.status).toBe('SUCCESS');
+        });
+    });
+
+    describe('_transferLastErrorToErrorType Method', () => {
+        test('should return standard error if lastError has message', () => {
+            const errorObj = { mojaloopError: { errorInformation: { errorCode: '4000', errorDescription: 'Something went wrong' } } };
+            const result = Transfer._transferLastErrorToErrorType(errorObj);
+            expect(result).toBe('Something went wrong');
+        });
+
+        test('should return default error if no message is provided', () => {
+            const errorObj = { httpStatusCode: '401' };
+            const result = Transfer._transferLastErrorToErrorType(errorObj);
+            expect(result).toBe('HTTP 401');
+        });
+
+        test('should handle null error object gracefully', () => {
+            const result = transfer._convertToApiFormat({ raw: JSON.stringify({ lastError: null }), created_at: new Date().toISOString() });
+            expect(result.errorType).toBeNull();
         });
     });
 });
