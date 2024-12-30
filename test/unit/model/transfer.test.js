@@ -1,6 +1,6 @@
 const Transfer = require('../../../src/lib/model/Transfer');
 const mock = require('../../../src/lib/model/mock');
-const util = require('util');
+// const util = require('../../../src/lib/utils/utils');
 
 const mockDb = {
     _error: null, // To simulate database errors
@@ -69,9 +69,342 @@ describe('Transfer', () => {
     let transfer;
 
     beforeAll(() => {
-        transfer = new Transfer({ mockData: true, logger: console });
+        transfer = new Transfer({ mockData: true, logger: console, db: mockDb });
     });
 
+    test('should initialize with provided props', () => {
+        expect(transfer.mockData).toBe(true);
+        expect(transfer._db).toBe(mockDb);
+    });
+      
+    test('should have correct static STATUSES', () => {
+        expect(Transfer.STATUSES).toEqual({
+            null: 'PENDING',
+            1: 'SUCCESS',
+            0: 'ERROR',
+        });
+    });
+      
+    test('should log error message when database query fails', async () => {
+        transfer.mockData = false;
+        mockDb._result = new Error('Database error');
+    
+        const loggerSpy = jest.spyOn(transfer.logger, 'log');
+    
+        try {
+            await transfer.errors({
+                startTimestamp: '2022-01-01',
+                endTimestamp: '2022-12-31',
+            });
+        } catch (error) {
+            expect(loggerSpy).toHaveBeenCalledWith(
+                expect.stringContaining('Error getting transfer errors')
+            );
+        }
+    });
+    
+    test('should handle empty values in data transformations', () => {
+        expect(
+            transfer._convertToApiFormat({
+                success: null,
+                raw: '{}',
+                created_at: '2023-01-01T00:00:00Z',
+            })
+        ).toHaveProperty('status', 'PENDING');
+        expect(
+            transfer._convertToApiFormat({
+                success: 1,
+                raw: '{}',
+                created_at: '2023-01-01T00:00:00Z',
+            })
+        ).toHaveProperty('status', 'SUCCESS');
+        expect(
+            transfer._convertToApiFormat({
+                success: 0,
+                raw: '{"lastError":{}}',
+                created_at: '2023-01-01T00:00:00Z',
+            })
+        ).toHaveProperty('status', 'ERROR');
+    });
+    
+    test('should handle custom complex name formats', () => {
+        const complexNameCases = [
+            {
+                input: { firstName: 'John', middleName: 'M', lastName: 'Doe' },
+                expected: 'John M Doe',
+            },
+            {
+                input: { firstName: 'John', lastName: 'Doe' },
+                expected: 'John Doe',
+            },
+            {
+                input: { firstName: 'John' },
+                expected: 'John',
+            },
+            {
+                input: null,
+                expected: undefined,
+            },
+        ];
+    
+        complexNameCases.forEach(({ input, expected }) => {
+            expect(transfer._complexNameToDisplayName(input)).toBe(expected);
+        });
+    });
+    
+    test('should handle edge cases in transfer party conversion', () => {
+        const partyData = {
+            idType: 'MSISDN',
+            idValue: '123456789',
+            idSubType: 'PERSONAL',
+            firstName: 'John',
+            middleName: 'M',
+            lastName: 'Doe',
+            dateOfBirth: '1990-01-01',
+            merchantClassificationCode: '123',
+            fspId: 'testFsp',
+            extensionList: ['ext1', 'ext2'],
+        };
+    
+        const result = transfer._convertToTransferParty(partyData);
+    
+        expect(result).toEqual({
+            type: '',
+            ...partyData,
+            displayName: 'John M Doe',
+        });
+    });
+    
+    test('should handle edge cases in exchange rate calculation', () => {
+        const testCases = [
+            {
+                input: {
+                    sourceAmount: '100',
+                    targetAmount: '200',
+                    sourceCharges: 10,
+                    targetCharges: 20,
+                },
+                expected: '2.0000',
+            },
+            {
+                input: {
+                    sourceAmount: '0',
+                    targetAmount: '200',
+                    sourceCharges: 10,
+                    targetCharges: 20,
+                },
+                expected: '-18.0000',
+            },
+            {
+                input: {
+                    sourceAmount: '100',
+                    targetAmount: '0',
+                    sourceCharges: 10,
+                    targetCharges: 20,
+                },
+                expected: '-0.2222',
+            },
+        ];
+    
+        testCases.forEach(({ input, expected }) => {
+            const { sourceAmount, targetAmount, sourceCharges, targetCharges } =
+            input;
+            expect(
+                transfer._calculateExchangeRate(
+                    sourceAmount,
+                    targetAmount,
+                    sourceCharges,
+                    targetCharges
+                )
+            ).toBe(expected);
+        });
+    });
+    
+    test('should parse various raw transfer request bodies', () => {
+        const rawTransfer = {
+            getPartiesRequest: {
+                body: JSON.stringify({ party: 'test' }),
+            },
+            quoteRequest: {
+                body: JSON.stringify({ quote: 'test' }),
+            },
+        };
+    
+        const result = transfer._parseRawTransferRequestBodies(rawTransfer);
+    
+        expect(result.getPartiesRequest.body).toEqual({ party: 'test' });
+        expect(result.quoteRequest.body).toEqual({ quote: 'test' });
+    
+        // Test invalid JSON separately to ensure it throws
+        expect(() => {
+            transfer._parseRawTransferRequestBodies({
+                getPartiesRequest: { body: 'invalid json' },
+            });
+        }).toThrow();
+    });
+    
+    test('should calculate hourly flows correctly', async () => {
+        transfer = new Transfer({
+            mockData: true,
+            logger: { log: jest.fn() },
+            db: mockDb,
+        });
+    
+        const mockFlowData = [
+            {
+                timestamp: 1000,
+                currency: 'USD',
+                inbound: 300,
+                outbound: 500,
+            },
+        ];
+    
+        mock.getFlows = jest.fn().mockResolvedValueOnce(mockFlowData);
+    
+        const result = await transfer.hourlyFlow({ hoursPrevious: 24 });
+    
+        expect(result).toEqual(mockFlowData);
+    });
+    
+    test('should apply join correctly', () => {
+        const query = mockDb;
+        transfer._applyJoin(query);
+        expect(query.leftJoin).toHaveBeenCalledWith(
+            'fx_quote',
+            'transfer.redis_key',
+            'fx_quote.redis_key'
+        );
+        expect(query.leftJoin).toHaveBeenCalledWith(
+            'fx_transfer',
+            'fx_quote.redis_key',
+            'fx_transfer.redis_key'
+        );
+        expect(query.select).toHaveBeenCalledWith([
+            'transfer.*',
+            'fx_quote.source_currency as fx_source_currency',
+            'fx_quote.source_amount as fx_source_amount',
+            'fx_quote.target_currency as fx_target_currency',
+            'fx_quote.target_amount as fx_target_amount',
+            'fx_transfer.source_currency as fx_transfer_source_currency',
+            'fx_transfer.target_currency as fx_transfer_target_currency',
+            'fx_transfer.commit_request_id as fx_commit_request_id',
+        ]);
+    });
+
+    test('should convert transfer to API format correctly', () => {
+        const transferData = {
+            id: '1',
+            batch_id: 'batch1',
+            dfsp: 'dfsp1',
+            direction: 1,
+            currency: 'USD',
+            amount: '100',
+            success: 1,
+            created_at: '2020-01-01T00:00:00Z',
+            sender: 'sender1',
+            sender_id_type: 'type1',
+            sender_id_sub_value: 'sub1',
+            sender_id_value: 'value1',
+            recipient: 'recipient1',
+            recipient_id_type: 'type2',
+            recipient_id_sub_value: 'sub2',
+            recipient_id_value: 'value2',
+            raw: JSON.stringify({
+                homeTransactionId: 'home1',
+                lastError: { httpStatusCode: 500 },
+                getPartiesRequest: { body: {} },
+                quoteRequest: { body: {} },
+                quoteResponse: { body: {} },
+            }),
+            details: 'details1',
+        };
+        const result = transfer._convertToApiFormat(transferData);
+        expect(result).toEqual({
+            id: '1',
+            batchId: 'batch1',
+            institution: 'dfsp1',
+            direction: 'OUTBOUND',
+            currency: 'USD',
+            amount: 100,
+            type: 'P2P',
+            status: 'SUCCESS',
+            initiatedTimestamp: '2020-01-01T00:00:00.000Z',
+            confirmationNumber: 0,
+            sender: 'sender1',
+            senderIdType: 'type1',
+            senderIdSubValue: 'sub1',
+            senderIdValue: 'value1',
+            recipient: 'recipient1',
+            recipientIdType: 'type2',
+            recipientIdSubValue: 'sub2',
+            recipientIdValue: 'value2',
+            homeTransferId: 'home1',
+            details: 'details1',
+            errorType: null,
+        });
+    });
+    
+    test('should convert last error to error type correctly', () => {
+        const error = {
+            mojaloopError: { errorInformation: { errorDescription: 'error' } },
+        };
+        const result = Transfer._transferLastErrorToErrorType(error);
+        expect(result).toBe('error');
+    
+        const error2 = { httpStatusCode: 500 };
+        const result2 = Transfer._transferLastErrorToErrorType(error2);
+        expect(result2).toBe('HTTP 500');
+    });
+    
+    test('should parse raw transfer request bodies correctly', () => {
+        const transferRaw = {
+            getPartiesRequest: { body: '{"key":"value"}' },
+            quoteRequest: { body: '{"key":"value"}' },
+            quoteResponse: { body: '{"key":"value"}' },
+            fxQuoteResponse: { body: '{"key":"value"}' },
+            fxQuoteRequest: { body: '{"key":"value"}' },
+            fxTransferRequest: { body: '{"key":"value"}' },
+            fxTransferResponse: { body: '{"key":"value"}' },
+            prepare: { body: '{"key":"value"}' },
+            fulfil: { body: '{"key":"value"}' },
+        };
+        const result = transfer._parseRawTransferRequestBodies(transferRaw);
+        expect(result).toEqual({
+            getPartiesRequest: { body: { key: 'value' } },
+            quoteRequest: { body: { key: 'value' } },
+            quoteResponse: { body: { key: 'value' } },
+            fxQuoteResponse: { body: { key: 'value' } },
+            fxQuoteRequest: { body: { key: 'value' } },
+            fxTransferRequest: { body: { key: 'value' } },
+            fxTransferResponse: { body: { key: 'value' } },
+            prepare: { body: { key: 'value' } },
+            fulfil: { body: { key: 'value' } },
+        });
+    });
+    
+    test('should get conversion terms from fx quote response correctly', () => {
+        const fxQuoteResponse = {
+            body: {
+                conversionTerms:
+              '{"sourceAmount":{"amount":"100","currency":"USD"},"targetAmount":{"amount":"200","currency":"EUR"},"charges":[],"expiration":"2020-01-01T00:00:00Z"}',
+            },
+        };
+        const result =
+          transfer._getConversionTermsFromFxQuoteResponse(fxQuoteResponse);
+        expect(result).toEqual({
+            charges: {
+                totalSourceCurrencyCharges: { amount: '0', currency: 'USD' },
+                totalTargetCurrencyCharges: { amount: '0', currency: 'EUR' },
+            },
+            expiryDate: '2020-01-01T00:00:00Z',
+            transferAmount: {
+                sourceAmount: { amount: '100', currency: 'USD' },
+                targetAmount: { amount: '200', currency: 'EUR' },
+            },
+            exchangeRate: '2.0000',
+        });
+    });
+    
     describe('Data Transformation and Formatting', () => {
         test('should apply joins correctly', () => {
             const query = mockDb;
@@ -173,9 +506,85 @@ describe('Transfer', () => {
 
             expect(transfer._getConversionTermsFromFxQuoteResponse({ body: {} })).toBeUndefined();
         });
+
+        test('should return mock data when mockData is true', async () => {
+            const mockId = '123';
+            const mockDataResponse = { id: mockId };
+        
+            mock.getTransferDetails = jest.fn().mockReturnValueOnce(mockDataResponse);
+        
+            const result = await transfer.details(mockId);
+        
+            expect(mock.getTransferDetails).toHaveBeenCalledWith({ id: mockId });
+            expect(result).toEqual(mockDataResponse);
+        });
+
+        test('should return null transfer details if no data found in database when mockdata is false', async () => {
+            transfer._db = jest.fn().mockImplementation(() => mockDb);
+        
+            transfer.mockData = false;
+            const mockApplyJoin = jest.fn();
+            mockDb.where.mockReturnValueOnce(mockDb);
+        
+            mockApplyJoin.mockResolvedValueOnce([]);
+        
+            const result = await transfer.details('789');
+        
+            expect(result).toBeNull();
+        });
+        
+        test('should return converted API detail format for transfer details if data is found in the database when mockData is false', async () => {
+            transfer.mockData = false;
+        
+            const mockTransferId = '12345';
+            const mockQueryResult = [
+                {
+                    id: mockTransferId,
+                    amount: '100.00',
+                    currency: 'USD',
+                    success: true,
+                    createdAt: '2024-12-23T19:35:38.865Z',
+                },
+            ];
+        
+            const mockDb = {
+                where: jest.fn().mockReturnThis(),
+                leftJoin: jest.fn().mockReturnThis(),
+                select: jest.fn().mockReturnThis(),
+                then: jest.fn((cb) => cb(mockQueryResult)),
+            };
+        
+            transfer._db = jest.fn(() => mockDb);
+            transfer._applyJoin = jest.fn().mockReturnValue(mockDb);
+        
+            const mockApiDetails = {
+                transferDetails: {
+                    id: mockTransferId,
+                    amount: {
+                        value: '100.00',
+                        currency: 'USD',
+                    },
+                    status: 'SUCCESS',
+                },
+            };
+        
+            transfer._convertToApiDetailFormat = jest.fn().mockReturnValue(mockApiDetails);
+        
+            const result = await transfer.details(mockTransferId);
+        
+            expect(result).toEqual(mockApiDetails);
+            expect(transfer._applyJoin).toHaveBeenCalledTimes(1);
+            expect(mockDb.where).toHaveBeenCalledWith('transfer.id', mockTransferId);
+            expect(transfer._convertToApiDetailFormat).toHaveBeenCalledWith(mockQueryResult[0]);
+        });
     });
 
     describe('Calculations', () => {
+        test('should calculate exchange rate correctly', () => {
+            const result = transfer._calculateExchangeRate(100, 200, 10, 20);
+            expect(result).toBe('2.0000');
+        });
+
         test('should calculate total charges correctly', () => {
             const charges = [
                 { sourceAmount: { amount: '10', currency: 'USD' }, targetAmount: { amount: '20', currency: 'EUR' } },
@@ -249,6 +658,103 @@ describe('Transfer', () => {
                 extensionList: undefined
             });
         });
+
+        test('should get party from quote request correctly', () => {
+            const quoteRequest = {
+                body: {
+                    payer: {
+                        partyIdInfo: {
+                            partyIdType: 'type1',
+                            partyIdentifier: 'value1',
+                            partySubIdOrType: 'sub1',
+                            fspId: 'fsp1',
+                            extensionList: { extension: ['ext'] },
+                        },
+                        name: 'payer1',
+                        personalInfo: {
+                            complexName: {
+                                firstName: 'first',
+                                middleName: 'middle',
+                                lastName: 'last',
+                            },
+                            dateOfBirth: '2000-01-01',
+                        },
+                        merchantClassificationCode: 'code1',
+                    },
+                },
+            };
+            const result = transfer._getPartyFromQuoteRequest(quoteRequest, 'payer');
+            expect(result).toEqual({
+                idType: 'type1',
+                idValue: 'value1',
+                idSubType: 'sub1',
+                displayName: 'payer1',
+                firstName: 'first',
+                middleName: 'middle',
+                lastName: 'last',
+                dateOfBirth: '2000-01-01',
+                merchantClassificationCode: 'code1',
+                fspId: 'fsp1',
+                extensionList: ['ext'],
+            });
+        });
+        
+        test('should convert complex name to display name correctly', () => {
+            const complexName = {
+                firstName: 'first',
+                middleName: 'middle',
+                lastName: 'last',
+            };
+            const result = transfer._complexNameToDisplayName(complexName);
+            expect(result).toBe('first middle last');
+        });
+        
+        test('should convert party to transfer party correctly', () => {
+            const party = {
+                idType: 'type1',
+                idValue: 'value1',
+                idSubType: 'sub1',
+                displayName: 'display',
+                firstName: 'first',
+                middleName: 'middle',
+                lastName: 'last',
+                dateOfBirth: '2000-01-01',
+                merchantClassificationCode: 'code1',
+                fspId: 'fsp1',
+                extensionList: [],
+            };
+            const result = transfer._convertToTransferParty(party);
+            expect(result).toEqual({
+                type: '',
+                idType: 'type1',
+                idValue: 'value1',
+                idSubType: 'sub1',
+                displayName: 'display',
+                firstName: 'first',
+                middleName: 'middle',
+                lastName: 'last',
+                dateOfBirth: '2000-01-01',
+                merchantClassificationCode: 'code1',
+                fspId: 'fsp1',
+                extensionList: [],
+            });
+        });
+        
+        test('should handle undefined fxQuoteResponse in getConversionTerms', () => {
+            const result = transfer._getConversionTermsFromFxQuoteResponse(undefined);
+            expect(result).toEqual({
+                charges: {
+                    totalSourceCurrencyCharges: { amount: '', currency: '' },
+                    totalTargetCurrencyCharges: { amount: '', currency: '' },
+                },
+                expiryDate: '',
+                transferAmount: {
+                    sourceAmount: { amount: '', currency: '' },
+                    targetAmount: { amount: '', currency: '' },
+                },
+                exchangeRate: '',
+            });
+        });
     });
 
     describe('Complex Name Handling', () => {
@@ -259,6 +765,41 @@ describe('Transfer', () => {
             { name: null, expected: undefined },
         ])('should format complex names to display names', ({ name, expected }) => {
             expect(transfer._complexNameToDisplayName(name)).toBe(expected);
+        });
+
+        test('should handle partial complex name', () => {
+            const result = transfer._complexNameToDisplayName({
+                firstName: 'John',
+                lastName: 'Doe',
+            });
+            expect(result).toBe('John Doe');
+        });
+        
+        test('should correctly format complex name to display name', () => {
+            const transfer = new Transfer({ mockData: false, logger: console });
+        
+            expect(
+                transfer._complexNameToDisplayName({
+                    firstName: 'John',
+                    middleName: 'M',
+                    lastName: 'Doe',
+                })
+            ).toBe('John M Doe');
+        
+            expect(
+                transfer._complexNameToDisplayName({
+                    firstName: 'John',
+                    lastName: 'Doe',
+                })
+            ).toBe('John Doe');
+        
+            expect(
+                transfer._complexNameToDisplayName({
+                    firstName: 'John',
+                })
+            ).toBe('John');
+        
+            expect(transfer._complexNameToDisplayName(null)).toBeUndefined();
         });
     });
 
@@ -352,6 +893,128 @@ describe('Transfer', () => {
     
             expect(resultFindAll).toHaveLength(0);
             expect(resultFindAllWithFX).toHaveLength(0);
+        });
+
+        test('should handle findAllWithFX with mock data', async () => {
+            const mockTransfers = [
+                { id: 'fx1', fx_source_currency: 'USD', fx_target_currency: 'EUR' },
+            ];
+            mock.getTransfers = jest.fn().mockResolvedValue(mockTransfers);
+        
+            const result = await transfer.findAllWithFX({ limit: 10 });
+            expect(result).toEqual(mockTransfers);
+        });
+        
+        test('should handle undefined party in getPartyFromQuoteRequest', () => {
+            const quoteRequest = { body: {} };
+            const result = transfer._getPartyFromQuoteRequest(quoteRequest, 'payer');
+            expect(result).toBeUndefined();
+        });
+        
+        test('should handle missing conversionTerms in fxQuoteResponse', () => {
+            const fxQuoteResponse = { body: {} };
+            const result =
+              transfer._getConversionTermsFromFxQuoteResponse(fxQuoteResponse);
+            expect(result).toBeUndefined();
+        });
+        
+        test('should handle empty raw data in convertToApiDetailFormat', () => {
+            const transferData = {
+                id: '12345',
+                amount: '100.00',
+                currency: 'USD',
+                success: true,
+                raw: JSON.stringify({}),
+                supported_currencies: '[]',
+                created_at: new Date().toISOString()
+            };
+            const result = transfer._convertToApiDetailFormat(transferData);
+            expect(result).toEqual({
+                transferDetails: {
+                    id: '12345',
+                    amount: {
+                        value: '100.00',
+                        currency: 'USD'
+                    },
+                    status: 'SUCCESS'
+                }
+            });
+        });
+        
+        test('should parse raw transfer request bodies with invalid JSON', () => {
+            const transferRaw = {
+                getPartiesRequest: { body: 'invalid json' },
+                quoteRequest: { body: 'invalid json' },
+            };
+            expect(() =>
+                transfer._parseRawTransferRequestBodies(transferRaw)
+            ).toThrow();
+        });
+        
+        test('should handle division by zero in exchange rate calculation', () => {
+            const result = transfer._calculateExchangeRate('0', '200', '0', '20');
+            expect(result).toBe(null);
+        });
+        
+        test('should handle undefined values in charges calculation', () => {
+            const charges = [
+                {
+                    sourceAmount: undefined,
+                    targetAmount: { amount: '20', currency: 'EUR' },
+                },
+                {
+                    sourceAmount: { amount: '5', currency: 'USD' },
+                    targetAmount: undefined,
+                },
+            ];
+            const result = transfer._calculateTotalChargesFromCharges(
+                charges,
+                'USD',
+                'EUR'
+            );
+            expect(result).toEqual({
+                totalSourceCurrencyCharges: { amount: '5', currency: 'USD' },
+                totalTargetCurrencyCharges: { amount: '20', currency: 'EUR' },
+            });
+        });
+        
+        test('should validate required fields in conversion terms', () => {
+            const fxQuoteResponse = {
+                body: {
+                    conversionTerms: JSON.stringify({
+                        sourceAmount: { amount: '100', currency: 'USD' },
+                        targetAmount: { amount: '200', currency: 'EUR' },
+                        charges: [],
+                        expiration: '2020-01-01T00:00:00Z',
+                    }),
+                },
+            };
+            const result =
+              transfer._getConversionTermsFromFxQuoteResponse(fxQuoteResponse);
+            expect(result).toEqual({
+                charges: {
+                    totalSourceCurrencyCharges: { amount: '0', currency: 'USD' },
+                    totalTargetCurrencyCharges: { amount: '0', currency: 'EUR' },
+                },
+                expiryDate: '2020-01-01T00:00:00Z',
+                transferAmount: {
+                    sourceAmount: { amount: '100', currency: 'USD' },
+                    targetAmount: { amount: '200', currency: 'EUR' },
+                },
+                exchangeRate: '2.0000',
+            });
+        });
+        
+        test('should handle null charges in _calculateTotalChargesFromCharges', () => {
+            const result = transfer._calculateTotalChargesFromCharges(
+                null,
+                'USD',
+                'EUR'
+            );
+            expect(result).toEqual({
+                totalSourceCurrencyCharges: { amount: '', currency: '' },
+                totalTargetCurrencyCharges: { amount: '', currency: '' },
+            });
         });
     });
 
@@ -697,291 +1360,135 @@ describe('Transfer', () => {
             expect(result.dateSubmitted instanceof Date).toBe(true);
         });
     });
-});
 
-describe('Transfer - Additional Tests', () => {
-    let transfer;
-
-    beforeEach(() => {
-        transfer = new Transfer({
-            mockData: false,
-            logger: { log: jest.fn() },
-            db: mockDb,
-        });
-        jest.clearAllMocks();
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
-    describe('Database Error Handling', () => {
-        const methods = ['findAll', 'findAllWithFX', 'findOne', 'details', 'successRate', 'avgResponseTime', 'statusSummary', 'hourlyFlow', 'errors'];
-
-        test.each(methods)('%s should handle database errors gracefully', async (method) => {
-            const error = new Error('Database error');
-            mockDb.setError(error);
-            const loggerSpy = jest.spyOn(transfer.logger, 'log');
-
-            // Special handling for 'errors' method
-            if (method === 'errors') {
-                mockDb.where.mockImplementationOnce(() => Promise.reject(error));
-            }
-
-            if (['findAll', 'findAllWithFX', 'details'].includes(method)) {
-                mockDb.orderBy.mockImplementationOnce(() => Promise.reject(error));
-            } else if (method === 'findOne') {
-                mockDb.first.mockImplementationOnce(() => Promise.reject(error));
-            }
-
-            try {
-                await transfer[method]({});
-                fail(`The ${method} method should have thrown an error.`);
-            } catch (err) {
-                expect(err).toBe(error);
-                if (method !== 'errors') {
-                    expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining('Error getting transfer errors'));
-                }
-            }
+    describe('Hourly Flow Tests', () => {
+        test('should return mock data when mockData is true', async () => {
+            transfer = new Transfer({ mockData: true, logger: console });
+            const mockFlowData = [
+                {
+                    timestamp: 1000,
+                    currency: 'USD',
+                    inbound: 300,
+                    outbound: 500,
+                },
+            ];
+            mock.getFlows = jest.fn().mockResolvedValue(mockFlowData);
+    
+            const result = await transfer.hourlyFlow({ hoursPrevious: 24 });
+            expect(result).toEqual(mockFlowData);
         });
     });
+    
+    describe('_getConversionTermsFromFxQuoteResponse', () => {
+        test('should extract conversion terms from FX quote response', () => {
+            const fxQuoteResponse = {
+                body: {
+                    conversionTerms: {
+                        sourceAmount: { amount: '100', currency: 'EUR' },
+                        targetAmount: { amount: '120', currency: 'USD' },
+                        charges: [],
+                        expiration: '2023-12-31',
+                    },
+                },
+            };
+    
+            const result =
+            transfer._getConversionTermsFromFxQuoteResponse(fxQuoteResponse);
+    
+            expect(result).toMatchObject({
+                transferAmount: {
+                    sourceAmount: { amount: '100', currency: 'EUR' },
+                    targetAmount: { amount: '120', currency: 'USD' },
+                },
+                expiryDate: '2023-12-31',
+            });
+        });
+    
+        test('should handle undefined FX quote response', () => {
+            const result = transfer._getConversionTermsFromFxQuoteResponse(undefined);
+            expect(result).toMatchObject({
+                charges: {
+                    totalSourceCurrencyCharges: { amount: '', currency: '' },
+                    totalTargetCurrencyCharges: { amount: '', currency: '' },
+                },
+            });
+        });
+    });
+    
+    describe('_calculateTotalChargesFromCharges', () => {
+        test('should calculate total charges correctly', () => {
+            const charges = [
+                {
+                    sourceAmount: { amount: '10', currency: 'EUR' },
+                    targetAmount: { amount: '12', currency: 'USD' },
+                },
+                {
+                    sourceAmount: { amount: '5', currency: 'EUR' },
+                    targetAmount: { amount: '6', currency: 'USD' },
+                },
+            ];
+    
+            const result = transfer._calculateTotalChargesFromCharges(
+                charges,
+                'EUR',
+                'USD'
+            );
+    
+            expect(result).toEqual({
+                totalSourceCurrencyCharges: { amount: '15', currency: 'EUR' },
+                totalTargetCurrencyCharges: { amount: '18', currency: 'USD' },
+            });
+        });
+    
+        test('should handle empty charges', () => {
+            const result = transfer._calculateTotalChargesFromCharges(
+                null,
+                'EUR',
+                'USD'
+            );
+    
+            expect(result).toEqual({
+                totalSourceCurrencyCharges: { amount: '', currency: '' },
+                totalTargetCurrencyCharges: { amount: '', currency: '' },
+            });
+        });
+    });
 
-    describe('Branch Coverage in findAll and findAllWithFX', () => {
-        const testCases = [
-            { direction: 'INBOUND', status: 'SUCCESS' },
-            { direction: 'OUTBOUND', status: 'ERROR' },
-            { direction: 'INVALID', status: 'PENDING' },
-            { direction: 'INVALID' },
-            { status: 'INVALID' },
-            { offset: 10, limit: 20 },
+    test('should handle hourly flow calculations with mock data', async () => {
+        const mockFlowData = [
+            {
+                timestamp: 1609459200000,
+                currency: 'USD',
+                inbound: 1000,
+                outbound: 2000,
+            },
         ];
-
-        beforeEach(() => {
-            mockDb.setResult([]);
-        });
-
-        test.each(testCases)('findAll should cover all branches with params: %p', async (params) => {
-            await transfer.findAll(params);
-            // Add assertions based on expected behavior for each parameter combination
-        });
-
-        test.each(testCases)('findAllWithFX should cover all branches with params: %p', async (params) => {
-            await transfer.findAllWithFX(params);
-            // Add assertions based on expected behavior for each parameter combination
-        });
-    });
-
-    describe('Null/Undefined Values Handling', () => {
-        beforeEach(() => {
-            mockDb.setResult([]);
-        });
-
-        test('findAll should handle null/undefined values in query parameters', async () => {
-            await transfer.findAll({
-                startTimestamp: null,
-                endTimestamp: undefined,
-                senderIdType: null,
-            });
-            // Add assertions to check how the query is built with null/undefined values
-        });
-
-        test('findAllWithFX should handle null/undefined values in query parameters', async () => {
-            await transfer.findAllWithFX({
-                startTimestamp: null,
-                endTimestamp: undefined,
-                senderIdType: null,
-            });
-            // Add assertions to check how the query is built with null/undefined values
-        });
-
-        test('details should handle null/undefined database results', async () => {
-            mockDb.setResult(null);
-            const result = await transfer.details('test-id');
-            expect(result).toBeNull();
-        });
-    });
-
-    describe('Edge Cases in Date/Time Handling', () => {
-        beforeEach(() => {
-            mockDb.setResult([]);
-        });
-        
-        test('findAll should handle invalid date strings in timestamps', async () => {
-            await transfer.findAll({
-                startTimestamp: 'invalid-date',
-                endTimestamp: 'another-invalid-date',
-            });
-            // Add assertions to check how the query handles invalid dates
-        });
-
-        test('findAllWithFX should handle invalid date strings in timestamps', async () => {
-            await transfer.findAllWithFX({
-                startTimestamp: 'invalid-date',
-                endTimestamp: 'another-invalid-date',
-            });
-            // Add assertions to check how the query handles invalid dates
-        });
-
-        test('findAll should handle edge case timestamps', async () => {
-            await transfer.findAll({
-                startTimestamp: '0000-01-01T00:00:00Z',
-                endTimestamp: '9999-12-31T23:59:59Z',
-            });
-            // Add assertions for edge case timestamps
-        });
-
-        test('findAllWithFX should handle edge case timestamps', async () => {
-            await transfer.findAllWithFX({
-                startTimestamp: '0000-01-01T00:00:00Z',
-                endTimestamp: '9999-12-31T23:59:59Z',
-            });
-            // Add assertions for edge case timestamps
-        });
+        mock.getFlows = jest.fn().mockResolvedValue(mockFlowData);
+    
+        const result = await transfer.hourlyFlow({ hoursPrevious: 24 });
+        expect(result).toEqual(mockFlowData);
+        expect(mock.getFlows).toHaveBeenCalledWith({ hoursPrevious: 24 });
     });
     
-    describe('findAll Method - Parameter Combinations', () => {
-        const testParams = [
-            { startTimestamp: '2023-01-01', endTimestamp: '2023-12-31' },
-            { senderIdType: 'TYPE1', senderIdValue: 'VALUE1' },
-            { recipientIdType: 'TYPE2', recipientIdValue: 'VALUE2' },
-            { direction: 'INBOUND', institution: 'INST1' },
-            { batchId: 'BATCH1', status: 'SUCCESS' },
-            { offset: 5, limit: 15 },
-            { senderIdSubValue: 'SUB1', recipientIdSubValue: 'SUB2' },
-            { direction: 'OUTBOUND', status: 'ERROR' },
-            { status: 'PENDING' },
-            { id: 'ID123' }
+    test('should handle error status summary with mock data', async () => {
+        const mockErrors = [{ id: 'error1', status: 'ERROR' }];
+        mock.getErrors = jest.fn().mockResolvedValue(mockErrors);
+    
+        const result = await transfer.errors({ startTimestamp: '2023-01-01' });
+        expect(result).toEqual(mockErrors);
+    });
+    
+    test('should handle status summary with mock data', async () => {
+        const mockSummary = [
+            { status: 'PENDING', count: 5 },
+            { status: 'SUCCESS', count: 10 },
+            { status: 'ERROR', count: 2 },
         ];
+        mock.getTransferStatusSummary = jest.fn().mockResolvedValue(mockSummary);
     
-        beforeEach(() => {
-            mockDb.setResult([]);
+        const result = await transfer.statusSummary({
+            startTimestamp: '2023-01-01',
         });
-    
-        test.each(testParams)('should handle different parameter combinations in findAll - %p', async (params) => {
-            await transfer.findAll(params);
-    
-            if (params.startTimestamp) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('created_at', '>=', expect.any(Number));
-            }
-            if (params.endTimestamp) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('created_at', '<', expect.any(Number));
-            }
-            if (params.senderIdType) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('sender_id_type', 'LIKE', `%${params.senderIdType}%`);
-            }
-            if (params.senderIdValue) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('sender_id_value', 'LIKE', `%${params.senderIdValue}%`);
-            }
-            if (params.senderIdSubValue) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('sender_id_sub_value', 'LIKE', `%${params.senderIdSubValue}%`);
-            }
-            if (params.recipientIdType) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('recipient_id_type', 'LIKE', `%${params.recipientIdType}%`);
-            }
-            if (params.recipientIdValue) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('recipient_id_value', 'LIKE', `%${params.recipientIdValue}%`);
-            }
-            if (params.recipientIdSubValue) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('recipient_id_sub_value', 'LIKE', `%${params.recipientIdSubValue}%`);
-            }
-            if (params.direction === 'INBOUND') {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('direction', '=', '-1');
-            } else if (params.direction === 'OUTBOUND') {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('direction', '=', '1');
-            }
-            if (params.institution) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('dfsp', 'LIKE', `%${params.institution}%`);
-            }
-            if (params.batchId) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('batchId', 'LIKE', `%${params.batchId}%`);
-            }
-            if (params.status === 'PENDING') {
-                expect(mockDb.andWhereRaw).toHaveBeenCalledWith('success IS NULL');
-            } else if (params.status) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('success', params.status === 'SUCCESS');
-            }
-            if (params.offset) {
-                expect(mockDb.offset).toHaveBeenCalledWith(params.offset);
-            }
-            if (params.limit) {
-                expect(mockDb.limit).toHaveBeenCalledWith(params.limit);
-            }
-            if (params.id) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('id', 'LIKE', `%${params.id}%`);
-            }
-        });
-    });
-    
-    describe('findAllWithFX Method - Parameter Combinations', () => {
-        const testParams = [
-            { startTimestamp: '2023-01-01', endTimestamp: '2023-12-31' },
-            { senderIdType: 'TYPE1', senderIdValue: 'VALUE1' },
-            { recipientIdType: 'TYPE2', recipientIdValue: 'VALUE2' },
-            { direction: 'INBOUND', institution: 'INST1' },
-            { batchId: 'BATCH1', status: 'SUCCESS' },
-            { offset: 5, limit: 15 },
-            { senderIdSubValue: 'SUB1', recipientIdSubValue: 'SUB2' },
-            { direction: 'OUTBOUND', status: 'ERROR' },
-            { status: 'PENDING' },
-            { id: 'ID123' }
-        ];
-    
-        beforeEach(() => {
-            mockDb.setResult([]);
-        });
-    
-        test.each(testParams)('should handle different parameter combinations in findAllWithFX - %p', async (params) => {
-            await transfer.findAllWithFX(params);
-    
-            if (params.startTimestamp) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.created_at', '>=', expect.any(Number));
-            }
-            if (params.endTimestamp) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.created_at', '<', expect.any(Number));
-            }
-            if (params.senderIdType) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.sender_id_type', 'LIKE', `%${params.senderIdType}%`);
-            }
-            if (params.senderIdValue) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.sender_id_value', 'LIKE', `%${params.senderIdValue}%`);
-            }
-            if (params.senderIdSubValue) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.sender_id_sub_value', 'LIKE', `%${params.senderIdSubValue}%`);
-            }
-            if (params.recipientIdType) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.recipient_id_type', 'LIKE', `%${params.recipientIdType}%`);
-            }
-            if (params.recipientIdValue) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.recipient_id_value', 'LIKE', `%${params.recipientIdValue}%`);
-            }
-            if (params.recipientIdSubValue) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.recipient_id_sub_value', 'LIKE', `%${params.recipientIdSubValue}%`);
-            }
-            if (params.direction === 'INBOUND') {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.direction', '=', '-1');
-            } else if (params.direction === 'OUTBOUND') {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.direction', '=', '1');
-            }
-            if (params.institution) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.dfsp', 'LIKE', `%${params.institution}%`);
-            }
-            if (params.batchId) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.batch_id', 'LIKE', `%${params.batchId}%`);
-            }
-            if (params.status === 'PENDING') {
-                expect(mockDb.andWhereRaw).toHaveBeenCalledWith('transfer.success IS NULL');
-            } else if (params.status) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.success', params.status === 'SUCCESS');
-            }
-            if (params.offset) {
-                expect(mockDb.offset).toHaveBeenCalledWith(params.offset);
-            }
-            if (params.limit) {
-                expect(mockDb.limit).toHaveBeenCalledWith(params.limit);
-            }
-            if (params.id) {
-                expect(mockDb.andWhere).toHaveBeenCalledWith('transfer.id', 'LIKE', `%${params.id}%`);
-            }
-        });
+        expect(result).toEqual(mockSummary);
     });
 });
