@@ -377,6 +377,22 @@ module.exports = {
             'transferId': '8'
         }
     },
+    getTransferErrorsContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/errors'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'startTimestamp': '2020-11-01T16T14:11:00.371Z',
+            'endTimestamp': '2020-11-17T14:11:06.371Z'
+        }
+    },
     getTransferStatusSummaryContext: {
         'request': {
             'method': 'GET',
@@ -681,5 +697,20 @@ module.exports = {
         },
         'params': {},
         'query': {}
+    },
+    getPositionContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/hourlyPosition'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'hoursPrevious': '7',
+        }
     },
 };
