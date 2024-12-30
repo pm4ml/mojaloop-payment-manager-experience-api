@@ -43,6 +43,18 @@ describe('Requests Class', () => {
             expect(logger.push).toHaveBeenCalled();
             expect(logger.log).toHaveBeenCalledWith('Error attempting HTTP GET');
         });
+        it('should remove undefined query parameters before sending the request', async () => {
+            const qs = { param1: 'value1', param2: undefined };
+            nock('http://localhost:3000')
+                .get('/test')
+                .query({ param1: 'value1' })
+                .reply(200, { success: true });
+    
+            const response = await requests.get('/test', qs);
+            expect(response).toEqual({ success: true });
+            expect(logger.push).toHaveBeenCalled();
+            expect(logger.log).toHaveBeenCalledWith('Executing HTTP GET');
+        });
     });
 
     describe('POST method', () => {
