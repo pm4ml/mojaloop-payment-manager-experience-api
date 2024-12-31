@@ -9,9 +9,8 @@ jest.mock('../../../src/lib/model/mock/common', () => ({
 
 jest.mock('faker');
 
-describe('Error.js', () => {
+describe('Error Module', () => {
     beforeEach(() => {
-    // Mock faker functions
         faker.random.number.mockImplementation(({ min, max }) =>
             Math.floor((min + max) / 2)
         );
@@ -37,7 +36,6 @@ describe('Error.js', () => {
         expect(errors.length).toBeLessThanOrEqual(11);
 
         errors.forEach((error) => {
-            // Assert that each error has the correct structure
             expect(error).toHaveProperty('id', 500050);
             expect(error).toHaveProperty('direction', 'INBOUND');
             expect(error).toHaveProperty('type', 'P2P');

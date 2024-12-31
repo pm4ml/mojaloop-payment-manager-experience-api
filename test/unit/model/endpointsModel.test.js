@@ -118,7 +118,6 @@ describe('EndpointsModel', () => {
         });
     });
 
-    ///
     test('updateDFSPEndpoints should call the correct endpoint with IP type', async () => {
         const opts = {
             type: 'IP',
@@ -163,7 +162,7 @@ describe('EndpointsModel', () => {
         );
     });
 
-    it('should update endpoint with IP address and ports', async () => {
+    test('should update endpoint with IP address and ports', async () => {
         const opts = { type: 'IP', epId: '123' };
         const body = { ip: '192.168.1.100', ports: [80, 443] };
 
@@ -175,7 +174,7 @@ describe('EndpointsModel', () => {
         });
     });
 
-    it('should update endpoint with URL', async () => {
+    test('should update endpoint with URL', async () => {
         const opts = { type: 'URL', epId: '456' };
         const body = { address: 'https://example.com' };
 
@@ -186,7 +185,7 @@ describe('EndpointsModel', () => {
         });
     });
 
-    it('should upload endpoint with IP address and ports', async () => {
+    test('should upload endpoint with IP address and ports', async () => {
         const opts = { type: 'IP' };
         const body = { address: '192.168.0.1', ports: [80, 443] };
 
@@ -200,7 +199,7 @@ describe('EndpointsModel', () => {
         });
     });
 
-    it('should upload endpoint with URL', async () => {
+    test('should upload endpoint with URL', async () => {
         const opts = { type: 'URL' };
         const body = { url: 'https://example.com' };
 

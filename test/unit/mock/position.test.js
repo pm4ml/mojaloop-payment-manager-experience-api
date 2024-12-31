@@ -1,5 +1,4 @@
-// Import the required modules
-const { getPositions } = require('../../../src/lib/model/mock/Position'); // Update with the actual module path
+const { getPositions } = require('../../../src/lib/model/mock/Position');
 const { fakeAmount } = require('../../../src/lib/model/mock/common');
 
 jest.mock('../../../src/lib/model/mock/common', () => ({
@@ -8,11 +7,11 @@ jest.mock('../../../src/lib/model/mock/common', () => ({
 
 describe('getPositions', () => {
     beforeEach(() => {
-        jest.clearAllMocks(); // Clear mocks before each test
+        jest.clearAllMocks();
     });
 
-    it('should return an array of positions with the correct length', () => {
-        fakeAmount.mockReturnValue(100); // Mock `fakeAmount` to return 100
+    test('should return an array of positions with the correct length', () => {
+        fakeAmount.mockReturnValue(100);
 
         const positions = getPositions({ hoursPrevious: 3 });
 
@@ -23,14 +22,12 @@ describe('getPositions', () => {
             expect(position).toHaveProperty('committed', 100);
             expect(position).toHaveProperty('liquidity', 100);
             expect(position).toHaveProperty('timestamp');
-
-            // Ensure timestamp is a valid ISO string
             expect(new Date(position.timestamp).toISOString()).toBe(position.timestamp);
         });
     });
 
-    it('should default to 1 hour if hoursPrevious is not provided', () => {
-        fakeAmount.mockReturnValue(50); // Mock `fakeAmount` to return 50
+    test('should default to 1 hour if hoursPrevious is not provided', () => {
+        fakeAmount.mockReturnValue(50);
 
         const positions = getPositions({});
 
@@ -42,7 +39,7 @@ describe('getPositions', () => {
         expect(positions[0]).toHaveProperty('timestamp');
     });
 
-    it('should correctly calculate timestamps for each position', () => {
+    test('should correctly calculate timestamps for each position', () => {
         fakeAmount.mockReturnValue(100);
         const now = new Date();
 
@@ -56,6 +53,6 @@ describe('getPositions', () => {
             new Date(now.getTime() - 1 * 60 * 60 * 1000)
         );
 
-        global.Date.mockRestore(); // Restore the original Date implementation
+        global.Date.mockRestore();
     });
 });

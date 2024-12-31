@@ -1,4 +1,4 @@
-const { getFlows } = require('../../../src/lib/model/mock/Flow'); // Adjust the import path
+const { getFlows } = require('../../../src/lib/model/mock/Flow');
 const { fakeAmount } = require('../../../src/lib/model/mock/common');
 
 jest.mock('../../../src/lib/model/mock/common', () => ({

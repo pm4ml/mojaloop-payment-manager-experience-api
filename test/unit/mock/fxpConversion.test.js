@@ -69,7 +69,7 @@ describe('Fxp Conversion Functions', () => {
         });
     });
 
-    it('should return a correctly structured object from getFxpConversion', () => {
+    test('should return a correctly structured object from getFxpConversion', () => {
         const conversion = getFxpConversion({});
         expect(conversion).toHaveProperty('conversionId');
         expect(conversion).toHaveProperty('batchId');
@@ -81,20 +81,18 @@ describe('Fxp Conversion Functions', () => {
         expect(conversion).toHaveProperty('initiatedTimestamp');
     });
 
-    it('should return an array with the correct number of conversions from getFxpConversions', () => {
+    test('should return an array with the correct number of conversions from getFxpConversions', () => {
         const conversions = getFxpConversions({});
         expect(conversions.length).toBeGreaterThan(0);
     });
 
-    it('should return an object with correct structure and values when options are passed', () => {
+    test('should return an object with correct structure and values when options are passed', () => {
         const opts = {
             id: 'custom-id-123',
             status: 'completed',
             institution: 'XYZ123',
         };
         const result = getFxpConversionDetails(opts);
-
-        // Assert correct structure and values
         expect(result).toHaveProperty('determiningTransferId', 'custom-id-123');
         expect(result).toHaveProperty('conversionId', 'custom-id-123');
         expect(result).toHaveProperty('conversionRequestId', 'custom-id-123');
@@ -107,7 +105,7 @@ describe('Fxp Conversion Functions', () => {
         expect(result.targetAmount).toHaveProperty('currency', 'USD');
     });
 
-    it('should generate random values if options are not passed', () => {
+    test('should generate random values if options are not passed', () => {
         const result = getFxpConversionDetails({});
 
         expect(result.determiningTransferId).toBe('uuid-1234');

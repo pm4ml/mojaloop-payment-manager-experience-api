@@ -1,8 +1,7 @@
-// monetaryZoneModel.test.js
 const { Requests } = require('@internal/requests');
-const MonetaryZoneModel = require('../../../src/lib/model/MonetaryZoneModel'); // Adjust the import based on your file structure
+const MonetaryZoneModel = require('../../../src/lib/model/MonetaryZoneModel');
 
-jest.mock('@internal/requests'); // Mocking the Requests class
+jest.mock('@internal/requests');
 
 describe('MonetaryZoneModel', () => {
     let monetaryZoneModel;
@@ -31,7 +30,7 @@ describe('MonetaryZoneModel', () => {
 
     it('should call get on Requests with the correct endpoint', async () => {
         const mockResponse = { zones: ['USD', 'EUR', 'GBP'] };
-        monetaryZoneModel._requests.get.mockResolvedValue(mockResponse); // Mocking the get method
+        monetaryZoneModel._requests.get.mockResolvedValue(mockResponse);
 
         const result = await monetaryZoneModel.getMonetaryZones();
 
@@ -41,7 +40,7 @@ describe('MonetaryZoneModel', () => {
 
     it('should handle errors thrown by the Requests.get method', async () => {
         const mockError = new Error('Network Error');
-        monetaryZoneModel._requests.get.mockRejectedValue(mockError); // Mocking an error
+        monetaryZoneModel._requests.get.mockRejectedValue(mockError);
 
         await expect(monetaryZoneModel.getMonetaryZones()).rejects.toThrow('Network Error');
     });

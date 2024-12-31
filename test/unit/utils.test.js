@@ -1,4 +1,4 @@
-const { NotImplementedError } = require('../../src/lib/utils/utils.js'); // Update the path as needed
+const { NotImplementedError } = require('../../src/lib/utils/utils.js');
 
 describe('NotImplementedError', () => {
     it('should create a NotImplementedError with default message', () => {
@@ -21,12 +21,9 @@ describe('NotImplementedError', () => {
     });
 
     it('should maintain the stack trace format', () => {
-        const methodName = 'mockMethod'; // Mocking method name for test clarity
+        const methodName = 'mockMethod';
         const error = new NotImplementedError();
-
-        // Simulate the expected output
         const expectedMessage = `The method ${methodName} isn't implemented.`;
-        // Manually replace the method name in the error message for testing
         const actualMessage = error.message.replace(/The method .* isn't implemented\./, expectedMessage);
 
         expect(actualMessage).toContain(expectedMessage);

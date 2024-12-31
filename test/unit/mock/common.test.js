@@ -3,7 +3,7 @@ const {
     fakeAmount,
 } = require('../../../src/lib/model/mock/common');
 
-describe('Currency Module', () => {
+describe('Common Module', () => {
     test('currencies array should contain expected currency codes', () => {
         const expectedCurrencies = ['USD', 'EUR', 'MAD', 'XOF'];
         expect(currencies).toEqual(expectedCurrencies);

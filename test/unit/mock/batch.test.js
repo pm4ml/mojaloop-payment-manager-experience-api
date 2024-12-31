@@ -3,7 +3,7 @@ const { getBatch, getBatches } = require('../../../src/lib/model/mock/Batch');
 
 describe('Batch Module', () => {
     beforeEach(() => {
-        faker.seed(12345); // Ensures consistent random values for testing
+        faker.seed(12345);
     });
 
     describe('getBatch', () => {
@@ -44,54 +44,6 @@ describe('Batch Module', () => {
     });
 
     describe('getBatches', () => {
-    // test("should return batches within the specified date range", () => {
-    //   const opts = {
-    //     startTimestamp: "2024-01-01",
-    //     endTimestamp: "2024-01-03",
-    //   };
-    //   const batches = getBatches(opts);
-
-        //   // Extract the unique dates from the batches
-        //   const batchDates = Array.from(
-        //     new Set(
-        //       batches.map(
-        //         (batch) =>
-        //           new Date(batch.startingTimestamp).toISOString().split("T")[0]
-        //       )
-        //     )
-        //   );
-
-        //   // Ensure no dates outside the specified range are included
-        //   batchDates.forEach((date) => {
-        //     const batchDate = new Date(date);
-        //     const startDate = new Date(opts.startTimestamp);
-        //     const endDate = new Date(opts.endTimestamp);
-
-        //     // Remove time part for comparison
-        //     batchDate.setHours(0, 0, 0, 0);
-        //     startDate.setHours(0, 0, 0, 0);
-        //     endDate.setHours(0, 0, 0, 0);
-
-        //     expect(batchDate >= startDate).toBe(true); // Ensure date is not before start
-        //     expect(batchDate <= endDate).toBe(true); // Ensure date is not after end
-        //   });
-
-        //   // Check that all expected dates are covered by batchDates
-        //   const expectedDatesSet = new Set();
-        //   let currentDate = new Date(opts.startTimestamp);
-        //   while (currentDate <= new Date(opts.endTimestamp)) {
-        //     expectedDatesSet.add(currentDate.toISOString().split("T")[0]);
-        //     currentDate.setDate(currentDate.getDate() + 1);
-        //   }
-
-        //   expectedDatesSet.forEach((date) => {
-        //     expect(batchDates).toContain(date);
-        //   });
-
-        //   // Validate that the number of unique dates returned is not less than the expected dates
-        //   expect(batchDates.length).toBeGreaterThanOrEqual(expectedDatesSet.size);
-        // });
-
         test('should use the default date range if no options are provided', () => {
             const batches = getBatches({});
             expect(batches.length).toBeGreaterThan(0);

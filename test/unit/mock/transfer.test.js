@@ -106,7 +106,7 @@ describe('Transfer Functions', () => {
             endTimestamp: undefined,
         };
 
-        const result = getTransfer(opts);
+        getTransfer(opts);
 
         expect(faker.date.recent).not.toHaveBeenCalled();
         expect(faker.date.between).toHaveBeenCalledWith(
@@ -123,7 +123,7 @@ describe('Transfer Functions', () => {
             endTimestamp,
         };
 
-        const result = getTransfer(opts);
+        getTransfer(opts);
 
         expect(faker.date.recent).toHaveBeenCalledWith(20);
         expect(faker.date.between).toHaveBeenCalledWith(
@@ -187,7 +187,7 @@ describe('Transfer Functions', () => {
     });
 
     test('getTransferDetails should generate a new id if opts.id is not provided', () => {
-        const opts = {}; // No id provided
+        const opts = {}; // no id provided
         const result = getTransferDetails(opts);
         expect(result.id).toBeDefined();
         expect(result.id).toMatch(
