@@ -11,7 +11,7 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const { oas } = require('koa-oas3');
-// const cors = require('@koa/cors');
+const cors = require('@koa/cors');
 
 // required for authentication and authorisation
 const session = require('koa-session');
@@ -33,7 +33,6 @@ class Server {
         this._server = null;
         this._logger = null;
         this._db = db;
-
     }
 
     async setupApi() {
@@ -49,7 +48,9 @@ class Server {
                 uiEndpoint: '/',
             });
         } catch (e) {
-            throw new Error('Error loading API spec. Please validate it with https://editor.swagger.io/');
+            throw new Error(
+                'Error loading API spec. Please validate it with https://editor.swagger.io/'
+            );
         }
 
         this._api.use(async (ctx, next) => {
@@ -60,7 +61,10 @@ class Server {
             await next();
         });
 
-        this._conf.sessionConfig.store = new CookieStore({ logger: this._logger, redisUrl: this._conf.sessionConfig.redisUrl});
+        this._conf.sessionConfig.store = new CookieStore({
+            logger: this._logger,
+            redisUrl: this._conf.sessionConfig.redisUrl,
+        });
 
         await this._conf.sessionConfig.store.connect();
 
@@ -69,14 +73,23 @@ class Server {
         // we need to allow cookies to be forwarded from other origins as this api may not
         // be served on the same port as the UI
         // moved this responsibility on Istio side
-        // this._api.use(cors({ credentials: true }));
+
+        if (this._conf.enableCors) {
+            this._api.use(cors({ credentials: true }));
+        }
 
         this._api.use(middlewares.createErrorHandler());
         this._api.use(middlewares.createRequestIdGenerator());
         this._api.use(middlewares.createLogger(this._logger));
         this._api.use(bodyParser());
-        if(this._conf.authConfig.enableAuthClient){
-            this._api.use(await middlewares.createAuthenticator(oidcClient, this._conf.authConfig, this._logger));
+        if (this._conf.authConfig.enableAuthClient) {
+            this._api.use(
+                await middlewares.createAuthenticator(
+                    oidcClient,
+                    this._conf.authConfig,
+                    this._logger
+                )
+            );
         }
         this._api.use(validator);
         this._api.use(middlewares.createRouter(handlers));
@@ -86,23 +99,24 @@ class Server {
     }
 
     async start() {
-        await new Promise((resolve) => this._server.listen(this._conf.inboundPort, resolve));
+        await new Promise((resolve) =>
+            this._server.listen(this._conf.inboundPort, resolve)
+        );
         this._logger.log(`Serving inbound API on port ${this._conf.inboundPort}`);
-
     }
 
     async stop() {
         if (!this._server) {
             return;
         }
-        await new Promise(resolve => this._server.close(resolve));
+        await new Promise((resolve) => this._server.close(resolve));
         console.log('inbound shut down complete');
     }
 
     async _createLogger() {
         return new Logger.Logger({
             context: {
-                app: 'mojaloop-payment-manager-experience-api'
+                app: 'mojaloop-payment-manager-experience-api',
             },
             stringify: Logger.buildStringify({ space: 2 }),
         });
@@ -111,7 +125,6 @@ class Server {
     _createServer() {
         return http.createServer(this._api.callback());
     }
-
 }
 
 module.exports = Server;
