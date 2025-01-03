@@ -1,8 +1,7 @@
-// hubModel.test.js
 const { Requests } = require('@internal/requests');
 const HubModel = require('../../../src/lib/model/HubModel');
 
-jest.mock('@internal/requests'); // Mocking the Requests class
+jest.mock('@internal/requests');
 
 describe('HubModel', () => {
     let hubModel;
@@ -33,7 +32,7 @@ describe('HubModel', () => {
         const opts = { direction: 'inbound', type: 'api', state: 'active' };
         const mockResponse = { data: 'some data' };
 
-        hubModel._requests.get.mockResolvedValue(mockResponse); // Mocking the get method
+        hubModel._requests.get.mockResolvedValue(mockResponse);
 
         const result = await hubModel.getEndpoints(opts);
 
@@ -44,7 +43,7 @@ describe('HubModel', () => {
     it('should handle errors thrown by the Requests.get method', async () => {
         const opts = { direction: 'outbound' };
         const mockError = new Error('Network Error');
-        hubModel._requests.get.mockRejectedValue(mockError); // Mocking an error
+        hubModel._requests.get.mockRejectedValue(mockError);
 
         await expect(hubModel.getEndpoints(opts)).rejects.toThrow('Network Error');
     });
