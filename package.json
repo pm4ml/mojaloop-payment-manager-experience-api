@@ -27,7 +27,7 @@
     "test:coverage-check": "jest --coverage --detectOpenHandles && jest --coverage --coverageThreshold='{}'",
     "dep:check": "npx ncu -e 2",
     "dep:update": "npx ncu -e 2 -u",
-    "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
+    "audit:check": "mkdir -p ./audit/results && npx audit-ci --config ./audit-ci.jsonc -o json > ./audit/results/auditResults.json",
     "test:integration": "./test/scripts/test-integration.sh",
     "test:functional": "./test/scripts/test-functional.sh"
   },
