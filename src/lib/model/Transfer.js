@@ -248,6 +248,11 @@ class Transfer {
         // Condition for when exchangeRate calculation is not possible , also to avoid divide by zero error
         if(!sourceAmount || !targetAmount || ((sourceAmount - totalSourceCharges) === 0))
             return null;
+        // If the totalTargetCharges and totalSourceCharges are null because of there being no charges the result should not evaluate to Nan. To avoid that checking if the charge is an empty string and setting it to 0 before the calculations
+        if(isNaN(totalTargetCharges))
+            totalTargetCharges = 0;
+        if(isNaN(totalSourceCharges))
+            totalSourceCharges = 0;
         return ((targetAmount - totalTargetCharges)/(sourceAmount - totalSourceCharges)).toFixed(4);
     }
 
