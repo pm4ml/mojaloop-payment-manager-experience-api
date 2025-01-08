@@ -6,7 +6,7 @@ echo "Setting up the environment for functional tests..."
 
 # Run functional tests
 echo "Running functional tests..."
-npx jest --config ../jest.config.js
+npx jest --config ./jest.config.js
 
 # Teardown steps
 echo "Cleaning up after functional tests..."
