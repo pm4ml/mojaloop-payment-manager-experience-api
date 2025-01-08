@@ -4,11 +4,17 @@
  */
 
 /** @type {import('jest').Config} */
+const path = require('path');
+
 const config = {
 
+    // reporters: [
+    //     'default',
+    //     ['jest-junit', {outputDirectory: 'reports', outputName: 'report.xml'}],
+    // ],
     reporters: [
         'default',
-        ['jest-junit', {outputDirectory: 'reports', outputName: 'report.xml'}],
+        [path.resolve('node_modules/jest-junit'), { outputDirectory: 'reports', outputName: 'report.xml' }],
     ],
  
     // Automatically clear mock calls, instances, contexts and results before every test
