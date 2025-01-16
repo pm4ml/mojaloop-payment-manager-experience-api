@@ -173,6 +173,9 @@ describe('Database', () => {
         test('should process transfer data correctly', async () => {
             mockRedisClient.get.mockResolvedValue(JSON.stringify(testData.transferData));
 
+            const migrationsDirectory = `${__dirname}/../../../src/lib/cacheDatabase/migrations`;
+            await db.migrate.latest({ directory: migrationsDirectory });
+
             await syncDB({ redisCache: mockRedisClient, db, logger });
 
             const result = await db('transfer').where({ id: 'test-transfer-id' }).first();
@@ -187,6 +190,9 @@ describe('Database', () => {
 
         test('should process FX quote data correctly', async () => {
             mockRedisClient.get.mockResolvedValue(JSON.stringify(testData.fxQuoteData));
+
+            const migrationsDirectory = `${__dirname}/../../../src/lib/cacheDatabase/migrations`;
+            await db.migrate.latest({ directory: migrationsDirectory });
 
             await syncDB({ redisCache: mockRedisClient, db, logger });
 
