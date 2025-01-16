@@ -30,7 +30,7 @@ describe('Database', () => {
             transferId: 'test-transfer-id',
             direction: 'OUTBOUND',
             currentState: 'succeeded',
-            from: { 
+            from: {
                 displayName: 'Sender',
                 idType: 'MSISDN',
                 idValue: '123456789'
@@ -77,7 +77,7 @@ describe('Database', () => {
             })
         };
 
-        redis.createClient.mockReturnValue(mockRedisClient);
+        redis.createClient = jest.fn().mockReturnValue(mockRedisClient);
 
         logger = new Logger.Logger({
             context: {
@@ -114,7 +114,7 @@ describe('Database', () => {
             await cache.connect();
             await cache.set(testData.key, testData.objectValue);
             expect(mockRedisClient.set).toHaveBeenCalledWith(
-                testData.key, 
+                testData.key,
                 JSON.stringify(testData.objectValue)
             );
         });
@@ -172,9 +172,9 @@ describe('Database', () => {
     describe('Data Processing', () => {
         test('should process transfer data correctly', async () => {
             mockRedisClient.get.mockResolvedValue(JSON.stringify(testData.transferData));
-            
+
             await syncDB({ redisCache: mockRedisClient, db, logger });
-            
+
             const result = await db('transfer').where({ id: 'test-transfer-id' }).first();
             expect(result).toMatchObject({
                 id: 'test-transfer-id',
@@ -187,9 +187,9 @@ describe('Database', () => {
 
         test('should process FX quote data correctly', async () => {
             mockRedisClient.get.mockResolvedValue(JSON.stringify(testData.fxQuoteData));
-            
+
             await syncDB({ redisCache: mockRedisClient, db, logger });
-            
+
             const result = await db('fx_quote').where({ conversion_request_id: 'test-conversion-id' }).first();
             expect(result).toMatchObject({
                 conversion_id: 'test-conversion',
@@ -203,9 +203,9 @@ describe('Database', () => {
         test('should handle invalid JSON data', async () => {
             mockRedisClient.get.mockResolvedValue('invalid-json');
             const logSpy = jest.spyOn(logger, 'log');
-            
+
             await syncDB({ redisCache: mockRedisClient, db, logger });
-            
+
             expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Error parsing JSON'));
         });
 
@@ -213,9 +213,9 @@ describe('Database', () => {
             const invalidData = { ...testData.transferData };
             delete invalidData.transferId;
             mockRedisClient.get.mockResolvedValue(JSON.stringify(invalidData));
-            
+
             await syncDB({ redisCache: mockRedisClient, db, logger });
-            
+
             const result = await db('transfer').count();
             expect(result[0]['count(*)']).toBe(0);
         });
