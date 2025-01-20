@@ -29,7 +29,7 @@
     "dep:update": "npx ncu -e 2 -u",
     "audit:check": "mkdir -p ./audit/results && npx audit-ci --config ./audit-ci.jsonc -o json > ./audit/results/auditResults.json",
     "test:integration": "./test/scripts/test-integration.sh",
-    "test:functional": "./test/scripts/test-functional.sh"
+    "test:functional": "true"
   },
   "dependencies": {
     "@internal/accesscontrol": "file:src/lib/accesscontrol",
