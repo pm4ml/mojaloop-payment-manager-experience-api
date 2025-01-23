@@ -4,14 +4,15 @@
  */
 
 /** @type {import('jest').Config} */
+// eslint-disable-next-line no-unused-vars
 const path = require('path');
 
 const config = {
-  // Configure reporters for test results
+    // Configure reporters for test results
     reporters: [
         'default',
         ['jest-junit', {outputDirectory: './test/results/', outputName: 'xunit.xml'}],
-      ],
+    ],
     // Automatically clear mock calls, instances, contexts and results before every test
     clearMocks: true,
 
