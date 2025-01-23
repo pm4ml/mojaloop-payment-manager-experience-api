@@ -7,16 +7,11 @@
 const path = require('path');
 
 const config = {
-
-    // reporters: [
-    //     'default',
-    //     ['jest-junit', {outputDirectory: 'reports', outputName: 'report.xml'}],
-    // ],
+  // Configure reporters for test results
     reporters: [
         'default',
-        [path.resolve('node_modules/jest-junit'), { outputDirectory: 'reports', outputName: 'report.xml' }],
-    ],
- 
+        ['jest-junit', {outputDirectory: './test/results/', outputName: 'xunit.xml'}],
+      ],
     // Automatically clear mock calls, instances, contexts and results before every test
     clearMocks: true,
 
