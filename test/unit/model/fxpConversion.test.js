@@ -1,28 +1,6 @@
 const FxpConversion = require('../../../src/lib/model/FxpConversion');
 const mock = require('../../../src/lib/model/mock');
 
-// const mockDb = {
-//     count: jest.fn().mockReturnThis(),
-//     raw: jest.fn().mockReturnThis(),
-//     whereRaw: jest.fn().mockReturnThis(),
-//     leftJoin: jest.fn().mockReturnThis(),
-//     andWhere: jest.fn().mockReturnThis(),
-//     andWhereRaw: jest.fn().mockReturnThis(),
-//     offset: jest.fn().mockReturnThis(),
-//     limit: jest.fn().mockReturnThis(),
-//     orderBy: jest.fn().mockReturnThis(),
-//     fx_quote: jest.fn().mockReturnThis(),
-//     select: jest.fn().mockReturnThis(),
-//     where: jest.fn().mockReturnThis(),
-//     first: jest.fn().mockReturnThis(),
-//     insert: jest.fn().mockReturnThis(),
-//     update: jest.fn().mockReturnThis(),
-//     del: jest.fn().mockReturnThis(),
-//     sum: jest.fn().mockReturnThis(),
-//     groupByRaw: jest.fn().mockReturnThis(),
-//     groupBy: jest.fn().mockReturnThis(),
-// };
-
 const mockDb = {
     _error: null, // To simulate database errors
     _result: null,

@@ -301,7 +301,8 @@ class FxpConversion {
                   headers: raw.fxTransferRequest && raw.fxTransferRequest.headers,
                   body:
                   raw.fxTransferRequest &&
-                  raw.fxTransferRequest.body
+                  raw.fxTransferRequest.body &&
+                  JSON.parse(raw.fxTransferRequest.body),
               }
               : raw.fxPrepare,
                 fxTransferFulfil:
