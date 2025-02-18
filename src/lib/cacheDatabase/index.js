@@ -86,10 +86,12 @@ async function syncDB({ redisCache, db, logger }) {
 
         if (data.direction === 'INBOUND') {
             if (data.quoteResponse?.body) {
-                data.quoteResponse.body = JSON.parse(data.quoteResponse.body);
+                if(typeof data.quoteResponse.body === 'string')
+                    data.quoteResponse.body = JSON.parse(data.quoteResponse.body);
             }
             if (data.fulfil?.body) {
-                data.fulfil.body = JSON.parse(data.fulfil.body);
+                if(typeof data.fulfil.body === 'string')
+                    data.fulfil.body = JSON.parse(data.fulfil.body);
             }
         }
         return data;
@@ -177,7 +179,9 @@ async function syncDB({ redisCache, db, logger }) {
             // The empty object is initialised for the case in which fxQuoteResponse is empty so we don't have to deal with null errors
             let fx_quote_row = null;
             if(data.fxQuoteRequest){
-                let fxQuoteRequest = JSON.parse(data.fxQuoteRequest.body);
+                let fxQuoteRequest = data.fxQuoteRequest.body;
+                if(typeof data.fxQuoteRequest.body === 'string')
+                    fxQuoteRequest = JSON.parse(fxQuoteRequest);
                 fx_quote_row = {
                     redis_key: key,
                     conversion_request_id: fxQuoteRequest.conversionRequestId,
@@ -353,7 +357,9 @@ async function syncDB({ redisCache, db, logger }) {
                 logger.log('fxQuoteRequest not present on ',key);
             }
             if(data.fxQuoteResponse){
-                const fxQuoteBody = JSON.parse(data.fxQuoteResponse.body);
+                let fxQuoteBody = (data.fxQuoteResponse.body);
+                if(typeof fxQuoteBody === 'string')
+                    fxQuoteBody = JSON.parse(fxQuoteBody);
                 fxQuoteRow.conversion_id = fxQuoteBody.conversionTerms.conversionId;
                 fxQuoteRow.initiating_fsp = fxQuoteBody.conversionTerms.initiatingFsp;
                 fxQuoteRow.counter_party_fsp = fxQuoteBody.conversionTerms.counterPartyFsp;
