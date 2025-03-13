@@ -1,0 +1,9 @@
+{
+    "moderate": true,
+    "registry": "https://registry.npmjs.org",
+    "allowlist": [
+      "GHSA-*",  // GitHub Security Advisory IDs
+      "npm:*"    // npm advisory IDs
+    ],
+    "report-type": "full"
+  }

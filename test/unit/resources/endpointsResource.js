@@ -112,6 +112,147 @@ module.exports = {
         },
         'params': { 'epId': '1' }
     },
+    getIngressEndpointContext: {
+        'request': {
+            'method': 'GET',
+            'url': '/dfsp/endpoints/ingress/ips/1',
+            'body': {
+                'value': {
+                    'address': '163.10.24.29/32',
+                    'ports': [
+                        '9900'
+                    ]
+                }
+            },
+            'header': {
+            }
+        },
+        'response': {
+            'header': {
+                'vary': 'Origin',
+                'access-control-allow-origin': 'http://localhost:8080'
+            }
+        },
+        'state': {
+            'conf': {
+                'inboundPort': 3000,
+                'mockData': false,
+                'logIndent': 2,
+                'managementEndpoint': 'localhost:9000',
+                'dfspId': 'pm4mltest'
+            },
+        },
+        'params': { 'epId': '1' }
+    },
+    getEgressEndpointContext: {
+        'request': {
+            'method': 'GET',
+            'url': '/dfsp/endpoints/egress/ips/1',
+            'body': {
+                'value': {
+                    'address': '163.10.24.29/32',
+                    'ports': [
+                        '9900'
+                    ]
+                }
+            },
+            'header': {
+            }
+        },
+        'response': {
+            'header': {
+                'vary': 'Origin',
+                'access-control-allow-origin': 'http://localhost:8080'
+            }
+        },
+        'state': {
+            'conf': {
+                'inboundPort': 3000,
+                'mockData': false,
+                'logIndent': 2,
+                'managementEndpoint': 'localhost:9000',
+                'dfspId': 'pm4mltest'
+            },
+        },
+        'params': { 'epId': '1' }
+    },
+    getHubIngressContext: {
+        'request': {
+            'method': 'GET',
+            'url': '/hub/endpoints/ingress',
+            'body': {
+                'value': {
+                    'address': '163.10.24.29/32',
+                    'ports': [
+                        '9900'
+                    ]
+                }
+            },
+            'header': {
+            }
+        },
+        'response': {
+            'header': {
+                'vary': 'Origin',
+                'access-control-allow-origin': 'http://localhost:8080'
+            }
+        },
+        'state': {
+            'conf': {
+                'inboundPort': 3000,
+                'mockData': false,
+                'logIndent': 2,
+                'managementEndpoint': 'localhost:9000',
+                'dfspId': 'pm4mltest'
+            },
+        }
+    },
+    getHubEgressContext: {
+        'request': {
+            'method': 'GET',
+            'url': '/hub/endpoints/egress',
+            'body': {
+                'value': {
+                    'address': '163.10.24.29/32',
+                    'ports': [
+                        '9900'
+                    ]
+                }
+            },
+            'header': {
+            }
+        },
+        'response': {
+            'header': {
+                'vary': 'Origin',
+                'access-control-allow-origin': 'http://localhost:8080'
+            }
+        },
+        'state': {
+            'conf': {
+                'inboundPort': 3000,
+                'mockData': false,
+                'logIndent': 2,
+                'managementEndpoint': 'localhost:9000',
+                'dfspId': 'pm4mltest'
+            },
+        }
+    },
+    getDfspStatus: {
+        'request': {
+            'method': 'GET',
+            'url': '/status',
+            'body': null
+        },
+        'state': {
+            'conf': {
+                'dfspId': 'test-dfsp-id',
+                'managementEndpoint': 'http://test-endpoint'
+            },
+            'logger': console
+        },
+        'response': {},
+    },
     deleteEndpointContext: {
         'state': {
             'conf': {
@@ -124,6 +265,28 @@ module.exports = {
         },
         'response': {},
         'params': { 'epId': '1' }
+    },
+    getDFSPdetails: {
+        'request': {
+            'method': 'GET',
+            'url': '/dfsp/details'
+        },
+        'state': {
+            'conf': {
+                'managementEndpoint': 'localhost:9000',
+            },
+        },
+    },
+    getAllDFSP: {
+        'request': {
+            'method': 'GET',
+            'url': '/dfsps'
+        },
+        'state': {
+            'conf': {
+                'managementEndpoint': 'localhost:9000',
+            },
+        },
     },
     getMonetaryZones: {
         'request': {
@@ -212,6 +375,22 @@ module.exports = {
         },
         'params': {
             'transferId': '8'
+        }
+    },
+    getTransferErrorsContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/errors'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'startTimestamp': '2020-11-01T16T14:11:00.371Z',
+            'endTimestamp': '2020-11-17T14:11:06.371Z'
         }
     },
     getTransferStatusSummaryContext: {
@@ -504,5 +683,34 @@ module.exports = {
         },
         'params': {},
         'query': {}
+    },
+    generateAllCertificatesContext: {
+        'request': {
+            'method': 'POST',
+            'utl': '/dfsp/allcerts'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+                'managementEndpoint': 'localhost:9000',
+            }
+        },
+        'params': {},
+        'query': {}
+    },
+    getPositionContext: {
+        'request': {
+            'method': 'GET',
+            'utl': '/hourlyPosition'
+        },
+        'state': {
+            'conf': {
+                'mockData': true,
+            }
+        },
+        'params': {},
+        'query': {
+            'hoursPrevious': '7',
+        }
     },
 };
