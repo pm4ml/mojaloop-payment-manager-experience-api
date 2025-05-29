@@ -85,13 +85,12 @@ async function syncDB({ redisCache, db, logger }) {
         }
 
         if (!data) {
-            logger.push({ rawData }).log('Data is null or undefined after parsing');
             return null;
         }
 
         if (data.direction === 'INBOUND') {
             if (data.quoteResponse?.body) {
-                if(typeof data.quoteResponse.body === 'string') {
+                if (typeof data.quoteResponse.body === 'string') {
                     try {
                         data.quoteResponse.body = JSON.parse(data.quoteResponse.body);
                     } catch (err) {
@@ -100,7 +99,6 @@ async function syncDB({ redisCache, db, logger }) {
                     }
                 }
             } else {
-                logger.push({ data }).log('quoteResponse.body is missing or undefined');
                 data.quoteResponse = { body: null }; // Ensure body is null if missing
             }
             if (data.fulfil?.body) {
@@ -127,8 +125,7 @@ async function syncDB({ redisCache, db, logger }) {
         }
 
         // If the key is for a transfer
-        if(key.includes('transferModel'))
-        {
+        if (key.includes('transferModel')) {
             // this is all a hack right now as we will eventually NOT use the cache as a source
             // of truth for transfers but rather some sort of dedicated persistence service instead.
             // Therefore we can afford to do some nasty things in order to get working features...
@@ -142,8 +139,7 @@ async function syncDB({ redisCache, db, logger }) {
             // the cache data model for inbound transfers is lacking some properties that make it easy to extract
             // certain information...therefore we have to find it elsewhere...
 
-            if (!['INBOUND', 'OUTBOUND'].includes(data.direction))
-            {
+            if (!['INBOUND', 'OUTBOUND'].includes(data.direction)) {
                 logger.push({ data }).log('Unable to process row. No direction property found');
                 return;
             }
@@ -157,18 +153,18 @@ async function syncDB({ redisCache, db, logger }) {
                 ...(data.direction === 'INBOUND' && {
                     sender: getPartyNameFromQuoteRequest(data.quoteRequest, 'payer'),
                     sender_id_type:
-                      data.quoteRequest?.body?.payer?.partyIdInfo?.partyIdType,
+                        data.quoteRequest?.body?.payer?.partyIdInfo?.partyIdType,
                     sender_id_sub_value:
-                      data.quoteRequest?.body?.payer?.partyIdInfo?.partySubIdOrType,
+                        data.quoteRequest?.body?.payer?.partyIdInfo?.partySubIdOrType,
                     sender_id_value:
-                      data.quoteRequest?.body?.payer?.partyIdInfo?.partyIdentifier,
+                        data.quoteRequest?.body?.payer?.partyIdInfo?.partyIdentifier,
                     recipient: getPartyNameFromQuoteRequest(data.quoteRequest, 'payee'),
                     recipient_id_type:
-                      data.quoteRequest?.body?.payee?.partyIdInfo?.partyIdType,
+                        data.quoteRequest?.body?.payee?.partyIdInfo?.partyIdType,
                     recipient_id_sub_value:
-                      data.quoteRequest?.body?.payee?.partyIdInfo?.partySubIdOrType,
+                        data.quoteRequest?.body?.payee?.partyIdInfo?.partySubIdOrType,
                     recipient_id_value:
-                      data.quoteRequest?.body?.payee?.partyIdInfo?.partyIdentifier,
+                        data.quoteRequest?.body?.payee?.partyIdInfo?.partyIdentifier,
                     amount: data.quoteResponse?.body?.transferAmount?.amount ?? null,
                     currency: data.quoteResponse?.body?.transferAmount?.currency ?? null,
                     direction: -1,
@@ -201,7 +197,7 @@ async function syncDB({ redisCache, db, logger }) {
             // check if there is a key in the data object named fxQuoteResponse
             // The empty object is initialised for the case in which fxQuoteResponse is empty so we don't have to deal with null errors
             let fx_quote_row = null;
-            if(data.fxQuoteRequest){
+            if (data.fxQuoteRequest) {
                 let fxQuoteRequest;
 
                 if (data.fxQuoteRequest.body !== undefined) {
@@ -221,14 +217,21 @@ async function syncDB({ redisCache, db, logger }) {
 
                 // Check if fxQuoteRequest is a valid object before proceeding
                 if (fxQuoteRequest && typeof fxQuoteRequest === 'object') {
+                    const requiredFields = ['conversionRequestId', 'conversionTerms'];
+                    const missing = requiredFields.filter(field => !fxQuoteRequest[field]);
+
+                    if (missing.length > 0) {
+                        logger.push({ key, missingRequiredFxFields: missing }).log('FX quote missing required fields');
+                    }
+
                     try {
                         fx_quote_row = {
                             redis_key: key,
                             conversion_request_id: fxQuoteRequest.conversionRequestId || '',
                             conversion_id: fxQuoteRequest.conversionTerms?.conversionId || '',
-                            determining_transfer_id : fxQuoteRequest.conversionTerms?.determiningTransferId || '',
+                            determining_transfer_id: fxQuoteRequest.conversionTerms?.determiningTransferId || '',
                             initiating_fsp: '',
-                            counter_party_fsp: '' ,
+                            counter_party_fsp: '',
                             amount_type: '',
                             source_amount: fxQuoteRequest.conversionTerms?.sourceAmount?.amount || '',
                             source_currency: fxQuoteRequest.conversionTerms?.sourceAmount?.currency || '',
@@ -347,41 +350,41 @@ async function syncDB({ redisCache, db, logger }) {
                 try {
                     await db('transfer').insert(row);
                 } catch (err) {
-                    console.log("Error inserting transfer row", err);
+                    logger.log("Error inserting transfer", err);
                 }
-                if(fx_quote_row != undefined && fx_quote_row != null) {
+                if (fx_quote_row != undefined && fx_quote_row != null) {
                     try {
                         await db('fx_quote').insert(fx_quote_row);
                     } catch (err) {
-                        console.log("Error inserting fx_quote_row", err);
+                        logger.log("Error inserting fx_quote", err);
                     }
                 }
                 if (fx_transfer_row != undefined && fx_transfer_row != null) {
                     try {
                         await db('fx_transfer').insert(fx_transfer_row);
                     } catch (err) {
-                        console.log("Error inserting fx_transfer_row", err);
+                        logger.log("Error inserting fx_transfer", err);
                     }
                 }
                 cachedPendingKeys.push(row.redis_key);
             } else {
                 try {
-                    await db('transfer').where({ redis_key: row.redis_key}).update(row);
+                    await db('transfer').where({ redis_key: row.redis_key }).update(row);
                 } catch (err) {
-                    console.log(err);
+                    logger.log("Error updating transfer", err);
                 }
-                if(fx_quote_row != null && fx_quote_row != undefined) {
+                if (fx_quote_row != null && fx_quote_row != undefined) {
                     try {
-                        await db('fx_quote').where({redis_key: fx_quote_row.redis_key}).update(fx_quote_row);
+                        await db('fx_quote').where({ redis_key: fx_quote_row.redis_key }).update(fx_quote_row);
                     } catch (err) {
-                        console.log(err);
+                        logger.log("Error updating fx_quote", err);
                     }
                 }
-                if(fx_transfer_row != undefined && fx_transfer_row != null) {
+                if (fx_transfer_row != undefined && fx_transfer_row != null) {
                     try {
-                        await db('fx_transfer').where({redis_key:fx_transfer_row.redis_key}).update(fx_transfer_row);
+                        await db('fx_transfer').where({ redis_key: fx_transfer_row.redis_key }).update(fx_transfer_row);
                     } catch (err) {
-                        console.log(err);
+                        logger.log("Error updating fx_transfer", err);
                     }
                 }
                 // cachedPendingKeys.splice(keyIndex, 1);
@@ -413,6 +416,13 @@ async function syncDB({ redisCache, db, logger }) {
                         ? JSON.parse(data.fxQuoteRequest.body)
                         : data.fxQuoteRequest.body || {};
 
+                    const requiredFields = ['conversionRequestId', 'conversionTerms'];
+                    const missing = requiredFields.filter(field => !fxQuoteRequestBody[field]);
+
+                    if (missing.length > 0) {
+                        logger.push({ key, missingRequiredFxFields: missing }).log('FX quote missing required fields');
+                    }
+
                     fxQuoteRow = {
                         redis_key: key,
                         conversion_request_id: fxQuoteRequestBody.conversionRequestId || '',
@@ -438,14 +448,14 @@ async function syncDB({ redisCache, db, logger }) {
                     fxQuoteRow = null;
                 }
             }
-            else{
-                logger.log('fxQuoteRequest not present on ',key);
+            else {
+                logger.log('fxQuoteRequest not present on ', key);
             }
 
-            if(data.fxQuoteResponse && fxQuoteRow) {
+            if (data.fxQuoteResponse && fxQuoteRow) {
                 try {
                     let fxQuoteBody = data.fxQuoteResponse.body;
-                    if(typeof fxQuoteBody === 'string'){
+                    if (typeof fxQuoteBody === 'string') {
                         fxQuoteBody = JSON.parse(fxQuoteBody);
                     }
 
@@ -521,36 +531,36 @@ async function syncDB({ redisCache, db, logger }) {
             try {
                 if (fxQuoteRow) {
                     const keyIndex = cachedPendingKeys.indexOf(fxQuoteRow.redis_key);
-                    if(keyIndex === -1){
-                        if(fxQuoteRow !== undefined && fxQuoteRow !== null){
+                    if (keyIndex === -1) {
+                        if (fxQuoteRow !== undefined && fxQuoteRow !== null) {
                             try {
                                 await db('fx_quote').insert(fxQuoteRow);
                             } catch (err) {
-                                console.log(err);
+                                logger.log("Error inserting fx_quote", err);
                             }
                         }
-                        if(fxTransferRow!== undefined && fxTransferRow!== null){
+                        if (fxTransferRow !== undefined && fxTransferRow !== null) {
                             try {
                                 await db('fx_transfer').insert(fxTransferRow);
                             } catch (err) {
-                                console.log(err);
+                                logger.log("Error inserting fx_transfer", err);
                             }
                         }
                         cachedPendingKeys.push(fxQuoteRow.redis_key);
                     }
-                    else{
-                        if(fxQuoteRow!= null && fxQuoteRow!= undefined) {
+                    else {
+                        if (fxQuoteRow != null && fxQuoteRow != undefined) {
                             try {
                                 await db('fx_quote').where({ redis_key: fxQuoteRow.redis_key }).update(fxQuoteRow);
                             } catch (err) {
-                                console.log(err);
+                                logger.log("Error inserting fx_quote", err);
                             }
                         }
                         if (fxTransferRow != undefined && fxTransferRow != null) {
                             try {
                                 await db('fx_transfer').where({ redis_key: fxTransferRow.redis_key }).update(fxTransferRow);
                             } catch (err) {
-                                console.log(err);
+                                logger.log("Error inserting fx_transfer", err);
                             }
                         }
                     }
@@ -562,13 +572,13 @@ async function syncDB({ redisCache, db, logger }) {
                 logger.push({ err, key }).log('Error processing fx data');
             }
         }
-    // const sqlRaw = db('transfer').insert(row).toString();
-    // db.raw(sqlRaw.replace(/^insert/i, 'insert or ignore')).then(resolve);
+        // const sqlRaw = db('transfer').insert(row).toString();
+        // db.raw(sqlRaw.replace(/^insert/i, 'insert or ignore')).then(resolve);
     };
 
     // Available key patterns in redis
     const redisKeys = ['transferModel_*', 'fxQuote_in_*'];
-    redisKeys.forEach( async (key) => {
+    redisKeys.forEach(async (key) => {
         const keys = await redisCache.keys(key);
         const uncachedOrPendingKeys = keys.filter(
             (x) => cachedFulfilledKeys.indexOf(x) === -1,
