@@ -1,6 +1,6 @@
 {
   "name": "mojaloop-payment-manager-experience-api-service",
-  "version": "3.0.1",
+  "version": "3.2.0",
   "private": true,
   "description": "Mojaloop Payment Manager - Experience API Service",
   "main": "index.js",
@@ -28,7 +28,8 @@
     "test:coverage-check": "npm run test:coverage && nyc check-coverage",
     "dep:check": "npx ncu -e 2",
     "dep:update": "npx ncu -e 2 -u",
-    "audit:check": "mkdir -p ./audit/results && npx audit-ci --config ./audit-ci.jsonc -o json > ./audit/results/auditResults.json",
+    "audit:fix": "npm audit fix",
+    "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
     "test:integration": "./test/scripts/test-integration.sh",
     "test:functional": "true"
   },
