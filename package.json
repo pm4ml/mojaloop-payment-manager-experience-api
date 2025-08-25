@@ -31,7 +31,9 @@
     "audit:fix": "npm audit fix",
     "audit:check": "npx audit-ci --config ./audit-ci.jsonc",
     "test:integration": "./test/scripts/test-integration.sh",
-    "test:functional": "true"
+    "test:functional": "true",
+    "release": "npx standard-version --no-verify --releaseCommitMessageFormat 'chore(release): {{currentTag}} [skip ci]'",
+    "snapshot": "npx standard-version --no-verify --skip.changelog --prerelease snapshot --releaseCommitMessageFormat 'chore(snapshot): {{currentTag}}'"
   },
   "dependencies": {
     "@internal/accesscontrol": "file:src/lib/accesscontrol",
