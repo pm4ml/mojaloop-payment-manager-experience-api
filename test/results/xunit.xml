@@ -1,547 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="353" failures="0" errors="0" time="0.95">
-  <testsuite name="Utility Functions" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.328" tests="11">
-    <testcase classname="Utility Functions HTTPResponseError should initialize with a message and params" name="Utility Functions HTTPResponseError should initialize with a message and params" time="0.005">
-    </testcase>
-    <testcase classname="Utility Functions HTTPResponseError should return correct string representation" name="Utility Functions HTTPResponseError should return correct string representation" time="0.001">
-    </testcase>
-    <testcase classname="Utility Functions HTTPResponseError should return correct JSON representation" name="Utility Functions HTTPResponseError should return correct JSON representation" time="0">
-    </testcase>
-    <testcase classname="Utility Functions buildUrl should build a URL correctly without leading or trailing slashes" name="Utility Functions buildUrl should build a URL correctly without leading or trailing slashes" time="0">
-    </testcase>
-    <testcase classname="Utility Functions buildUrl should strip leading and trailing slashes" name="Utility Functions buildUrl should strip leading and trailing slashes" time="0">
-    </testcase>
-    <testcase classname="Utility Functions buildUrl should handle undefined arguments" name="Utility Functions buildUrl should handle undefined arguments" time="0">
-    </testcase>
-    <testcase classname="Utility Functions buildUrl should retain trailing slash if last argument ends with one" name="Utility Functions buildUrl should retain trailing slash if last argument ends with one" time="0.001">
-    </testcase>
-    <testcase classname="Utility Functions throwOrJson should return null for content-length 0 or statusCode 204" name="Utility Functions throwOrJson should return null for content-length 0 or statusCode 204" time="0">
-    </testcase>
-    <testcase classname="Utility Functions throwOrJson should throw HTTPResponseError for non-2xx status codes" name="Utility Functions throwOrJson should throw HTTPResponseError for non-2xx status codes" time="0.009">
-    </testcase>
-    <testcase classname="Utility Functions throwOrJson should return data for successful responses" name="Utility Functions throwOrJson should return data for successful responses" time="0">
-    </testcase>
-    <testcase classname="Utility Functions throwOrJson should return null for 204 status code with data null" name="Utility Functions throwOrJson should return null for 204 status code with data null" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="CertificatesModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.419" tests="16">
-    <testcase classname="CertificatesModel getCertificates should call the correct endpoint" name="CertificatesModel getCertificates should call the correct endpoint" time="0.004">
-    </testcase>
-    <testcase classname="CertificatesModel uploadClientCSR should call the correct endpoint" name="CertificatesModel uploadClientCSR should call the correct endpoint" time="0">
-    </testcase>
-    <testcase classname="CertificatesModel createClientCSR should call the correct endpoint" name="CertificatesModel createClientCSR should call the correct endpoint" time="0.001">
-    </testcase>
-    <testcase classname="CertificatesModel getDFSPCA should call the correct endpoint" name="CertificatesModel getDFSPCA should call the correct endpoint" time="0">
-    </testcase>
-    <testcase classname="CertificatesModel createDFSPCA should call the correct endpoint" name="CertificatesModel createDFSPCA should call the correct endpoint" time="0.001">
-    </testcase>
-    <testcase classname="CertificatesModel setDFSPCA should call the correct endpoint" name="CertificatesModel setDFSPCA should call the correct endpoint" time="0">
-    </testcase>
-    <testcase classname="CertificatesModel getHubCA should call the correct endpoint" name="CertificatesModel getHubCA should call the correct endpoint" time="0.001">
-    </testcase>
-    <testcase classname="CertificatesModel getDFSPServerCertificates should call the correct endpoint" name="CertificatesModel getDFSPServerCertificates should call the correct endpoint" time="0.001">
-    </testcase>
-    <testcase classname="CertificatesModel generateServerCertificates should call the correct endpoint" name="CertificatesModel generateServerCertificates should call the correct endpoint" time="0">
-    </testcase>
-    <testcase classname="CertificatesModel getHubServerCertificates should call the correct endpoint" name="CertificatesModel getHubServerCertificates should call the correct endpoint" time="0.001">
-    </testcase>
-    <testcase classname="CertificatesModel getAllJWSCertificates should call the correct endpoint" name="CertificatesModel getAllJWSCertificates should call the correct endpoint" time="0.001">
-    </testcase>
-    <testcase classname="CertificatesModel getJWSCertificates should call the correct endpoint" name="CertificatesModel getJWSCertificates should call the correct endpoint" time="0.009">
-    </testcase>
-    <testcase classname="CertificatesModel uploadJWSCertificates should call the correct endpoint" name="CertificatesModel uploadJWSCertificates should call the correct endpoint" time="0">
-    </testcase>
-    <testcase classname="CertificatesModel updateJWSCertificates should call the correct endpoint" name="CertificatesModel updateJWSCertificates should call the correct endpoint" time="0.001">
-    </testcase>
-    <testcase classname="CertificatesModel deleteJWSCertificates should call the correct endpoint" name="CertificatesModel deleteJWSCertificates should call the correct endpoint" time="0">
-    </testcase>
-    <testcase classname="CertificatesModel generateAllCerts should call the correct endpoint" name="CertificatesModel generateAllCerts should call the correct endpoint" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Authentication library" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.431" tests="7">
-    <testcase classname="Authentication library Creates koa middleware" name="Authentication library Creates koa middleware" time="0.009">
-    </testcase>
-    <testcase classname="Authentication library handles a GET /login request by setting the session up for callback and redirecting to auth URL" name="Authentication library handles a GET /login request by setting the session up for callback and redirecting to auth URL" time="0.008">
-    </testcase>
-    <testcase classname="Authentication library handles a GET /auth request (callback from oidc provider) correctly by setting tokens on the session and redirecting to previously set URL" name="Authentication library handles a GET /auth request (callback from oidc provider) correctly by setting tokens on the session and redirecting to previously set URL" time="0.001">
-    </testcase>
-    <testcase classname="Authentication library Returns user info from the identity provider" name="Authentication library Returns user info from the identity provider" time="0.001">
-    </testcase>
-    <testcase classname="Authentication library Rejects unauthenticated userInfo requests" name="Authentication library Rejects unauthenticated userInfo requests" time="0.002">
-    </testcase>
-    <testcase classname="Authentication library Rejects requests for non-auth related routes with expired tokens" name="Authentication library Rejects requests for non-auth related routes with expired tokens" time="0.002">
-    </testcase>
-    <testcase classname="Authentication library Rejects requests for non-auth related routes with no tokens" name="Authentication library Rejects requests for non-auth related routes with no tokens" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="CookieStore" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.445" tests="14">
-    <testcase classname="CookieStore connect successfully establishes a connection" name="CookieStore connect successfully establishes a connection" time="0.006">
-    </testcase>
-    <testcase classname="CookieStore connect handles Redis client error" name="CookieStore connect handles Redis client error" time="0.024">
-    </testcase>
-    <testcase classname="CookieStore throws an error if destroy is called without connection" name="CookieStore throws an error if destroy is called without connection" time="0">
-    </testcase>
-    <testcase classname="CookieStore get method retrieves and parses session data successfully" name="CookieStore get method retrieves and parses session data successfully" time="0.001">
-    </testcase>
-    <testcase classname="CookieStore get method throws an error if not connected" name="CookieStore get method throws an error if not connected" time="0">
-    </testcase>
-    <testcase classname="CookieStore get method returns null for non-existent session key" name="CookieStore get method returns null for non-existent session key" time="0.001">
-    </testcase>
-    <testcase classname="CookieStore set method sets session data successfully" name="CookieStore set method sets session data successfully" time="0">
-    </testcase>
-    <testcase classname="CookieStore set method throws an error if not connected" name="CookieStore set method throws an error if not connected" time="0.001">
-    </testcase>
-    <testcase classname="CookieStore set method handles Redis client set error" name="CookieStore set method handles Redis client set error" time="0">
-    </testcase>
-    <testcase classname="CookieStore destroy deletes a stored session" name="CookieStore destroy deletes a stored session" time="0.001">
-    </testcase>
-    <testcase classname="Cookie Store Constructor initializes properties correctly" name="Cookie Store Constructor initializes properties correctly" time="0.001">
-    </testcase>
-    <testcase classname="Cookie Store Connects to redis successfully" name="Cookie Store Connects to redis successfully" time="0">
-    </testcase>
-    <testcase classname="Cookie Store Stores and retrieves a session object" name="Cookie Store Stores and retrieves a session object" time="0">
-    </testcase>
-    <testcase classname="Cookie Store Deletes a stored session object" name="Cookie Store Deletes a stored session object" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Requests Class" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.443" tests="9">
-    <testcase classname="Requests Class GET method should perform a GET request successfully" name="Requests Class GET method should perform a GET request successfully" time="0.018">
-    </testcase>
-    <testcase classname="Requests Class GET method should handle errors gracefully" name="Requests Class GET method should handle errors gracefully" time="0.013">
-    </testcase>
-    <testcase classname="Requests Class GET method should remove undefined query parameters before sending the request" name="Requests Class GET method should remove undefined query parameters before sending the request" time="0.003">
-    </testcase>
-    <testcase classname="Requests Class POST method should perform a POST request successfully" name="Requests Class POST method should perform a POST request successfully" time="0.004">
-    </testcase>
-    <testcase classname="Requests Class POST method should handle POST errors gracefully" name="Requests Class POST method should handle POST errors gracefully" time="0.003">
-    </testcase>
-    <testcase classname="Requests Class PUT method should perform a PUT request successfully" name="Requests Class PUT method should perform a PUT request successfully" time="0.005">
-    </testcase>
-    <testcase classname="Requests Class PUT method should handle PUT errors gracefully" name="Requests Class PUT method should handle PUT errors gracefully" time="0.003">
-    </testcase>
-    <testcase classname="Requests Class DELETE method should perform a DELETE request successfully" name="Requests Class DELETE method should perform a DELETE request successfully" time="0.004">
-    </testcase>
-    <testcase classname="Requests Class DELETE method should handle DELETE errors gracefully" name="Requests Class DELETE method should handle DELETE errors gracefully" time="0.003">
-    </testcase>
-  </testsuite>
-  <testsuite name="MetricsModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.448" tests="6">
-    <testcase classname="MetricsModel should throw an error if metricName is not supplied" name="MetricsModel should throw an error if metricName is not supplied" time="0.017">
-    </testcase>
-    <testcase classname="MetricsModel should set default values for aggregateDurationSeconds, resolutionSeconds, startTimestamp, and endTimestamp" name="MetricsModel should set default values for aggregateDurationSeconds, resolutionSeconds, startTimestamp, and endTimestamp" time="0.001">
-    </testcase>
-    <testcase classname="MetricsModel should form the correct query for metricType HIST_SIZE" name="MetricsModel should form the correct query for metricType HIST_SIZE" time="0.001">
-    </testcase>
-    <testcase classname="MetricsModel should log and return error if Prometheus query fails" name="MetricsModel should log and return error if Prometheus query fails" time="0.001">
-    </testcase>
-    <testcase classname="MetricsModel should return parsed result data if Prometheus query succeeds" name="MetricsModel should return parsed result data if Prometheus query succeeds" time="0.001">
-    </testcase>
-    <testcase classname="MetricsModel should return empty data if Prometheus query returns no results" name="MetricsModel should return empty data if Prometheus query returns no results" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="EndpointsModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.429" tests="14">
-    <testcase classname="EndpointsModel getDFSPEgressEndpoints should call the correct endpoint" name="EndpointsModel getDFSPEgressEndpoints should call the correct endpoint" time="0.006">
-    </testcase>
-    <testcase classname="EndpointsModel uploadDFSPEgressEndpoints should call the correct endpoint with IP type" name="EndpointsModel uploadDFSPEgressEndpoints should call the correct endpoint with IP type" time="0.001">
-    </testcase>
-    <testcase classname="EndpointsModel uploadDFSPEgressEndpoints should call the correct endpoint with URL type" name="EndpointsModel uploadDFSPEgressEndpoints should call the correct endpoint with URL type" time="0">
-    </testcase>
-    <testcase classname="EndpointsModel getDFSPIngressEndpoints should call the correct endpoint" name="EndpointsModel getDFSPIngressEndpoints should call the correct endpoint" time="0">
-    </testcase>
-    <testcase classname="EndpointsModel deleteDFSPEndpoints should call the correct endpoint" name="EndpointsModel deleteDFSPEndpoints should call the correct endpoint" time="0.001">
-    </testcase>
-    <testcase classname="EndpointsModel deleteDFSPIngressEndpointsUrlById should call the correct endpoint" name="EndpointsModel deleteDFSPIngressEndpointsUrlById should call the correct endpoint" time="0.001">
-    </testcase>
-    <testcase classname="EndpointsModel getHubIngressEndpoints should call the correct endpoint" name="EndpointsModel getHubIngressEndpoints should call the correct endpoint" time="0">
-    </testcase>
-    <testcase classname="EndpointsModel getHubEgressEndpoints should call the correct endpoint" name="EndpointsModel getHubEgressEndpoints should call the correct endpoint" time="0.001">
-    </testcase>
-    <testcase classname="EndpointsModel updateDFSPEndpoints should call the correct endpoint with IP type" name="EndpointsModel updateDFSPEndpoints should call the correct endpoint with IP type" time="0.001">
-    </testcase>
-    <testcase classname="EndpointsModel updateDFSPEndpoints should call the correct endpoint with URL type" name="EndpointsModel updateDFSPEndpoints should call the correct endpoint with URL type" time="0.001">
-    </testcase>
-    <testcase classname="EndpointsModel should update endpoint with IP address and ports" name="EndpointsModel should update endpoint with IP address and ports" time="0">
-    </testcase>
-    <testcase classname="EndpointsModel should update endpoint with URL" name="EndpointsModel should update endpoint with URL" time="0.001">
-    </testcase>
-    <testcase classname="EndpointsModel should upload endpoint with IP address and ports" name="EndpointsModel should upload endpoint with IP address and ports" time="0.001">
-    </testcase>
-    <testcase classname="EndpointsModel should upload endpoint with URL" name="EndpointsModel should upload endpoint with URL" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="getPositions" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.102" tests="3">
-    <testcase classname="getPositions should return an array of positions with the correct length" name="getPositions should return an array of positions with the correct length" time="0.011">
-    </testcase>
-    <testcase classname="getPositions should default to 1 hour if hoursPrevious is not provided" name="getPositions should default to 1 hour if hoursPrevious is not provided" time="0.001">
-    </testcase>
-    <testcase classname="getPositions should correctly calculate timestamps for each position" name="getPositions should correctly calculate timestamps for each position" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="MonetaryZoneModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.125" tests="3">
-    <testcase classname="MonetaryZoneModel should instantiate Requests with the correct parameters" name="MonetaryZoneModel should instantiate Requests with the correct parameters" time="0.001">
-    </testcase>
-    <testcase classname="MonetaryZoneModel should call get on Requests with the correct endpoint" name="MonetaryZoneModel should call get on Requests with the correct endpoint" time="0">
-    </testcase>
-    <testcase classname="MonetaryZoneModel should handle errors thrown by the Requests.get method" name="MonetaryZoneModel should handle errors thrown by the Requests.get method" time="0.006">
-    </testcase>
-  </testsuite>
-  <testsuite name="getFlows" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.11" tests="3">
-    <testcase classname="getFlows should return flows with correct structure when hoursPrevious is 1" name="getFlows should return flows with correct structure when hoursPrevious is 1" time="0.001">
-    </testcase>
-    <testcase classname="getFlows should return flows for multiple hours when hoursPrevious is greater than 1" name="getFlows should return flows for multiple hours when hoursPrevious is greater than 1" time="0.001">
-    </testcase>
-    <testcase classname="getFlows should default hoursPrevious to 1 if not provided" name="getFlows should default hoursPrevious to 1 if not provided" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="DFSPModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.118" tests="6">
-    <testcase classname="DFSPModel getDfspStatus should call the correct endpoint" name="DFSPModel getDfspStatus should call the correct endpoint" time="0.001">
-    </testcase>
-    <testcase classname="DFSPModel getDFSPDetails should call the correct endpoint" name="DFSPModel getDFSPDetails should call the correct endpoint" time="0">
-    </testcase>
-    <testcase classname="DFSPModel getAllDfsp should call the correct endpoint with options" name="DFSPModel getAllDfsp should call the correct endpoint with options" time="0.001">
-    </testcase>
-    <testcase classname="DFSPModel getDFSPsByMonetaryZone should call the correct endpoint" name="DFSPModel getDFSPsByMonetaryZone should call the correct endpoint" time="0">
-    </testcase>
-    <testcase classname="DFSPModel getEndpoints should call the correct endpoint with options" name="DFSPModel getEndpoints should call the correct endpoint with options" time="0.001">
-    </testcase>
-    <testcase classname="DFSPModel createEndpoints should call the correct endpoint" name="DFSPModel createEndpoints should call the correct endpoint" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="HubModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.125" tests="3">
-    <testcase classname="HubModel should instantiate Requests with the correct parameters" name="HubModel should instantiate Requests with the correct parameters" time="0.002">
-    </testcase>
-    <testcase classname="HubModel should call get on Requests with the correct parameters" name="HubModel should call get on Requests with the correct parameters" time="0">
-    </testcase>
-    <testcase classname="HubModel should handle errors thrown by the Requests.get method" name="HubModel should handle errors thrown by the Requests.get method" time="0.006">
-    </testcase>
-  </testsuite>
-  <testsuite name="Position" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.109" tests="2">
-    <testcase classname="Position should return mocked positions when mockData is true" name="Position should return mocked positions when mockData is true" time="0.01">
-    </testcase>
-    <testcase classname="Position should throw NotImplementedError when mockData is false" name="Position should throw NotImplementedError when mockData is false" time="0.007">
-    </testcase>
-  </testsuite>
-  <testsuite name="NotImplementedError" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:17" time="0.077" tests="4">
-    <testcase classname="NotImplementedError should create a NotImplementedError with default message" name="NotImplementedError should create a NotImplementedError with default message" time="0.003">
-    </testcase>
-    <testcase classname="NotImplementedError should append a custom message if provided" name="NotImplementedError should append a custom message if provided" time="0.008">
-    </testcase>
-    <testcase classname="NotImplementedError should not have extra spaces in the message" name="NotImplementedError should not have extra spaces in the message" time="0">
-    </testcase>
-    <testcase classname="NotImplementedError should maintain the stack trace format" name="NotImplementedError should maintain the stack trace format" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Batch" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.663" tests="4">
-    <testcase classname="Batch findAll findAll should return mock data when mockData is true" name="Batch findAll findAll should return mock data when mockData is true" time="0.003">
-    </testcase>
-    <testcase classname="Batch findAll findAll should return mock data when mockData is false" name="Batch findAll findAll should return mock data when mockData is false" time="0">
-    </testcase>
-    <testcase classname="Batch findOne findOne should return mock data when mockData is true" name="Batch findOne findOne should return mock data when mockData is true" time="0">
-    </testcase>
-    <testcase classname="Batch findOne findOne should return mock data when mockData is false" name="Batch findOne findOne should return mock data when mockData is false" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="Batch Module" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.663" tests="6">
-    <testcase classname="Batch Module getBatch should return a batch with expected structure" name="Batch Module getBatch should return a batch with expected structure" time="0.006">
-    </testcase>
-    <testcase classname="Batch Module getBatch should decrement OPEN status in state if present" name="Batch Module getBatch should decrement OPEN status in state if present" time="0.001">
-    </testcase>
-    <testcase classname="Batch Module getBatch should use default values if opts are not provided" name="Batch Module getBatch should use default values if opts are not provided" time="0.002">
-    </testcase>
-    <testcase classname="Batch Module getBatches should use the default date range if no options are provided" name="Batch Module getBatches should use the default date range if no options are provided" time="0.002">
-    </testcase>
-    <testcase classname="Batch Module getBatches should generate unique batches with valid structures" name="Batch Module getBatches should generate unique batches with valid structures" time="0.002">
-    </testcase>
-    <testcase classname="Batch Module getBatches should seed faker to ensure reproducible results" name="Batch Module getBatches should seed faker to ensure reproducible results" time="0.002">
-    </testcase>
-  </testsuite>
-  <testsuite name="Fxp Conversion Functions" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.699" tests="13">
-    <testcase classname="Fxp Conversion Functions getFxpConversionsSuccessRate should return an array of success rate objects with the correct structure" name="Fxp Conversion Functions getFxpConversionsSuccessRate should return an array of success rate objects with the correct structure" time="0.004">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions getFxpConversionsAvgResponseTime should return an array of avgResponseTime objects with the correct structure" name="Fxp Conversion Functions getFxpConversionsAvgResponseTime should return an array of avgResponseTime objects with the correct structure" time="0.004">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions getFxpConversionStatusSummary should return an array of status counts" name="Fxp Conversion Functions getFxpConversionStatusSummary should return an array of status counts" time="0.001">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions should return a correctly structured object from getFxpConversion" name="Fxp Conversion Functions should return a correctly structured object from getFxpConversion" time="0">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions should return an array with the correct number of conversions from getFxpConversions" name="Fxp Conversion Functions should return an array with the correct number of conversions from getFxpConversions" time="0.002">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions should return an object with correct structure and values when options are passed" name="Fxp Conversion Functions should return an object with correct structure and values when options are passed" time="0.003">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions should generate random values if options are not passed" name="Fxp Conversion Functions should generate random values if options are not passed" time="0.001">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions getFxpConversion should use startTimestamp if provided" name="Fxp Conversion Functions getFxpConversion should use startTimestamp if provided" time="0">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions getFxpConversion should use endTimestamp if provided" name="Fxp Conversion Functions getFxpConversion should use endTimestamp if provided" time="0.001">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions getFxpConversionsAvgResponseTime should use default value for minutePrevious when not provided" name="Fxp Conversion Functions getFxpConversionsAvgResponseTime should use default value for minutePrevious when not provided" time="0">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions getFxpConversionsAvgResponseTime should use the provided value for minutePrevious" name="Fxp Conversion Functions getFxpConversionsAvgResponseTime should use the provided value for minutePrevious" time="0.001">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions getFxpConversionsSuccessRate should use default value for minutePrevious when not provided" name="Fxp Conversion Functions getFxpConversionsSuccessRate should use default value for minutePrevious when not provided" time="0">
-    </testcase>
-    <testcase classname="Fxp Conversion Functions getFxpConversionsSuccessRate should use the provided value for minutePrevious" name="Fxp Conversion Functions getFxpConversionsSuccessRate should use the provided value for minutePrevious" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Error Module" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.708" tests="3">
-    <testcase classname="Error Module getErrors should return an array of error objects with expected structure" name="Error Module getErrors should return an array of error objects with expected structure" time="0.018">
-    </testcase>
-    <testcase classname="Error Module getErrors should use startTimestamp if provided" name="Error Module getErrors should use startTimestamp if provided" time="0">
-    </testcase>
-    <testcase classname="Error Module getErrors should use endTimestamp if provided" name="Error Module getErrors should use endTimestamp if provided" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="FxpConversion Model" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.701" tests="34">
-    <testcase classname="FxpConversion Model should initialize with provided props" name="FxpConversion Model should initialize with provided props" time="0.004">
-    </testcase>
-    <testcase classname="FxpConversion Model should have correct static STATUSES" name="FxpConversion Model should have correct static STATUSES" time="0.001">
-    </testcase>
-    <testcase classname="FxpConversion Model _joinFxQuotesAndFxTransfers method should join fx_quote and fx_transfer tables and select correct fields" name="FxpConversion Model _joinFxQuotesAndFxTransfers method should join fx_quote and fx_transfer tables and select correct fields" time="0.001">
-    </testcase>
-    <testcase classname="FxpConversion Model _fxpConversionLastErrorToErrorType method should return error description if mojaloopError exists" name="FxpConversion Model _fxpConversionLastErrorToErrorType method should return error description if mojaloopError exists" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model _fxpConversionLastErrorToErrorType method should return HTTP status code if mojaloopError does not exists" name="FxpConversion Model _fxpConversionLastErrorToErrorType method should return HTTP status code if mojaloopError does not exists" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model _parseRawTransferRequestBodies method should parse raw transfer request bodies correctly" name="FxpConversion Model _parseRawTransferRequestBodies method should parse raw transfer request bodies correctly" time="0.001">
-    </testcase>
-    <testcase classname="FxpConversion Model _parseRawTransferRequestBodies method should return unchanged object if no stringified JSON is present" name="FxpConversion Model _parseRawTransferRequestBodies method should return unchanged object if no stringified JSON is present" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model _calculateTotalChargesFromCharges method should calculate total charges correctly" name="FxpConversion Model _calculateTotalChargesFromCharges method should calculate total charges correctly" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model _calculateTotalChargesFromCharges method should return empty charges when charges array is null" name="FxpConversion Model _calculateTotalChargesFromCharges method should return empty charges when charges array is null" time="0.001">
-    </testcase>
-    <testcase classname="FxpConversion Model _getConversionTermsFromFxQuoteResponse method should return conversion terms correctly" name="FxpConversion Model _getConversionTermsFromFxQuoteResponse method should return conversion terms correctly" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model _getConversionTermsFromFxQuoteResponse method should return default values when fxQuoteResponse is undefined" name="FxpConversion Model _getConversionTermsFromFxQuoteResponse method should return default values when fxQuoteResponse is undefined" time="0.001">
-    </testcase>
-    <testcase classname="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return empty response when fxQuoteRequest is undefined" name="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return empty response when fxQuoteRequest is undefined" time="0.001">
-    </testcase>
-    <testcase classname="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return quoteAmount from sourceAmount when sourceAmount has amount" name="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return quoteAmount from sourceAmount when sourceAmount has amount" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return quoteAmount from targetAmount when sourceAmount has no amount" name="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return quoteAmount from targetAmount when sourceAmount has no amount" time="0.001">
-    </testcase>
-    <testcase classname="FxpConversion Model _getConversionState method should return raw.currentState when finalNotification is true" name="FxpConversion Model _getConversionState method should return raw.currentState when finalNotification is true" time="0.006">
-    </testcase>
-    <testcase classname="FxpConversion Model _getConversionState method should return raw.currentState when conversion_state is null" name="FxpConversion Model _getConversionState method should return raw.currentState when conversion_state is null" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model _getConversionState method should return fxpConversion.conversion_state when finalNotification is false and conversion_state is not null" name="FxpConversion Model _getConversionState method should return fxpConversion.conversion_state when finalNotification is false and conversion_state is not null" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model findAll method should return all fxpconversion mock data when mockData is true" name="FxpConversion Model findAll method should return all fxpconversion mock data when mockData is true" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model details method should return fxpconversion details mock data when mockData is true" name="FxpConversion Model details method should return fxpconversion details mock data when mockData is true" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model details method should return null fxpconversion details if no data found in database when mockdata is false" name="FxpConversion Model details method should return null fxpconversion details if no data found in database when mockdata is false" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model details method should return converted API detail format for fxpconversion details if data is found in the database when mockdata is false" name="FxpConversion Model details method should return converted API detail format for fxpconversion details if data is found in the database when mockdata is false" time="0.001">
-    </testcase>
-    <testcase classname="FxpConversion Model successRate method should return fxp conversion success rate mock data when mockData is true" name="FxpConversion Model successRate method should return fxp conversion success rate mock data when mockData is true" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model avgResponseTime method should return fxp conversions average response time mock data when mockData is true" name="FxpConversion Model avgResponseTime method should return fxp conversions average response time mock data when mockData is true" time="0.001">
-    </testcase>
-    <testcase classname="FxpConversion Model avgResponseTime method should handle default minutePrevious value of 10" name="FxpConversion Model avgResponseTime method should handle default minutePrevious value of 10" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model statusSummary method should return mock data when mockData is true" name="FxpConversion Model statusSummary method should return mock data when mockData is true" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model fxpErrors method should return a list of conversion errors when query is successful" name="FxpConversion Model fxpErrors method should return a list of conversion errors when query is successful" time="0.001">
-    </testcase>
-    <testcase classname="FxpConversion Model fxpErrors method should log and re-throw an error if any query fails in fxp errors" name="FxpConversion Model fxpErrors method should log and re-throw an error if any query fails in fxp errors" time="0.026">
-    </testcase>
-    <testcase classname="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for outbound" name="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for outbound" time="0.002">
-    </testcase>
-    <testcase classname="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for inbound" name="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for inbound" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for outbound error" name="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for outbound error" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for inbound error" name="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for inbound error" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model _convertToApiDetailFormat should convert OUTBOUND fxpConversion to API detail format correctly" name="FxpConversion Model _convertToApiDetailFormat should convert OUTBOUND fxpConversion to API detail format correctly" time="0">
-    </testcase>
-    <testcase classname="FxpConversion Model _convertToApiDetailFormat should convert INBOUND fxpConversion to API detail format correctly" name="FxpConversion Model _convertToApiDetailFormat should convert INBOUND fxpConversion to API detail format correctly" time="0.001">
-    </testcase>
-    <testcase classname="FxpConversion Model _convertToApiDetailFormat should throw error when incomplete data" name="FxpConversion Model _convertToApiDetailFormat should throw error when incomplete data" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="Transfer Functions" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.714" tests="14">
-    <testcase classname="Transfer Functions getTransfer should return a transfer object with correct properties" name="Transfer Functions getTransfer should return a transfer object with correct properties" time="0.012">
-    </testcase>
-    <testcase classname="Transfer Functions getTransfers should return an array of transfer objects with correct length" name="Transfer Functions getTransfers should return an array of transfer objects with correct length" time="0.02">
-    </testcase>
-    <testcase classname="Transfer Functions getTransferDetails should return a transfer details object with correct properties" name="Transfer Functions getTransferDetails should return a transfer details object with correct properties" time="0">
-    </testcase>
-    <testcase classname="Transfer Functions getTransfersSuccessRate should return an array of success rate objects with correct structure" name="Transfer Functions getTransfersSuccessRate should return an array of success rate objects with correct structure" time="0.001">
-    </testcase>
-    <testcase classname="Transfer Functions getTransfersAvgResponseTime should return an array of avgResponseTime objects with correct structure" name="Transfer Functions getTransfersAvgResponseTime should return an array of avgResponseTime objects with correct structure" time="0">
-    </testcase>
-    <testcase classname="Transfer Functions getTransferStatusSummary should return an array with status counts" name="Transfer Functions getTransferStatusSummary should return an array with status counts" time="0.001">
-    </testcase>
-    <testcase classname="Transfer Functions getTransfer should use startTimestamp if provided" name="Transfer Functions getTransfer should use startTimestamp if provided" time="0">
-    </testcase>
-    <testcase classname="Transfer Functions getTransfer should use endTimestamp if provided" name="Transfer Functions getTransfer should use endTimestamp if provided" time="0.001">
-    </testcase>
-    <testcase classname="Transfer Functions getTransfersSuccessRate should use minutePrevious option if provided" name="Transfer Functions getTransfersSuccessRate should use minutePrevious option if provided" time="0.001">
-    </testcase>
-    <testcase classname="Transfer Functions getTransfersSuccessRate should use default minutePrevious of 1 if not provided" name="Transfer Functions getTransfersSuccessRate should use default minutePrevious of 1 if not provided" time="0">
-    </testcase>
-    <testcase classname="Transfer Functions getTransfersAvgResponseTime should use minutePrevious option if provided" name="Transfer Functions getTransfersAvgResponseTime should use minutePrevious option if provided" time="0.001">
-    </testcase>
-    <testcase classname="Transfer Functions getTransfersAvgResponseTime should use default minutePrevious of 1 if not provided" name="Transfer Functions getTransfersAvgResponseTime should use default minutePrevious of 1 if not provided" time="0">
-    </testcase>
-    <testcase classname="Transfer Functions getTransferDetails should use provided id if opts.id is provided" name="Transfer Functions getTransferDetails should use provided id if opts.id is provided" time="0">
-    </testcase>
-    <testcase classname="Transfer Functions getTransferDetails should generate a new id if opts.id is not provided" name="Transfer Functions getTransferDetails should generate a new id if opts.id is not provided" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="Common Module" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.367" tests="3">
-    <testcase classname="Common Module currencies array should contain expected currency codes" name="Common Module currencies array should contain expected currency codes" time="0.001">
-    </testcase>
-    <testcase classname="Common Module fakeAmount function should return a string representation of a number with two decimal places" name="Common Module fakeAmount function should return a string representation of a number with two decimal places" time="0">
-    </testcase>
-    <testcase classname="Common Module fakeAmount function should generate an amount within the specified range" name="Common Module fakeAmount function should generate an amount within the specified range" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="Inbound API handlers:" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.755" tests="55">
-    <testcase classname="Inbound API handlers: Endpoints tests should set ctx.body to {&quot;status&quot;:&quot;ok&quot;}" name="Inbound API handlers: Endpoints tests should set ctx.body to {&quot;status&quot;:&quot;ok&quot;}" time="0.002">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Create Egress endpoint calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Create Egress endpoint calls the Endpoints Model with the expected arguments" time="0.001">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Create Ingress endpoint calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Create Ingress endpoint calls the Endpoints Model with the expected arguments" time="0.001">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Update Egress endpoint with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Update Egress endpoint with IP calls the Endpoints Model with the expected arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Update Ingress endpoint with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Update Ingress endpoint with IP calls the Endpoints Model with the expected arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Delete Egress endpoint with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Delete Egress endpoint with IP calls the Endpoints Model with the expected arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Delete Ingress endpoint with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Delete Ingress endpoint with IP calls the Endpoints Model with the expected arguments" time="0.001">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Upload DFSP Ingress Endpoints with URL calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Upload DFSP Ingress Endpoints with URL calls the Endpoints Model with the expected arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Update DFSP Ingress Endpoints Url By Id calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Update DFSP Ingress Endpoints Url By Id calls the Endpoints Model with the expected arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Get DFSP Ingress Endpoints with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get DFSP Ingress Endpoints with IP calls the Endpoints Model with the expected arguments" time="0.001">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Get DFSP Egress Endpoint with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get DFSP Egress Endpoint with IP calls the Endpoints Model with the expected arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Get DFSP Ingress Endpoints With URL calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get DFSP Ingress Endpoints With URL calls the Endpoints Model with the expected arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Delete DFSP Ingress Endpoints Url By Id calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Delete DFSP Ingress Endpoints Url By Id calls the Endpoints Model with the expected arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Get Hub Ingress Endpoints calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get Hub Ingress Endpoints calls the Endpoints Model with the expected arguments" time="0.001">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Get Hub Egress Endpoints calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get Hub Egress Endpoints calls the Endpoints Model with the expected arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Get DFSP Details calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get DFSP Details calls the Endpoints Model with the expected arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Endpoints tests Get All DFSP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get All DFSP calls the Endpoints Model with the expected arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: MonetaryZone tests retrieve all monetaryZones" name="Inbound API handlers: MonetaryZone tests retrieve all monetaryZones" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: MonetaryZone tests retrieve all dfsps from a MonetaryZone" name="Inbound API handlers: MonetaryZone tests retrieve all dfsps from a MonetaryZone" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Metrics retrieves metrics from metrics service" name="Inbound API handlers: Metrics retrieves metrics from metrics service" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: Metrics handles error returned by metrics service" name="Inbound API handlers: Metrics handles error returned by metrics service" time="0.001">
-    </testcase>
-    <testcase classname="Inbound API handlers: getDfspStatus should call DFSPModel.getDfspStatus with correct arguments" name="Inbound API handlers: getDfspStatus should call DFSPModel.getDfspStatus with correct arguments" time="0">
-    </testcase>
-    <testcase classname="Inbound API handlers: getDfspStatus should handle errors correctly" name="Inbound API handlers: getDfspStatus should handle errors correctly" time="0.016">
-    </testcase>
-    <testcase classname="Outbound API handlers: Transfer tests Retrive position hourly" name="Outbound API handlers: Transfer tests Retrive position hourly" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Transfer tests Retrieve transfers including fx" name="Outbound API handlers: Transfer tests Retrieve transfers including fx" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Transfer tests Retrieve one transfer including fx" name="Outbound API handlers: Transfer tests Retrieve one transfer including fx" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Transfer tests Retrieve transfer details" name="Outbound API handlers: Transfer tests Retrieve transfer details" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Transfer tests Retrieve transfer details error" name="Outbound API handlers: Transfer tests Retrieve transfer details error" time="0.001">
-    </testcase>
-    <testcase classname="Outbound API handlers: Transfer tests Retrieve transfer details" name="Outbound API handlers: Transfer tests Retrieve transfer details" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Batch tests Retrieve batches" name="Outbound API handlers: Batch tests Retrieve batches" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Batch tests Retrieve a batch" name="Outbound API handlers: Batch tests Retrieve a batch" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Batch tests Retrieve hourly flow" name="Outbound API handlers: Batch tests Retrieve hourly flow" time="0.001">
-    </testcase>
-    <testcase classname="Outbound API handlers: Batch tests Retrieve success rate" name="Outbound API handlers: Batch tests Retrieve success rate" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Batch tests Retrieve average response time" name="Outbound API handlers: Batch tests Retrieve average response time" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversion Details" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversion Details" time="0.001">
-    </testcase>
-    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions Status Summary" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions Status Summary" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions Error" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions Error" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Get client certificate" name="Outbound API handlers: Certificates tests Get client certificate" time="0.001">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Create Client CSR" name="Outbound API handlers: Certificates tests Create Client CSR" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Get DSFP CA certificate" name="Outbound API handlers: Certificates tests Get DSFP CA certificate" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Create DFSP CA CSR" name="Outbound API handlers: Certificates tests Create DFSP CA CSR" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Update DFSP CA CSR" name="Outbound API handlers: Certificates tests Update DFSP CA CSR" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Get DFSP Server certificates" name="Outbound API handlers: Certificates tests Get DFSP Server certificates" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Generate DFSP Server certificates" name="Outbound API handlers: Certificates tests Generate DFSP Server certificates" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Get All JWS Certificates" name="Outbound API handlers: Certificates tests Get All JWS Certificates" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Get JWS Certificates" name="Outbound API handlers: Certificates tests Get JWS Certificates" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Get JWS Certificates" name="Outbound API handlers: Certificates tests Get JWS Certificates" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Get JWS Certificates" name="Outbound API handlers: Certificates tests Get JWS Certificates" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Get JWS Certificates" name="Outbound API handlers: Certificates tests Get JWS Certificates" time="0.001">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Get Hub Server Certs" name="Outbound API handlers: Certificates tests Get Hub Server Certs" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Get Hub CA Certs" name="Outbound API handlers: Certificates tests Get Hub CA Certs" time="0">
-    </testcase>
-    <testcase classname="Outbound API handlers: Certificates tests Generate All Certificates" name="Outbound API handlers: Certificates tests Generate All Certificates" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="Transfer" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:09:16" time="0.79" tests="120">
-    <testcase classname="Transfer should initialize with provided props" name="Transfer should initialize with provided props" time="0.003">
+<testsuites name="jest tests" tests="376" failures="0" errors="0" time="3.003">
+  <testsuite name="Transfer" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:14" time="0.428" tests="143">
+    <testcase classname="Transfer should initialize with provided props" name="Transfer should initialize with provided props" time="0.001">
     </testcase>
     <testcase classname="Transfer should have correct static STATUSES" name="Transfer should have correct static STATUSES" time="0.001">
     </testcase>
-    <testcase classname="Transfer should log error message when database query fails" name="Transfer should log error message when database query fails" time="0.093">
+    <testcase classname="Transfer should log error message when database query fails" name="Transfer should log error message when database query fails" time="0.079">
     </testcase>
     <testcase classname="Transfer should handle empty values in data transformations" name="Transfer should handle empty values in data transformations" time="0.001">
     </testcase>
-    <testcase classname="Transfer should handle custom complex name formats" name="Transfer should handle custom complex name formats" time="0">
+    <testcase classname="Transfer should handle custom complex name formats" name="Transfer should handle custom complex name formats" time="0.001">
     </testcase>
     <testcase classname="Transfer should handle edge cases in transfer party conversion" name="Transfer should handle edge cases in transfer party conversion" time="0">
     </testcase>
-    <testcase classname="Transfer should handle edge cases in exchange rate calculation" name="Transfer should handle edge cases in exchange rate calculation" time="0.001">
+    <testcase classname="Transfer should handle edge cases in exchange rate calculation" name="Transfer should handle edge cases in exchange rate calculation" time="0">
     </testcase>
     <testcase classname="Transfer should parse various raw transfer request bodies" name="Transfer should parse various raw transfer request bodies" time="0.001">
     </testcase>
     <testcase classname="Transfer should calculate hourly flows correctly" name="Transfer should calculate hourly flows correctly" time="0">
     </testcase>
-    <testcase classname="Transfer should apply join correctly" name="Transfer should apply join correctly" time="0">
+    <testcase classname="Transfer should apply join correctly" name="Transfer should apply join correctly" time="0.001">
     </testcase>
     <testcase classname="Transfer should convert transfer to API format correctly" name="Transfer should convert transfer to API format correctly" time="0">
     </testcase>
-    <testcase classname="Transfer should convert last error to error type correctly" name="Transfer should convert last error to error type correctly" time="0.001">
+    <testcase classname="Transfer should convert last error to error type correctly" name="Transfer should convert last error to error type correctly" time="0">
     </testcase>
-    <testcase classname="Transfer should parse raw transfer request bodies correctly" name="Transfer should parse raw transfer request bodies correctly" time="0">
+    <testcase classname="Transfer should parse raw transfer request bodies correctly" name="Transfer should parse raw transfer request bodies correctly" time="0.001">
     </testcase>
     <testcase classname="Transfer should get conversion terms from fx quote response correctly" name="Transfer should get conversion terms from fx quote response correctly" time="0">
     </testcase>
-    <testcase classname="Transfer Data Transformation and Formatting should apply joins correctly" name="Transfer Data Transformation and Formatting should apply joins correctly" time="0.001">
+    <testcase classname="Transfer Data Transformation and Formatting should apply joins correctly" name="Transfer Data Transformation and Formatting should apply joins correctly" time="0">
     </testcase>
-    <testcase classname="Transfer Data Transformation and Formatting should format transfer object correctly for API response" name="Transfer Data Transformation and Formatting should format transfer object correctly for API response" time="0">
+    <testcase classname="Transfer Data Transformation and Formatting should format transfer object correctly for API response" name="Transfer Data Transformation and Formatting should format transfer object correctly for API response" time="0.001">
     </testcase>
     <testcase classname="Transfer Data Transformation and Formatting should parse raw transfer request bodies correctly" name="Transfer Data Transformation and Formatting should parse raw transfer request bodies correctly" time="0">
     </testcase>
@@ -553,13 +43,13 @@
     </testcase>
     <testcase classname="Transfer Data Transformation and Formatting should return mock data when mockData is true" name="Transfer Data Transformation and Formatting should return mock data when mockData is true" time="0">
     </testcase>
-    <testcase classname="Transfer Data Transformation and Formatting should return null transfer details if no data found in database when mockdata is false" name="Transfer Data Transformation and Formatting should return null transfer details if no data found in database when mockdata is false" time="0">
+    <testcase classname="Transfer Data Transformation and Formatting should return null transfer details if no data found in database when mockdata is false" name="Transfer Data Transformation and Formatting should return null transfer details if no data found in database when mockdata is false" time="0.001">
     </testcase>
-    <testcase classname="Transfer Data Transformation and Formatting should return converted API detail format for transfer details if data is found in the database when mockData is false" name="Transfer Data Transformation and Formatting should return converted API detail format for transfer details if data is found in the database when mockData is false" time="0.001">
+    <testcase classname="Transfer Data Transformation and Formatting should return converted API detail format for transfer details if data is found in the database when mockData is false" name="Transfer Data Transformation and Formatting should return converted API detail format for transfer details if data is found in the database when mockData is false" time="0">
     </testcase>
     <testcase classname="Transfer Calculations should calculate exchange rate correctly" name="Transfer Calculations should calculate exchange rate correctly" time="0">
     </testcase>
-    <testcase classname="Transfer Calculations should calculate total charges correctly" name="Transfer Calculations should calculate total charges correctly" time="0">
+    <testcase classname="Transfer Calculations should calculate total charges correctly" name="Transfer Calculations should calculate total charges correctly" time="0.001">
     </testcase>
     <testcase classname="Transfer Calculations should handle non-matching and invalid currencies, and null values in charge calculations" name="Transfer Calculations should handle non-matching and invalid currencies, and null values in charge calculations" time="0">
     </testcase>
@@ -577,11 +67,11 @@
     </testcase>
     <testcase classname="Transfer Party Information Handling should handle missing or undefined party in quote request" name="Transfer Party Information Handling should handle missing or undefined party in quote request" time="0">
     </testcase>
-    <testcase classname="Transfer Party Information Handling should get party from quote request correctly" name="Transfer Party Information Handling should get party from quote request correctly" time="0.001">
+    <testcase classname="Transfer Party Information Handling should get party from quote request correctly" name="Transfer Party Information Handling should get party from quote request correctly" time="0">
     </testcase>
     <testcase classname="Transfer Party Information Handling should convert complex name to display name correctly" name="Transfer Party Information Handling should convert complex name to display name correctly" time="0">
     </testcase>
-    <testcase classname="Transfer Party Information Handling should convert party to transfer party correctly" name="Transfer Party Information Handling should convert party to transfer party correctly" time="0">
+    <testcase classname="Transfer Party Information Handling should convert party to transfer party correctly" name="Transfer Party Information Handling should convert party to transfer party correctly" time="0.001">
     </testcase>
     <testcase classname="Transfer Party Information Handling should handle undefined fxQuoteResponse in getConversionTerms" name="Transfer Party Information Handling should handle undefined fxQuoteResponse in getConversionTerms" time="0">
     </testcase>
@@ -591,7 +81,7 @@
     </testcase>
     <testcase classname="Transfer Complex Name Handling should format complex names to display names" name="Transfer Complex Name Handling should format complex names to display names" time="0">
     </testcase>
-    <testcase classname="Transfer Complex Name Handling should format complex names to display names" name="Transfer Complex Name Handling should format complex names to display names" time="0.001">
+    <testcase classname="Transfer Complex Name Handling should format complex names to display names" name="Transfer Complex Name Handling should format complex names to display names" time="0">
     </testcase>
     <testcase classname="Transfer Complex Name Handling should handle partial complex name" name="Transfer Complex Name Handling should handle partial complex name" time="0">
     </testcase>
@@ -599,18 +89,10 @@
     </testcase>
     <testcase classname="Transfer Error Handling should determine error type from transfer last error" name="Transfer Error Handling should determine error type from transfer last error" time="0">
     </testcase>
-    <testcase classname="Transfer Error Handling should determine error type from transfer last error" name="Transfer Error Handling should determine error type from transfer last error" time="0">
+    <testcase classname="Transfer Error Handling should determine error type from transfer last error" name="Transfer Error Handling should determine error type from transfer last error" time="0.001">
     </testcase>
     <testcase classname="Transfer Error Handling should handle null error object in last error gracefully" name="Transfer Error Handling should handle null error object in last error gracefully" time="0">
     </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0.001">
-    </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
-    </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
-    </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
-    </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
     </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
@@ -623,8 +105,6 @@
     </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
     </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0.002">
-    </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
     </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
@@ -636,6 +116,28 @@
     <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
     </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
+    </testcase>
+    <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
+    </testcase>
+    <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
+    </testcase>
+    <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
+    </testcase>
+    <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
+    </testcase>
+    <testcase classname="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAll should handle various query parameters" time="0">
+    </testcase>
+    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
+    </testcase>
+    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
+    </testcase>
+    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
+    </testcase>
+    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0.001">
+    </testcase>
+    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
+    </testcase>
+    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
     </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
     </testcase>
@@ -655,19 +157,7 @@
     </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
     </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0.001">
-    </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
-    </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
-    </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
-    </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
-    </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
-    </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0.001">
     </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" name="Transfer findAll and findAllWithFX Methods findAllWithFX should handle various query parameters" time="0">
     </testcase>
@@ -683,21 +173,21 @@
     </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods should parse raw transfer request bodies with invalid JSON" name="Transfer findAll and findAllWithFX Methods should parse raw transfer request bodies with invalid JSON" time="0">
     </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods should handle division by zero in exchange rate calculation" name="Transfer findAll and findAllWithFX Methods should handle division by zero in exchange rate calculation" time="0">
+    <testcase classname="Transfer findAll and findAllWithFX Methods should handle division by zero in exchange rate calculation" name="Transfer findAll and findAllWithFX Methods should handle division by zero in exchange rate calculation" time="0.001">
     </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods should handle undefined values in charges calculation" name="Transfer findAll and findAllWithFX Methods should handle undefined values in charges calculation" time="0">
     </testcase>
     <testcase classname="Transfer findAll and findAllWithFX Methods should validate required fields in conversion terms" name="Transfer findAll and findAllWithFX Methods should validate required fields in conversion terms" time="0">
     </testcase>
-    <testcase classname="Transfer findAll and findAllWithFX Methods should handle null charges in _calculateTotalChargesFromCharges" name="Transfer findAll and findAllWithFX Methods should handle null charges in _calculateTotalChargesFromCharges" time="0.001">
+    <testcase classname="Transfer findAll and findAllWithFX Methods should handle null charges in _calculateTotalChargesFromCharges" name="Transfer findAll and findAllWithFX Methods should handle null charges in _calculateTotalChargesFromCharges" time="0">
     </testcase>
     <testcase classname="Transfer transfer findOne method should return mock data when mockData is true" name="Transfer transfer findOne method should return mock data when mockData is true" time="0">
     </testcase>
-    <testcase classname="Transfer transfer findOne method should return database data when mockData is false" name="Transfer transfer findOne method should return database data when mockData is false" time="0">
+    <testcase classname="Transfer transfer findOne method should return database data when mockData is false" name="Transfer transfer findOne method should return database data when mockData is false" time="0.001">
     </testcase>
     <testcase classname="Transfer details Method should return transfer details by id" name="Transfer details Method should return transfer details by id" time="0">
     </testcase>
-    <testcase classname="Transfer details Method should return null or empty array for non-existent id" name="Transfer details Method should return null or empty array for non-existent id" time="0.001">
+    <testcase classname="Transfer details Method should return null or empty array for non-existent id" name="Transfer details Method should return null or empty array for non-existent id" time="0">
     </testcase>
     <testcase classname="Transfer details Method should handle empty response" name="Transfer details Method should handle empty response" time="0">
     </testcase>
@@ -709,15 +199,15 @@
     </testcase>
     <testcase classname="Transfer Metrics Methods should return hourly flow for transfers" name="Transfer Metrics Methods should return hourly flow for transfers" time="0">
     </testcase>
-    <testcase classname="Transfer Metrics Methods should handle empty response for metrics methods" name="Transfer Metrics Methods should handle empty response for metrics methods" time="0.001">
+    <testcase classname="Transfer Metrics Methods should handle empty response for metrics methods" name="Transfer Metrics Methods should handle empty response for metrics methods" time="0">
     </testcase>
     <testcase classname="Transfer Transfer Model Edge Cases and Additional Scenarios should initialize with provided props" name="Transfer Transfer Model Edge Cases and Additional Scenarios should initialize with provided props" time="0">
     </testcase>
     <testcase classname="Transfer Transfer Model Edge Cases and Additional Scenarios should have correct static STATUSES" name="Transfer Transfer Model Edge Cases and Additional Scenarios should have correct static STATUSES" time="0">
     </testcase>
-    <testcase classname="Transfer Transfer Model Edge Cases and Additional Scenarios should log error message when database query fails" name="Transfer Transfer Model Edge Cases and Additional Scenarios should log error message when database query fails" time="0">
+    <testcase classname="Transfer Transfer Model Edge Cases and Additional Scenarios should log error message when database query fails" name="Transfer Transfer Model Edge Cases and Additional Scenarios should log error message when database query fails" time="0.001">
     </testcase>
-    <testcase classname="Transfer Transfer Model Edge Cases and Additional Scenarios should handle empty values in data transformations" name="Transfer Transfer Model Edge Cases and Additional Scenarios should handle empty values in data transformations" time="0.001">
+    <testcase classname="Transfer Transfer Model Edge Cases and Additional Scenarios should handle empty values in data transformations" name="Transfer Transfer Model Edge Cases and Additional Scenarios should handle empty values in data transformations" time="0">
     </testcase>
     <testcase classname="Transfer Transfer Model Edge Cases and Additional Scenarios should convert party info to transfer party format" name="Transfer Transfer Model Edge Cases and Additional Scenarios should convert party info to transfer party format" time="0">
     </testcase>
@@ -737,7 +227,7 @@
     </testcase>
     <testcase classname="Transfer Hourly Flow Tests should return mock data when mockData is true" name="Transfer Hourly Flow Tests should return mock data when mockData is true" time="0">
     </testcase>
-    <testcase classname="Transfer _getConversionTermsFromFxQuoteResponse should extract conversion terms from FX quote response" name="Transfer _getConversionTermsFromFxQuoteResponse should extract conversion terms from FX quote response" time="0">
+    <testcase classname="Transfer _getConversionTermsFromFxQuoteResponse should extract conversion terms from FX quote response" name="Transfer _getConversionTermsFromFxQuoteResponse should extract conversion terms from FX quote response" time="0.001">
     </testcase>
     <testcase classname="Transfer _getConversionTermsFromFxQuoteResponse should handle undefined FX quote response" name="Transfer _getConversionTermsFromFxQuoteResponse should handle undefined FX quote response" time="0">
     </testcase>
@@ -750,6 +240,562 @@
     <testcase classname="Transfer should handle error status summary with mock data" name="Transfer should handle error status summary with mock data" time="0">
     </testcase>
     <testcase classname="Transfer should handle status summary with mock data" name="Transfer should handle status summary with mock data" time="0">
+    </testcase>
+    <testcase classname="Transfer Async Metrics Methods successRate should return correct success rate from database" name="Transfer Async Metrics Methods successRate should return correct success rate from database" time="0">
+    </testcase>
+    <testcase classname="Transfer Async Metrics Methods successRate should return mock data when mockData is true" name="Transfer Async Metrics Methods successRate should return mock data when mockData is true" time="0.001">
+    </testcase>
+    <testcase classname="Transfer Async Metrics Methods avgResponseTime should return correct average response time from database" name="Transfer Async Metrics Methods avgResponseTime should return correct average response time from database" time="0">
+    </testcase>
+    <testcase classname="Transfer Async Metrics Methods avgResponseTime should return mock data when mockData is true" name="Transfer Async Metrics Methods avgResponseTime should return mock data when mockData is true" time="0">
+    </testcase>
+    <testcase classname="Transfer Async Metrics Methods statusSummary should return correct status summary from database" name="Transfer Async Metrics Methods statusSummary should return correct status summary from database" time="0">
+    </testcase>
+    <testcase classname="Transfer Async Metrics Methods statusSummary should return mock data when mockData is true" name="Transfer Async Metrics Methods statusSummary should return mock data when mockData is true" time="0.001">
+    </testcase>
+    <testcase classname="Transfer Async Metrics Methods hourlyFlow should return correct hourly flow from database" name="Transfer Async Metrics Methods hourlyFlow should return correct hourly flow from database" time="0">
+    </testcase>
+    <testcase classname="Transfer Async Metrics Methods hourlyFlow should return mock data when mockData is true" name="Transfer Async Metrics Methods hourlyFlow should return mock data when mockData is true" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should return null if sourceAmount is falsy" name="Transfer _calculateExchangeRate edge cases should return null if sourceAmount is falsy" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should return null if targetAmount is falsy" name="Transfer _calculateExchangeRate edge cases should return null if targetAmount is falsy" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should return null if denominator is zero (division by zero)" name="Transfer _calculateExchangeRate edge cases should return null if denominator is zero (division by zero)" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle NaN charges and treat them as zero" name="Transfer _calculateExchangeRate edge cases should handle NaN charges and treat them as zero" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle string numbers for charges" name="Transfer _calculateExchangeRate edge cases should handle string numbers for charges" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle when result is NaN due to invalid input" name="Transfer _calculateExchangeRate edge cases should handle when result is NaN due to invalid input" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle when charges are null" name="Transfer _calculateExchangeRate edge cases should handle when charges are null" time="0.001">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle when charges are undefined" name="Transfer _calculateExchangeRate edge cases should handle when charges are undefined" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle when charges are empty string" name="Transfer _calculateExchangeRate edge cases should handle when charges are empty string" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle when charges are non-numeric strings" name="Transfer _calculateExchangeRate edge cases should handle when charges are non-numeric strings" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle when all inputs are NaN" name="Transfer _calculateExchangeRate edge cases should handle when all inputs are NaN" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle when only charges are NaN" name="Transfer _calculateExchangeRate edge cases should handle when only charges are NaN" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle when only one charge is NaN" name="Transfer _calculateExchangeRate edge cases should handle when only one charge is NaN" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle when charges are objects" name="Transfer _calculateExchangeRate edge cases should handle when charges are objects" time="0">
+    </testcase>
+    <testcase classname="Transfer _calculateExchangeRate edge cases should handle when charges are arrays" name="Transfer _calculateExchangeRate edge cases should handle when charges are arrays" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Inbound API handlers:" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:15" time="0.167" tests="55">
+    <testcase classname="Inbound API handlers: Endpoints tests should set ctx.body to {&quot;status&quot;:&quot;ok&quot;}" name="Inbound API handlers: Endpoints tests should set ctx.body to {&quot;status&quot;:&quot;ok&quot;}" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Create Egress endpoint calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Create Egress endpoint calls the Endpoints Model with the expected arguments" time="0.001">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Create Ingress endpoint calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Create Ingress endpoint calls the Endpoints Model with the expected arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Update Egress endpoint with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Update Egress endpoint with IP calls the Endpoints Model with the expected arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Update Ingress endpoint with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Update Ingress endpoint with IP calls the Endpoints Model with the expected arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Delete Egress endpoint with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Delete Egress endpoint with IP calls the Endpoints Model with the expected arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Delete Ingress endpoint with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Delete Ingress endpoint with IP calls the Endpoints Model with the expected arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Upload DFSP Ingress Endpoints with URL calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Upload DFSP Ingress Endpoints with URL calls the Endpoints Model with the expected arguments" time="0.001">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Update DFSP Ingress Endpoints Url By Id calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Update DFSP Ingress Endpoints Url By Id calls the Endpoints Model with the expected arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Get DFSP Ingress Endpoints with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get DFSP Ingress Endpoints with IP calls the Endpoints Model with the expected arguments" time="0.002">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Get DFSP Egress Endpoint with IP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get DFSP Egress Endpoint with IP calls the Endpoints Model with the expected arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Get DFSP Ingress Endpoints With URL calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get DFSP Ingress Endpoints With URL calls the Endpoints Model with the expected arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Delete DFSP Ingress Endpoints Url By Id calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Delete DFSP Ingress Endpoints Url By Id calls the Endpoints Model with the expected arguments" time="0.001">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Get Hub Ingress Endpoints calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get Hub Ingress Endpoints calls the Endpoints Model with the expected arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Get Hub Egress Endpoints calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get Hub Egress Endpoints calls the Endpoints Model with the expected arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Get DFSP Details calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get DFSP Details calls the Endpoints Model with the expected arguments" time="0.001">
+    </testcase>
+    <testcase classname="Inbound API handlers: Endpoints tests Get All DFSP calls the Endpoints Model with the expected arguments" name="Inbound API handlers: Endpoints tests Get All DFSP calls the Endpoints Model with the expected arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: MonetaryZone tests retrieve all monetaryZones" name="Inbound API handlers: MonetaryZone tests retrieve all monetaryZones" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: MonetaryZone tests retrieve all dfsps from a MonetaryZone" name="Inbound API handlers: MonetaryZone tests retrieve all dfsps from a MonetaryZone" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: Metrics retrieves metrics from metrics service" name="Inbound API handlers: Metrics retrieves metrics from metrics service" time="0.001">
+    </testcase>
+    <testcase classname="Inbound API handlers: Metrics handles error returned by metrics service" name="Inbound API handlers: Metrics handles error returned by metrics service" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: getDfspStatus should call DFSPModel.getDfspStatus with correct arguments" name="Inbound API handlers: getDfspStatus should call DFSPModel.getDfspStatus with correct arguments" time="0">
+    </testcase>
+    <testcase classname="Inbound API handlers: getDfspStatus should handle errors correctly" name="Inbound API handlers: getDfspStatus should handle errors correctly" time="0.012">
+    </testcase>
+    <testcase classname="Outbound API handlers: Transfer tests Retrive position hourly" name="Outbound API handlers: Transfer tests Retrive position hourly" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Transfer tests Retrieve transfers including fx" name="Outbound API handlers: Transfer tests Retrieve transfers including fx" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Transfer tests Retrieve one transfer including fx" name="Outbound API handlers: Transfer tests Retrieve one transfer including fx" time="0.001">
+    </testcase>
+    <testcase classname="Outbound API handlers: Transfer tests Retrieve transfer details" name="Outbound API handlers: Transfer tests Retrieve transfer details" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Transfer tests Retrieve transfer details error" name="Outbound API handlers: Transfer tests Retrieve transfer details error" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Transfer tests Retrieve transfer details" name="Outbound API handlers: Transfer tests Retrieve transfer details" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Batch tests Retrieve batches" name="Outbound API handlers: Batch tests Retrieve batches" time="0.001">
+    </testcase>
+    <testcase classname="Outbound API handlers: Batch tests Retrieve a batch" name="Outbound API handlers: Batch tests Retrieve a batch" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Batch tests Retrieve hourly flow" name="Outbound API handlers: Batch tests Retrieve hourly flow" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Batch tests Retrieve success rate" name="Outbound API handlers: Batch tests Retrieve success rate" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Batch tests Retrieve average response time" name="Outbound API handlers: Batch tests Retrieve average response time" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversion Details" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversion Details" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions Status Summary" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions Status Summary" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions Error" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions Error" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" time="0.001">
+    </testcase>
+    <testcase classname="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" name="Outbound API handlers: Fxp Conversions tests Get Fxp Conversions" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Get client certificate" name="Outbound API handlers: Certificates tests Get client certificate" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Create Client CSR" name="Outbound API handlers: Certificates tests Create Client CSR" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Get DSFP CA certificate" name="Outbound API handlers: Certificates tests Get DSFP CA certificate" time="0.001">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Create DFSP CA CSR" name="Outbound API handlers: Certificates tests Create DFSP CA CSR" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Update DFSP CA CSR" name="Outbound API handlers: Certificates tests Update DFSP CA CSR" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Get DFSP Server certificates" name="Outbound API handlers: Certificates tests Get DFSP Server certificates" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Generate DFSP Server certificates" name="Outbound API handlers: Certificates tests Generate DFSP Server certificates" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Get All JWS Certificates" name="Outbound API handlers: Certificates tests Get All JWS Certificates" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Get JWS Certificates" name="Outbound API handlers: Certificates tests Get JWS Certificates" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Get JWS Certificates" name="Outbound API handlers: Certificates tests Get JWS Certificates" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Get JWS Certificates" name="Outbound API handlers: Certificates tests Get JWS Certificates" time="0.001">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Get JWS Certificates" name="Outbound API handlers: Certificates tests Get JWS Certificates" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Get Hub Server Certs" name="Outbound API handlers: Certificates tests Get Hub Server Certs" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Get Hub CA Certs" name="Outbound API handlers: Certificates tests Get Hub CA Certs" time="0">
+    </testcase>
+    <testcase classname="Outbound API handlers: Certificates tests Generate All Certificates" name="Outbound API handlers: Certificates tests Generate All Certificates" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Transfer Functions" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:15" time="0.134" tests="14">
+    <testcase classname="Transfer Functions getTransfer should return a transfer object with correct properties" name="Transfer Functions getTransfer should return a transfer object with correct properties" time="0">
+    </testcase>
+    <testcase classname="Transfer Functions getTransfers should return an array of transfer objects with correct length" name="Transfer Functions getTransfers should return an array of transfer objects with correct length" time="0.007">
+    </testcase>
+    <testcase classname="Transfer Functions getTransferDetails should return a transfer details object with correct properties" name="Transfer Functions getTransferDetails should return a transfer details object with correct properties" time="0.001">
+    </testcase>
+    <testcase classname="Transfer Functions getTransfersSuccessRate should return an array of success rate objects with correct structure" name="Transfer Functions getTransfersSuccessRate should return an array of success rate objects with correct structure" time="0">
+    </testcase>
+    <testcase classname="Transfer Functions getTransfersAvgResponseTime should return an array of avgResponseTime objects with correct structure" name="Transfer Functions getTransfersAvgResponseTime should return an array of avgResponseTime objects with correct structure" time="0.001">
+    </testcase>
+    <testcase classname="Transfer Functions getTransferStatusSummary should return an array with status counts" name="Transfer Functions getTransferStatusSummary should return an array with status counts" time="0">
+    </testcase>
+    <testcase classname="Transfer Functions getTransfer should use startTimestamp if provided" name="Transfer Functions getTransfer should use startTimestamp if provided" time="0">
+    </testcase>
+    <testcase classname="Transfer Functions getTransfer should use endTimestamp if provided" name="Transfer Functions getTransfer should use endTimestamp if provided" time="0">
+    </testcase>
+    <testcase classname="Transfer Functions getTransfersSuccessRate should use minutePrevious option if provided" name="Transfer Functions getTransfersSuccessRate should use minutePrevious option if provided" time="0">
+    </testcase>
+    <testcase classname="Transfer Functions getTransfersSuccessRate should use default minutePrevious of 1 if not provided" name="Transfer Functions getTransfersSuccessRate should use default minutePrevious of 1 if not provided" time="0.001">
+    </testcase>
+    <testcase classname="Transfer Functions getTransfersAvgResponseTime should use minutePrevious option if provided" name="Transfer Functions getTransfersAvgResponseTime should use minutePrevious option if provided" time="0">
+    </testcase>
+    <testcase classname="Transfer Functions getTransfersAvgResponseTime should use default minutePrevious of 1 if not provided" name="Transfer Functions getTransfersAvgResponseTime should use default minutePrevious of 1 if not provided" time="0">
+    </testcase>
+    <testcase classname="Transfer Functions getTransferDetails should use provided id if opts.id is provided" name="Transfer Functions getTransferDetails should use provided id if opts.id is provided" time="0">
+    </testcase>
+    <testcase classname="Transfer Functions getTransferDetails should generate a new id if opts.id is not provided" name="Transfer Functions getTransferDetails should generate a new id if opts.id is not provided" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="FxpConversion Model" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:15" time="0.137" tests="34">
+    <testcase classname="FxpConversion Model should initialize with provided props" name="FxpConversion Model should initialize with provided props" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model should have correct static STATUSES" name="FxpConversion Model should have correct static STATUSES" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _joinFxQuotesAndFxTransfers method should join fx_quote and fx_transfer tables and select correct fields" name="FxpConversion Model _joinFxQuotesAndFxTransfers method should join fx_quote and fx_transfer tables and select correct fields" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _fxpConversionLastErrorToErrorType method should return error description if mojaloopError exists" name="FxpConversion Model _fxpConversionLastErrorToErrorType method should return error description if mojaloopError exists" time="0.003">
+    </testcase>
+    <testcase classname="FxpConversion Model _fxpConversionLastErrorToErrorType method should return HTTP status code if mojaloopError does not exists" name="FxpConversion Model _fxpConversionLastErrorToErrorType method should return HTTP status code if mojaloopError does not exists" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _parseRawTransferRequestBodies method should parse raw transfer request bodies correctly" name="FxpConversion Model _parseRawTransferRequestBodies method should parse raw transfer request bodies correctly" time="0.001">
+    </testcase>
+    <testcase classname="FxpConversion Model _parseRawTransferRequestBodies method should return unchanged object if no stringified JSON is present" name="FxpConversion Model _parseRawTransferRequestBodies method should return unchanged object if no stringified JSON is present" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _calculateTotalChargesFromCharges method should calculate total charges correctly" name="FxpConversion Model _calculateTotalChargesFromCharges method should calculate total charges correctly" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _calculateTotalChargesFromCharges method should return empty charges when charges array is null" name="FxpConversion Model _calculateTotalChargesFromCharges method should return empty charges when charges array is null" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _getConversionTermsFromFxQuoteResponse method should return conversion terms correctly" name="FxpConversion Model _getConversionTermsFromFxQuoteResponse method should return conversion terms correctly" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _getConversionTermsFromFxQuoteResponse method should return default values when fxQuoteResponse is undefined" name="FxpConversion Model _getConversionTermsFromFxQuoteResponse method should return default values when fxQuoteResponse is undefined" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return empty response when fxQuoteRequest is undefined" name="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return empty response when fxQuoteRequest is undefined" time="0.001">
+    </testcase>
+    <testcase classname="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return quoteAmount from sourceAmount when sourceAmount has amount" name="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return quoteAmount from sourceAmount when sourceAmount has amount" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return quoteAmount from targetAmount when sourceAmount has no amount" name="FxpConversion Model _getQuoteAmountFromFxQuoteRequest method should return quoteAmount from targetAmount when sourceAmount has no amount" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _getConversionState method should return raw.currentState when finalNotification is true" name="FxpConversion Model _getConversionState method should return raw.currentState when finalNotification is true" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _getConversionState method should return raw.currentState when conversion_state is null" name="FxpConversion Model _getConversionState method should return raw.currentState when conversion_state is null" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _getConversionState method should return fxpConversion.conversion_state when finalNotification is false and conversion_state is not null" name="FxpConversion Model _getConversionState method should return fxpConversion.conversion_state when finalNotification is false and conversion_state is not null" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model findAll method should return all fxpconversion mock data when mockData is true" name="FxpConversion Model findAll method should return all fxpconversion mock data when mockData is true" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model details method should return fxpconversion details mock data when mockData is true" name="FxpConversion Model details method should return fxpconversion details mock data when mockData is true" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model details method should return null fxpconversion details if no data found in database when mockdata is false" name="FxpConversion Model details method should return null fxpconversion details if no data found in database when mockdata is false" time="0.001">
+    </testcase>
+    <testcase classname="FxpConversion Model details method should return converted API detail format for fxpconversion details if data is found in the database when mockdata is false" name="FxpConversion Model details method should return converted API detail format for fxpconversion details if data is found in the database when mockdata is false" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model successRate method should return fxp conversion success rate mock data when mockData is true" name="FxpConversion Model successRate method should return fxp conversion success rate mock data when mockData is true" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model avgResponseTime method should return fxp conversions average response time mock data when mockData is true" name="FxpConversion Model avgResponseTime method should return fxp conversions average response time mock data when mockData is true" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model avgResponseTime method should handle default minutePrevious value of 10" name="FxpConversion Model avgResponseTime method should handle default minutePrevious value of 10" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model statusSummary method should return mock data when mockData is true" name="FxpConversion Model statusSummary method should return mock data when mockData is true" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model fxpErrors method should return a list of conversion errors when query is successful" name="FxpConversion Model fxpErrors method should return a list of conversion errors when query is successful" time="0.001">
+    </testcase>
+    <testcase classname="FxpConversion Model fxpErrors method should log and re-throw an error if any query fails in fxp errors" name="FxpConversion Model fxpErrors method should log and re-throw an error if any query fails in fxp errors" time="0.012">
+    </testcase>
+    <testcase classname="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for outbound" name="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for outbound" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for inbound" name="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for inbound" time="0.001">
+    </testcase>
+    <testcase classname="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for outbound error" name="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for outbound error" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for inbound error" name="FxpConversion Model _convertToApiFormat should convert fxp conversion to API format correctly for inbound error" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _convertToApiDetailFormat should convert OUTBOUND fxpConversion to API detail format correctly" name="FxpConversion Model _convertToApiDetailFormat should convert OUTBOUND fxpConversion to API detail format correctly" time="0.001">
+    </testcase>
+    <testcase classname="FxpConversion Model _convertToApiDetailFormat should convert INBOUND fxpConversion to API detail format correctly" name="FxpConversion Model _convertToApiDetailFormat should convert INBOUND fxpConversion to API detail format correctly" time="0">
+    </testcase>
+    <testcase classname="FxpConversion Model _convertToApiDetailFormat should throw error when incomplete data" name="FxpConversion Model _convertToApiDetailFormat should throw error when incomplete data" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Fxp Conversion Functions" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:15" time="0.135" tests="13">
+    <testcase classname="Fxp Conversion Functions getFxpConversionsSuccessRate should return an array of success rate objects with the correct structure" name="Fxp Conversion Functions getFxpConversionsSuccessRate should return an array of success rate objects with the correct structure" time="0.001">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions getFxpConversionsAvgResponseTime should return an array of avgResponseTime objects with the correct structure" name="Fxp Conversion Functions getFxpConversionsAvgResponseTime should return an array of avgResponseTime objects with the correct structure" time="0">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions getFxpConversionStatusSummary should return an array of status counts" name="Fxp Conversion Functions getFxpConversionStatusSummary should return an array of status counts" time="0.001">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions should return a correctly structured object from getFxpConversion" name="Fxp Conversion Functions should return a correctly structured object from getFxpConversion" time="0">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions should return an array with the correct number of conversions from getFxpConversions" name="Fxp Conversion Functions should return an array with the correct number of conversions from getFxpConversions" time="0.001">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions should return an object with correct structure and values when options are passed" name="Fxp Conversion Functions should return an object with correct structure and values when options are passed" time="0">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions should generate random values if options are not passed" name="Fxp Conversion Functions should generate random values if options are not passed" time="0">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions getFxpConversion should use startTimestamp if provided" name="Fxp Conversion Functions getFxpConversion should use startTimestamp if provided" time="0">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions getFxpConversion should use endTimestamp if provided" name="Fxp Conversion Functions getFxpConversion should use endTimestamp if provided" time="0">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions getFxpConversionsAvgResponseTime should use default value for minutePrevious when not provided" name="Fxp Conversion Functions getFxpConversionsAvgResponseTime should use default value for minutePrevious when not provided" time="0">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions getFxpConversionsAvgResponseTime should use the provided value for minutePrevious" name="Fxp Conversion Functions getFxpConversionsAvgResponseTime should use the provided value for minutePrevious" time="0.001">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions getFxpConversionsSuccessRate should use default value for minutePrevious when not provided" name="Fxp Conversion Functions getFxpConversionsSuccessRate should use default value for minutePrevious when not provided" time="0">
+    </testcase>
+    <testcase classname="Fxp Conversion Functions getFxpConversionsSuccessRate should use the provided value for minutePrevious" name="Fxp Conversion Functions getFxpConversionsSuccessRate should use the provided value for minutePrevious" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Batch" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:15" time="0.12" tests="4">
+    <testcase classname="Batch findAll findAll should return mock data when mockData is true" name="Batch findAll findAll should return mock data when mockData is true" time="0.001">
+    </testcase>
+    <testcase classname="Batch findAll findAll should return mock data when mockData is false" name="Batch findAll findAll should return mock data when mockData is false" time="0">
+    </testcase>
+    <testcase classname="Batch findOne findOne should return mock data when mockData is true" name="Batch findOne findOne should return mock data when mockData is true" time="0.001">
+    </testcase>
+    <testcase classname="Batch findOne findOne should return mock data when mockData is false" name="Batch findOne findOne should return mock data when mockData is false" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Error Module" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:16" time="0.148" tests="3">
+    <testcase classname="Error Module getErrors should return an array of error objects with expected structure" name="Error Module getErrors should return an array of error objects with expected structure" time="0.005">
+    </testcase>
+    <testcase classname="Error Module getErrors should use startTimestamp if provided" name="Error Module getErrors should use startTimestamp if provided" time="0">
+    </testcase>
+    <testcase classname="Error Module getErrors should use endTimestamp if provided" name="Error Module getErrors should use endTimestamp if provided" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Batch Module" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:16" time="0.141" tests="6">
+    <testcase classname="Batch Module getBatch should return a batch with expected structure" name="Batch Module getBatch should return a batch with expected structure" time="0.002">
+    </testcase>
+    <testcase classname="Batch Module getBatch should decrement OPEN status in state if present" name="Batch Module getBatch should decrement OPEN status in state if present" time="0">
+    </testcase>
+    <testcase classname="Batch Module getBatch should use default values if opts are not provided" name="Batch Module getBatch should use default values if opts are not provided" time="0.001">
+    </testcase>
+    <testcase classname="Batch Module getBatches should use the default date range if no options are provided" name="Batch Module getBatches should use the default date range if no options are provided" time="0.001">
+    </testcase>
+    <testcase classname="Batch Module getBatches should generate unique batches with valid structures" name="Batch Module getBatches should generate unique batches with valid structures" time="0.002">
+    </testcase>
+    <testcase classname="Batch Module getBatches should seed faker to ensure reproducible results" name="Batch Module getBatches should seed faker to ensure reproducible results" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="CookieStore" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:16" time="0.116" tests="14">
+    <testcase classname="CookieStore connect successfully establishes a connection" name="CookieStore connect successfully establishes a connection" time="0">
+    </testcase>
+    <testcase classname="CookieStore connect handles Redis client error" name="CookieStore connect handles Redis client error" time="0.005">
+    </testcase>
+    <testcase classname="CookieStore throws an error if destroy is called without connection" name="CookieStore throws an error if destroy is called without connection" time="0.001">
+    </testcase>
+    <testcase classname="CookieStore get method retrieves and parses session data successfully" name="CookieStore get method retrieves and parses session data successfully" time="0">
+    </testcase>
+    <testcase classname="CookieStore get method throws an error if not connected" name="CookieStore get method throws an error if not connected" time="0.001">
+    </testcase>
+    <testcase classname="CookieStore get method returns null for non-existent session key" name="CookieStore get method returns null for non-existent session key" time="0">
+    </testcase>
+    <testcase classname="CookieStore set method sets session data successfully" name="CookieStore set method sets session data successfully" time="0">
+    </testcase>
+    <testcase classname="CookieStore set method throws an error if not connected" name="CookieStore set method throws an error if not connected" time="0.001">
+    </testcase>
+    <testcase classname="CookieStore set method handles Redis client set error" name="CookieStore set method handles Redis client set error" time="0">
+    </testcase>
+    <testcase classname="CookieStore destroy deletes a stored session" name="CookieStore destroy deletes a stored session" time="0">
+    </testcase>
+    <testcase classname="Cookie Store Constructor initializes properties correctly" name="Cookie Store Constructor initializes properties correctly" time="0.001">
+    </testcase>
+    <testcase classname="Cookie Store Connects to redis successfully" name="Cookie Store Connects to redis successfully" time="0">
+    </testcase>
+    <testcase classname="Cookie Store Stores and retrieves a session object" name="Cookie Store Stores and retrieves a session object" time="0">
+    </testcase>
+    <testcase classname="Cookie Store Deletes a stored session object" name="Cookie Store Deletes a stored session object" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Requests Class" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:16" time="0.134" tests="9">
+    <testcase classname="Requests Class GET method should perform a GET request successfully" name="Requests Class GET method should perform a GET request successfully" time="0.007">
+    </testcase>
+    <testcase classname="Requests Class GET method should handle errors gracefully" name="Requests Class GET method should handle errors gracefully" time="0.006">
+    </testcase>
+    <testcase classname="Requests Class GET method should remove undefined query parameters before sending the request" name="Requests Class GET method should remove undefined query parameters before sending the request" time="0.002">
+    </testcase>
+    <testcase classname="Requests Class POST method should perform a POST request successfully" name="Requests Class POST method should perform a POST request successfully" time="0.003">
+    </testcase>
+    <testcase classname="Requests Class POST method should handle POST errors gracefully" name="Requests Class POST method should handle POST errors gracefully" time="0.004">
+    </testcase>
+    <testcase classname="Requests Class PUT method should perform a PUT request successfully" name="Requests Class PUT method should perform a PUT request successfully" time="0.003">
+    </testcase>
+    <testcase classname="Requests Class PUT method should handle PUT errors gracefully" name="Requests Class PUT method should handle PUT errors gracefully" time="0.002">
+    </testcase>
+    <testcase classname="Requests Class DELETE method should perform a DELETE request successfully" name="Requests Class DELETE method should perform a DELETE request successfully" time="0.003">
+    </testcase>
+    <testcase classname="Requests Class DELETE method should handle DELETE errors gracefully" name="Requests Class DELETE method should handle DELETE errors gracefully" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="EndpointsModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:16" time="0.082" tests="14">
+    <testcase classname="EndpointsModel getDFSPEgressEndpoints should call the correct endpoint" name="EndpointsModel getDFSPEgressEndpoints should call the correct endpoint" time="0.001">
+    </testcase>
+    <testcase classname="EndpointsModel uploadDFSPEgressEndpoints should call the correct endpoint with IP type" name="EndpointsModel uploadDFSPEgressEndpoints should call the correct endpoint with IP type" time="0">
+    </testcase>
+    <testcase classname="EndpointsModel uploadDFSPEgressEndpoints should call the correct endpoint with URL type" name="EndpointsModel uploadDFSPEgressEndpoints should call the correct endpoint with URL type" time="0">
+    </testcase>
+    <testcase classname="EndpointsModel getDFSPIngressEndpoints should call the correct endpoint" name="EndpointsModel getDFSPIngressEndpoints should call the correct endpoint" time="0.001">
+    </testcase>
+    <testcase classname="EndpointsModel deleteDFSPEndpoints should call the correct endpoint" name="EndpointsModel deleteDFSPEndpoints should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="EndpointsModel deleteDFSPIngressEndpointsUrlById should call the correct endpoint" name="EndpointsModel deleteDFSPIngressEndpointsUrlById should call the correct endpoint" time="0.001">
+    </testcase>
+    <testcase classname="EndpointsModel getHubIngressEndpoints should call the correct endpoint" name="EndpointsModel getHubIngressEndpoints should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="EndpointsModel getHubEgressEndpoints should call the correct endpoint" name="EndpointsModel getHubEgressEndpoints should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="EndpointsModel updateDFSPEndpoints should call the correct endpoint with IP type" name="EndpointsModel updateDFSPEndpoints should call the correct endpoint with IP type" time="0.001">
+    </testcase>
+    <testcase classname="EndpointsModel updateDFSPEndpoints should call the correct endpoint with URL type" name="EndpointsModel updateDFSPEndpoints should call the correct endpoint with URL type" time="0">
+    </testcase>
+    <testcase classname="EndpointsModel should update endpoint with IP address and ports" name="EndpointsModel should update endpoint with IP address and ports" time="0.001">
+    </testcase>
+    <testcase classname="EndpointsModel should update endpoint with URL" name="EndpointsModel should update endpoint with URL" time="0">
+    </testcase>
+    <testcase classname="EndpointsModel should upload endpoint with IP address and ports" name="EndpointsModel should upload endpoint with IP address and ports" time="0">
+    </testcase>
+    <testcase classname="EndpointsModel should upload endpoint with URL" name="EndpointsModel should upload endpoint with URL" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Authentication library" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:16" time="0.088" tests="7">
+    <testcase classname="Authentication library Creates koa middleware" name="Authentication library Creates koa middleware" time="0.001">
+    </testcase>
+    <testcase classname="Authentication library handles a GET /login request by setting the session up for callback and redirecting to auth URL" name="Authentication library handles a GET /login request by setting the session up for callback and redirecting to auth URL" time="0.001">
+    </testcase>
+    <testcase classname="Authentication library handles a GET /auth request (callback from oidc provider) correctly by setting tokens on the session and redirecting to previously set URL" name="Authentication library handles a GET /auth request (callback from oidc provider) correctly by setting tokens on the session and redirecting to previously set URL" time="0.001">
+    </testcase>
+    <testcase classname="Authentication library Returns user info from the identity provider" name="Authentication library Returns user info from the identity provider" time="0.001">
+    </testcase>
+    <testcase classname="Authentication library Rejects unauthenticated userInfo requests" name="Authentication library Rejects unauthenticated userInfo requests" time="0">
+    </testcase>
+    <testcase classname="Authentication library Rejects requests for non-auth related routes with expired tokens" name="Authentication library Rejects requests for non-auth related routes with expired tokens" time="0.001">
+    </testcase>
+    <testcase classname="Authentication library Rejects requests for non-auth related routes with no tokens" name="Authentication library Rejects requests for non-auth related routes with no tokens" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Common Module" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:16" time="0.11" tests="3">
+    <testcase classname="Common Module currencies array should contain expected currency codes" name="Common Module currencies array should contain expected currency codes" time="0.001">
+    </testcase>
+    <testcase classname="Common Module fakeAmount function should return a string representation of a number with two decimal places" name="Common Module fakeAmount function should return a string representation of a number with two decimal places" time="0">
+    </testcase>
+    <testcase classname="Common Module fakeAmount function should generate an amount within the specified range" name="Common Module fakeAmount function should generate an amount within the specified range" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="CertificatesModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:16" time="0.089" tests="16">
+    <testcase classname="CertificatesModel getCertificates should call the correct endpoint" name="CertificatesModel getCertificates should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel uploadClientCSR should call the correct endpoint" name="CertificatesModel uploadClientCSR should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel createClientCSR should call the correct endpoint" name="CertificatesModel createClientCSR should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel getDFSPCA should call the correct endpoint" name="CertificatesModel getDFSPCA should call the correct endpoint" time="0.001">
+    </testcase>
+    <testcase classname="CertificatesModel createDFSPCA should call the correct endpoint" name="CertificatesModel createDFSPCA should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel setDFSPCA should call the correct endpoint" name="CertificatesModel setDFSPCA should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel getHubCA should call the correct endpoint" name="CertificatesModel getHubCA should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel getDFSPServerCertificates should call the correct endpoint" name="CertificatesModel getDFSPServerCertificates should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel generateServerCertificates should call the correct endpoint" name="CertificatesModel generateServerCertificates should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel getHubServerCertificates should call the correct endpoint" name="CertificatesModel getHubServerCertificates should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel getAllJWSCertificates should call the correct endpoint" name="CertificatesModel getAllJWSCertificates should call the correct endpoint" time="0.001">
+    </testcase>
+    <testcase classname="CertificatesModel getJWSCertificates should call the correct endpoint" name="CertificatesModel getJWSCertificates should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel uploadJWSCertificates should call the correct endpoint" name="CertificatesModel uploadJWSCertificates should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel updateJWSCertificates should call the correct endpoint" name="CertificatesModel updateJWSCertificates should call the correct endpoint" time="0.001">
+    </testcase>
+    <testcase classname="CertificatesModel deleteJWSCertificates should call the correct endpoint" name="CertificatesModel deleteJWSCertificates should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="CertificatesModel generateAllCerts should call the correct endpoint" name="CertificatesModel generateAllCerts should call the correct endpoint" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="DFSPModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:16" time="0.09" tests="6">
+    <testcase classname="DFSPModel getDfspStatus should call the correct endpoint" name="DFSPModel getDfspStatus should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="DFSPModel getDFSPDetails should call the correct endpoint" name="DFSPModel getDFSPDetails should call the correct endpoint" time="0.001">
+    </testcase>
+    <testcase classname="DFSPModel getAllDfsp should call the correct endpoint with options" name="DFSPModel getAllDfsp should call the correct endpoint with options" time="0">
+    </testcase>
+    <testcase classname="DFSPModel getDFSPsByMonetaryZone should call the correct endpoint" name="DFSPModel getDFSPsByMonetaryZone should call the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="DFSPModel getEndpoints should call the correct endpoint with options" name="DFSPModel getEndpoints should call the correct endpoint with options" time="0.001">
+    </testcase>
+    <testcase classname="DFSPModel createEndpoints should call the correct endpoint" name="DFSPModel createEndpoints should call the correct endpoint" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="MetricsModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:17" time="0.089" tests="6">
+    <testcase classname="MetricsModel should throw an error if metricName is not supplied" name="MetricsModel should throw an error if metricName is not supplied" time="0.003">
+    </testcase>
+    <testcase classname="MetricsModel should set default values for aggregateDurationSeconds, resolutionSeconds, startTimestamp, and endTimestamp" name="MetricsModel should set default values for aggregateDurationSeconds, resolutionSeconds, startTimestamp, and endTimestamp" time="0.001">
+    </testcase>
+    <testcase classname="MetricsModel should form the correct query for metricType HIST_SIZE" name="MetricsModel should form the correct query for metricType HIST_SIZE" time="0">
+    </testcase>
+    <testcase classname="MetricsModel should log and return error if Prometheus query fails" name="MetricsModel should log and return error if Prometheus query fails" time="0.001">
+    </testcase>
+    <testcase classname="MetricsModel should return parsed result data if Prometheus query succeeds" name="MetricsModel should return parsed result data if Prometheus query succeeds" time="0">
+    </testcase>
+    <testcase classname="MetricsModel should return empty data if Prometheus query returns no results" name="MetricsModel should return empty data if Prometheus query returns no results" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Position" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:17" time="0.082" tests="2">
+    <testcase classname="Position should return mocked positions when mockData is true" name="Position should return mocked positions when mockData is true" time="0.001">
+    </testcase>
+    <testcase classname="Position should throw NotImplementedError when mockData is false" name="Position should throw NotImplementedError when mockData is false" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="HubModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:17" time="0.088" tests="3">
+    <testcase classname="HubModel should instantiate Requests with the correct parameters" name="HubModel should instantiate Requests with the correct parameters" time="0">
+    </testcase>
+    <testcase classname="HubModel should call get on Requests with the correct parameters" name="HubModel should call get on Requests with the correct parameters" time="0">
+    </testcase>
+    <testcase classname="HubModel should handle errors thrown by the Requests.get method" name="HubModel should handle errors thrown by the Requests.get method" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="getFlows" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:17" time="0.085" tests="3">
+    <testcase classname="getFlows should return flows with correct structure when hoursPrevious is 1" name="getFlows should return flows with correct structure when hoursPrevious is 1" time="0.002">
+    </testcase>
+    <testcase classname="getFlows should return flows for multiple hours when hoursPrevious is greater than 1" name="getFlows should return flows for multiple hours when hoursPrevious is greater than 1" time="0.001">
+    </testcase>
+    <testcase classname="getFlows should default hoursPrevious to 1 if not provided" name="getFlows should default hoursPrevious to 1 if not provided" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="getPositions" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:17" time="0.087" tests="3">
+    <testcase classname="getPositions should return an array of positions with the correct length" name="getPositions should return an array of positions with the correct length" time="0.002">
+    </testcase>
+    <testcase classname="getPositions should default to 1 hour if hoursPrevious is not provided" name="getPositions should default to 1 hour if hoursPrevious is not provided" time="0.001">
+    </testcase>
+    <testcase classname="getPositions should correctly calculate timestamps for each position" name="getPositions should correctly calculate timestamps for each position" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Utility Functions" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:17" time="0.094" tests="11">
+    <testcase classname="Utility Functions HTTPResponseError should initialize with a message and params" name="Utility Functions HTTPResponseError should initialize with a message and params" time="0.001">
+    </testcase>
+    <testcase classname="Utility Functions HTTPResponseError should return correct string representation" name="Utility Functions HTTPResponseError should return correct string representation" time="0">
+    </testcase>
+    <testcase classname="Utility Functions HTTPResponseError should return correct JSON representation" name="Utility Functions HTTPResponseError should return correct JSON representation" time="0.001">
+    </testcase>
+    <testcase classname="Utility Functions buildUrl should build a URL correctly without leading or trailing slashes" name="Utility Functions buildUrl should build a URL correctly without leading or trailing slashes" time="0">
+    </testcase>
+    <testcase classname="Utility Functions buildUrl should strip leading and trailing slashes" name="Utility Functions buildUrl should strip leading and trailing slashes" time="0">
+    </testcase>
+    <testcase classname="Utility Functions buildUrl should handle undefined arguments" name="Utility Functions buildUrl should handle undefined arguments" time="0">
+    </testcase>
+    <testcase classname="Utility Functions buildUrl should retain trailing slash if last argument ends with one" name="Utility Functions buildUrl should retain trailing slash if last argument ends with one" time="0">
+    </testcase>
+    <testcase classname="Utility Functions throwOrJson should return null for content-length 0 or statusCode 204" name="Utility Functions throwOrJson should return null for content-length 0 or statusCode 204" time="0">
+    </testcase>
+    <testcase classname="Utility Functions throwOrJson should throw HTTPResponseError for non-2xx status codes" name="Utility Functions throwOrJson should throw HTTPResponseError for non-2xx status codes" time="0.004">
+    </testcase>
+    <testcase classname="Utility Functions throwOrJson should return data for successful responses" name="Utility Functions throwOrJson should return data for successful responses" time="0">
+    </testcase>
+    <testcase classname="Utility Functions throwOrJson should return null for 204 status code with data null" name="Utility Functions throwOrJson should return null for 204 status code with data null" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="MonetaryZoneModel" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:17" time="0.098" tests="3">
+    <testcase classname="MonetaryZoneModel should instantiate Requests with the correct parameters" name="MonetaryZoneModel should instantiate Requests with the correct parameters" time="0.001">
+    </testcase>
+    <testcase classname="MonetaryZoneModel should call get on Requests with the correct endpoint" name="MonetaryZoneModel should call get on Requests with the correct endpoint" time="0">
+    </testcase>
+    <testcase classname="MonetaryZoneModel should handle errors thrown by the Requests.get method" name="MonetaryZoneModel should handle errors thrown by the Requests.get method" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="NotImplementedError" errors="0" failures="0" skipped="0" timestamp="2025-08-26T21:32:17" time="0.095" tests="4">
+    <testcase classname="NotImplementedError should create a NotImplementedError with default message" name="NotImplementedError should create a NotImplementedError with default message" time="0.001">
+    </testcase>
+    <testcase classname="NotImplementedError should append a custom message if provided" name="NotImplementedError should append a custom message if provided" time="0">
+    </testcase>
+    <testcase classname="NotImplementedError should not have extra spaces in the message" name="NotImplementedError should not have extra spaces in the message" time="0">
+    </testcase>
+    <testcase classname="NotImplementedError should maintain the stack trace format" name="NotImplementedError should maintain the stack trace format" time="0.001">
     </testcase>
   </testsuite>
 </testsuites>

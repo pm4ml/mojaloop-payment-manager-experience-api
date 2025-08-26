@@ -20,7 +20,7 @@
     "start:dev": "node -r dotenv/config src/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "jest --env=node --testMatch '**/test/unit/**/*.test.js'",
+    "test": "jest --env=node --runInBand test/unit",
     "test:unit": "jest --detectOpenHandles test/unit",
     "test:int": "jest --reporters=default --reporters=jest-junit --env=node test/integration --forceExit",
     "test:coverage": "npm test -- --coverage --coverageThreshold='{}'",

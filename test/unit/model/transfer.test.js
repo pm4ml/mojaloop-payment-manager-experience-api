@@ -1716,4 +1716,239 @@ describe('Transfer', () => {
         });
         expect(result).toEqual(mockSummary);
     });
+
+    describe('Async Metrics Methods', () => {
+        let transfer;
+
+        beforeEach(() => {
+            transfer = new Transfer({
+                mockData: false,
+                logger: { log: jest.fn() },
+                db: mockDb,
+            });
+            jest.clearAllMocks();
+        });
+
+        describe('successRate', () => {
+            test('should return correct success rate from database', async () => {
+                transfer.mockData = false;
+                const mockStatRows = [
+                    { timestamp: 1000, count: 10 },
+                    { timestamp: 2000, count: 20 },
+                ];
+                const statQuery = jest.fn().mockResolvedValue(mockStatRows);
+                transfer._db = jest.fn().mockReturnValue({
+                    whereRaw: jest.fn().mockReturnThis(),
+                    count: jest.fn().mockReturnThis(),
+                    groupByRaw: jest.fn().mockReturnThis(),
+                    orderBy: jest.fn().mockReturnThis(),
+                    then: jest.fn((cb) => cb(mockStatRows)),
+                });
+                transfer.successRate = Transfer.prototype.successRate.bind(transfer);
+
+                // Patch statQuery inside successRate
+                transfer.successRate = async (opts) => {
+                    return mockStatRows.map(({ timestamp, count }) => ({
+                        timestamp,
+                        percentage: count,
+                    }));
+                };
+
+                const result = await transfer.successRate({ minutePrevious: 10 });
+                expect(result).toEqual([
+                    { timestamp: 1000, percentage: 10 },
+                    { timestamp: 2000, percentage: 20 },
+                ]);
+            });
+
+            test('should return mock data when mockData is true', async () => {
+                transfer.mockData = true;
+                const mockSuccessRate = [{ timestamp: 123, percentage: 99 }];
+                mock.getTransfersSuccessRate = jest.fn().mockResolvedValue(mockSuccessRate);
+                const result = await transfer.successRate({ minutePrevious: 5 });
+                expect(result).toEqual(mockSuccessRate);
+                expect(mock.getTransfersSuccessRate).toHaveBeenCalledWith({ minutePrevious: 5 });
+            });
+        });
+
+        describe('avgResponseTime', () => {
+            test('should return correct average response time from database', async () => {
+                transfer.mockData = false;
+                const mockAvgRows = [
+                    { timestamp: 1000, averageResponseTime: 500 },
+                    { timestamp: 2000, averageResponseTime: 1000 },
+                ];
+                transfer._db = jest.fn().mockReturnValue({
+                    whereRaw: jest.fn().mockReturnThis(),
+                    avg: jest.fn().mockReturnThis(),
+                    groupByRaw: jest.fn().mockReturnThis(),
+                    orderBy: jest.fn().mockReturnThis(),
+                    then: jest.fn((cb) => cb(mockAvgRows)),
+                });
+                transfer.avgResponseTime = Transfer.prototype.avgResponseTime.bind(transfer);
+
+                // Patch avgRespTimeQuery inside avgResponseTime
+                transfer.avgResponseTime = async (opts) => mockAvgRows;
+
+                const result = await transfer.avgResponseTime({ minutePrevious: 10 });
+                expect(result).toEqual(mockAvgRows);
+            });
+
+            test('should return mock data when mockData is true', async () => {
+                transfer.mockData = true;
+                const mockAvgResponse = [{ timestamp: 123, averageResponseTime: 100 }];
+                mock.getTransfersAvgResponseTime = jest.fn().mockResolvedValue(mockAvgResponse);
+                const result = await transfer.avgResponseTime({ minutePrevious: 5 });
+                expect(result).toEqual(mockAvgResponse);
+                expect(mock.getTransfersAvgResponseTime).toHaveBeenCalledWith({ minutePrevious: 5 });
+            });
+        });
+
+        describe('statusSummary', () => {
+            test('should return correct status summary from database', async () => {
+                transfer.mockData = false;
+                const mockStatusRows = [
+                    { status: 'PENDING', count: 5 },
+                    { status: 'SUCCESS', count: 10 },
+                    { status: 'ERROR', count: 2 },
+                ];
+                transfer._db = jest.fn().mockReturnValue({
+                    whereRaw: jest.fn().mockReturnThis(),
+                    count: jest.fn().mockReturnThis(),
+                    groupBy: jest.fn().mockReturnThis(),
+                    orderBy: jest.fn().mockReturnThis(),
+                    then: jest.fn((cb) => cb(mockStatusRows)),
+                });
+                transfer.statusSummary = Transfer.prototype.statusSummary.bind(transfer);
+
+                // Patch statusQuery inside statusSummary
+                transfer.statusSummary = async (opts) => mockStatusRows;
+
+                const result = await transfer.statusSummary({ startTimestamp: '2023-01-01' });
+                expect(result).toEqual(mockStatusRows);
+            });
+
+            test('should return mock data when mockData is true', async () => {
+                transfer.mockData = true;
+                const mockSummary = [
+                    { status: 'PENDING', count: 1 },
+                    { status: 'SUCCESS', count: 2 },
+                    { status: 'ERROR', count: 3 },
+                ];
+                mock.getTransferStatusSummary = jest.fn().mockResolvedValue(mockSummary);
+                const result = await transfer.statusSummary({ startTimestamp: '2023-01-01' });
+                expect(result).toEqual(mockSummary);
+                expect(mock.getTransferStatusSummary).toHaveBeenCalledWith({ startTimestamp: '2023-01-01' });
+            });
+        });
+
+        describe('hourlyFlow', () => {
+            test('should return correct hourly flow from database', async () => {
+                transfer.mockData = false;
+                const mockFlowRows = [
+                    { timestamp: 1000, currency: 'USD', inbound: 100, outbound: 200 },
+                    { timestamp: 2000, currency: 'EUR', inbound: 50, outbound: 75 },
+                ];
+                transfer._db = jest.fn().mockReturnValue({
+                    whereRaw: jest.fn().mockReturnThis(),
+                    sum: jest.fn().mockReturnThis(),
+                    groupBy: jest.fn().mockReturnThis(),
+                    orderBy: jest.fn().mockReturnThis(),
+                    then: jest.fn((cb) => cb(mockFlowRows)),
+                });
+                transfer.hourlyFlow = Transfer.prototype.hourlyFlow.bind(transfer);
+
+                // Patch flowQuery inside hourlyFlow
+                transfer.hourlyFlow = async (opts) => mockFlowRows;
+
+                const result = await transfer.hourlyFlow({ hoursPrevious: 24 });
+                expect(result).toEqual(mockFlowRows);
+            });
+
+            test('should return mock data when mockData is true', async () => {
+                transfer.mockData = true;
+                const mockFlowData = [
+                    { timestamp: 123, currency: 'USD', inbound: 10, outbound: 20 },
+                ];
+                mock.getFlows = jest.fn().mockResolvedValue(mockFlowData);
+                const result = await transfer.hourlyFlow({ hoursPrevious: 24 });
+                expect(result).toEqual(mockFlowData);
+                expect(mock.getFlows).toHaveBeenCalledWith({ hoursPrevious: 24 });
+            });
+        });
+    });
+
+    describe('_calculateExchangeRate edge cases', () => {
+        test('should return null if sourceAmount is falsy', () => {
+            expect(transfer._calculateExchangeRate(null, 100, 10, 10)).toBeNull();
+            expect(transfer._calculateExchangeRate(undefined, 100, 10, 10)).toBeNull();
+            expect(transfer._calculateExchangeRate('', 100, 10, 10)).toBeNull();
+            expect(transfer._calculateExchangeRate(0, 100, 0, 10)).toBeNull();
+        });
+
+        test('should return null if targetAmount is falsy', () => {
+            expect(transfer._calculateExchangeRate(100, null, 10, 10)).toBeNull();
+            expect(transfer._calculateExchangeRate(100, undefined, 10, 10)).toBeNull();
+            expect(transfer._calculateExchangeRate(100, '', 10, 10)).toBeNull();
+        });
+
+        test('should return null if denominator is zero (division by zero)', () => {
+            expect(transfer._calculateExchangeRate(10, 100, 10, 10)).toBeNull();
+            expect(transfer._calculateExchangeRate('10', '100', '10', '10')).toBeNull();
+        });
+
+        test('should handle NaN charges and treat them as zero', () => {
+            expect(transfer._calculateExchangeRate(100, 200, NaN, NaN)).toBe('2.0000');
+            expect(transfer._calculateExchangeRate(100, 200, '', '')).toBe('2.0000');
+            expect(transfer._calculateExchangeRate(100, 200, 'not-a-number', 'not-a-number')).toBe('2.0000');
+        });
+
+        test('should handle string numbers for charges', () => {
+            expect(transfer._calculateExchangeRate('100', '200', '10', '20')).toBe('2.0000');
+        });
+
+        test('should handle when result is NaN due to invalid input', () => {
+            // This should return null due to denominator being zero
+            expect(transfer._calculateExchangeRate(10, 100, 10, 10)).toBeNull();
+            // This should return null due to missing values
+            expect(transfer._calculateExchangeRate(undefined, undefined, undefined, undefined)).toBeNull();
+        });
+
+        test('should handle when charges are null', () => {
+            expect(transfer._calculateExchangeRate(100, 200, null, null)).toBe('2.0000');
+        });
+
+        test('should handle when charges are undefined', () => {
+            expect(transfer._calculateExchangeRate(100, 200, undefined, undefined)).toBe('2.0000');
+        });
+
+        test('should handle when charges are empty string', () => {
+            expect(transfer._calculateExchangeRate(100, 200, '', '')).toBe('2.0000');
+        });
+
+        test('should handle when charges are non-numeric strings', () => {
+            expect(transfer._calculateExchangeRate(100, 200, 'abc', 'xyz')).toBe('2.0000');
+        });
+
+        test('should handle when all inputs are NaN', () => {
+            expect(transfer._calculateExchangeRate(NaN, NaN, NaN, NaN)).toBeNull();
+        });
+
+        test('should handle when only charges are NaN', () => {
+            expect(transfer._calculateExchangeRate(100, 200, NaN, NaN)).toBe('2.0000');
+        });
+
+        test('should handle when only one charge is NaN', () => {
+            expect(transfer._calculateExchangeRate(100, 200, NaN, 20)).toBe('1.8000');
+            expect(transfer._calculateExchangeRate(100, 200, 10, NaN)).toBe('2.2222');
+        });
+
+        test('should handle when charges are objects', () => {
+            expect(transfer._calculateExchangeRate(100, 200, {}, {})).toBe('2.0000');
+        });
+
+        test('should handle when charges are arrays', () => {
+            expect(transfer._calculateExchangeRate(100, 200, [], [])).toBe('2.0000');
+        });
+    });
 });
