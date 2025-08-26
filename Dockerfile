@@ -12,21 +12,27 @@ ARG NODE_VERSION=lts-alpine
 
 # Build Image
 FROM node:${NODE_VERSION} AS builder
+USER root
 
-RUN apk add --no-cache git build-base build-dependencies make gcc g++ python3 libtool openssl-dev autoconf automake bash
+WORKDIR /opt/app
 
-WORKDIR /opt/mojaloop-payment-manager-experience-api
+RUN apk add --no-cache git build-base build-dependencies make gcc g++ python3 libtool openssl-dev autoconf automake bash \
+    && cd $(npm root -g)/npm
 
-COPY package.json package-lock.json* /opt/mojaloop-payment-manager-experience-api/
-COPY src /opt/mojaloop-payment-manager-experience-api/src
+COPY package.json package-lock.json* /opt/app/
+COPY src /opt/app/src
 
 RUN npm ci --production
 
 FROM node:${NODE_VERSION}
 
-WORKDIR /opt/mojaloop-payment-manager-experience-api
+WORKDIR /opt/app
 
-COPY --from=builder /opt/mojaloop-payment-manager-experience-api .
+# Create a non-root user: ml-user
+RUN adduser -D app-user
+USER app-user
+
+COPY --chown=app-user --from=builder /opt/app .
 
 EXPOSE 3000
 
