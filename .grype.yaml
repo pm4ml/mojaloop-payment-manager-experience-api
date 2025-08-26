@@ -1,4 +1,7 @@
-ignore: {}
+ignore:
+  - vulnerability: GHSA-2jcg-qqmg-46q6
+    package:
+      name: monorepo-symlink-test
 
 # Set output format defaults
 output:
