@@ -1,0 +1,31 @@
+## Add a comment indicating the reason for each rejected dependency upgrade added to this list, and what should be done to resolve it (i.e. handle it through a story, etc).
+reject: [
+  ## Address dependency issues in follow up pull requests
+  '@mojaloop/sdk-standard-components',
+  '@types/jest',
+  'ajv',
+  'better-sqlite3',
+  'co-body',
+  'dotenv',
+  'env-var',
+  'eslint',
+  'eslint-config-airbnb-base',
+  'eslint-plugin-import',
+  'faker',
+  'jest',
+  'knex',
+  'koa',
+  'koa-body',
+  'koa-bodyparser',
+  'koa-oas3',
+  'koa-router',
+  'koa-session',
+  'nock',
+  'nyc',
+  'openapi-response-validator',
+  'openid-client',
+  'redis',
+  'redis-mock',
+  'supertest',
+  'uuidv4'
+]
