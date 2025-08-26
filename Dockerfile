@@ -1,6 +1,6 @@
 FROM node:lts-alpine as builder
 
-RUN apk add --no-cache git python3 build-base
+RUN apk add --no-cache git build-base build-dependencies make gcc g++ python3 libtool openssl-dev autoconf automake bash
 
 WORKDIR /opt/mojaloop-payment-manager-experience-api
 
