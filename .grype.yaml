@@ -1,0 +1,15 @@
+ignore:
+  - vulnerability: GHSA-2jcg-qqmg-46q6
+    package:
+      name: monorepo-symlink-test
+
+# Set output format defaults
+output:
+  - "table"
+  - "json"
+
+# Modify your CircleCI job to check critical count
+search:
+  scope: "squashed"
+quiet: false
+check-for-app-update: false

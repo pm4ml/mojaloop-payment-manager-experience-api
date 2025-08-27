@@ -1,19 +1,38 @@
-FROM node:lts-alpine as builder
+# Arguments
+ARG NODE_VERSION=lts-alpine
 
-RUN apk add --no-cache git python3 build-base
+# NOTE: Ensure you set NODE_VERSION Build Argument as follows...
+#
+#  export NODE_VERSION="$(cat .nvmrc)-alpine"
+#  docker build \
+#    --build-arg NODE_VERSION=$NODE_VERSION \
+#    -t mojaloop/repo-name:local \
+#    .
+#
 
-WORKDIR /opt/mojaloop-payment-manager-experience-api
+# Build Image
+FROM node:${NODE_VERSION} AS builder
+USER root
 
-COPY package.json package-lock.json* /opt/mojaloop-payment-manager-experience-api/
-COPY src /opt/mojaloop-payment-manager-experience-api/src
+WORKDIR /opt/app
+
+RUN apk add --no-cache git build-base make gcc g++ python3 libtool openssl-dev autoconf automake bash \
+    && cd $(npm root -g)/npm
+
+COPY package.json package-lock.json* /opt/app/
+COPY src /opt/app/src
 
 RUN npm ci --production
 
-FROM node:lts-alpine
+FROM node:${NODE_VERSION}
 
-WORKDIR /opt/mojaloop-payment-manager-experience-api
+WORKDIR /opt/app
 
-COPY --from=builder /opt/mojaloop-payment-manager-experience-api .
+# Create a non-root user: ml-user
+RUN adduser -D app-user
+USER app-user
+
+COPY --chown=app-user --from=builder /opt/app .
 
 EXPOSE 3000
 
