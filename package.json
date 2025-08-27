@@ -1,6 +1,6 @@
 {
   "name": "mojaloop-payment-manager-experience-api-service",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "private": true,
   "description": "Mojaloop Payment Manager - Experience API Service",
   "main": "index.js",
