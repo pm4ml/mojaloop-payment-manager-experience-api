@@ -1736,7 +1736,7 @@ describe('Transfer', () => {
                     { timestamp: 1000, count: 10 },
                     { timestamp: 2000, count: 20 },
                 ];
-                const statQuery = jest.fn().mockResolvedValue(mockStatRows);
+                jest.fn().mockResolvedValue(mockStatRows);
                 transfer._db = jest.fn().mockReturnValue({
                     whereRaw: jest.fn().mockReturnThis(),
                     count: jest.fn().mockReturnThis(),
@@ -1747,7 +1747,7 @@ describe('Transfer', () => {
                 transfer.successRate = Transfer.prototype.successRate.bind(transfer);
 
                 // Patch statQuery inside successRate
-                transfer.successRate = async (opts) => {
+                transfer.successRate = async () => {
                     return mockStatRows.map(({ timestamp, count }) => ({
                         timestamp,
                         percentage: count,
@@ -1788,7 +1788,7 @@ describe('Transfer', () => {
                 transfer.avgResponseTime = Transfer.prototype.avgResponseTime.bind(transfer);
 
                 // Patch avgRespTimeQuery inside avgResponseTime
-                transfer.avgResponseTime = async (opts) => mockAvgRows;
+                transfer.avgResponseTime = async () => mockAvgRows;
 
                 const result = await transfer.avgResponseTime({ minutePrevious: 10 });
                 expect(result).toEqual(mockAvgRows);
@@ -1822,7 +1822,7 @@ describe('Transfer', () => {
                 transfer.statusSummary = Transfer.prototype.statusSummary.bind(transfer);
 
                 // Patch statusQuery inside statusSummary
-                transfer.statusSummary = async (opts) => mockStatusRows;
+                transfer.statusSummary = async () => mockStatusRows;
 
                 const result = await transfer.statusSummary({ startTimestamp: '2023-01-01' });
                 expect(result).toEqual(mockStatusRows);
@@ -1859,7 +1859,7 @@ describe('Transfer', () => {
                 transfer.hourlyFlow = Transfer.prototype.hourlyFlow.bind(transfer);
 
                 // Patch flowQuery inside hourlyFlow
-                transfer.hourlyFlow = async (opts) => mockFlowRows;
+                transfer.hourlyFlow = async () => mockFlowRows;
 
                 const result = await transfer.hourlyFlow({ hoursPrevious: 24 });
                 expect(result).toEqual(mockFlowRows);
